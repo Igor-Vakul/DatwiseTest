@@ -32,6 +32,7 @@ namespace SafetyPortal.Web.Models
         public string   SeverityLevel          { get; set; }
         public string   Status                 { get; set; }
         public int      CorrectiveActionsCount { get; set; }
+        public int      AttachmentsCount       { get; set; }
     }
 
     public class IncidentDetail

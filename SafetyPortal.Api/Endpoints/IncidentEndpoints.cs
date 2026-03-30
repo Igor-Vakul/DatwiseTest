@@ -32,6 +32,7 @@ public static class IncidentEndpoints
                 .Include(x => x.Department)
                 .Include(x => x.ReportedByUser)
                 .Include(x => x.CorrectiveActions)
+                .Include(x => x.Attachments)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -68,7 +69,8 @@ public static class IncidentEndpoints
                     x.IncidentDate,
                     x.SeverityLevel,
                     x.Status,
-                    x.CorrectiveActions.Count
+                    x.CorrectiveActions.Count,
+                    x.Attachments.Count
                 ))
                 .ToListAsync();
 

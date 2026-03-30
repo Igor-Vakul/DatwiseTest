@@ -10,5 +10,6 @@ public record IncidentSummaryDto(
     DateTime IncidentDate,
     string SeverityLevel,
     string Status,
-    int CorrectiveActionsCount
+    int CorrectiveActionsCount,
+    int AttachmentsCount
 );

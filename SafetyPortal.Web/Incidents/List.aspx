@@ -84,6 +84,7 @@
                             <th><%= T("date_col") %></th>
                             <th><%= T("actions") %></th>
                             <th class="text-center"><%= T("ca_count") %></th>
+                            <th class="text-center"><i class="bi bi-paperclip" title="Attachments"></i></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,10 +118,19 @@
                                 <span class="text-muted">—</span>
                                 <% } %>
                             </td>
+                            <td class="text-center">
+                                <% if (inc.AttachmentsCount > 0) { %>
+                                <span class="badge bg-secondary-subtle text-secondary">
+                                    <i class="bi bi-paperclip"></i> <%= inc.AttachmentsCount %>
+                                </span>
+                                <% } else { %>
+                                <span class="text-muted">—</span>
+                                <% } %>
+                            </td>
                         </tr>
                         <% } %>
                         <% if (Incidents.Count == 0) { %>
-                        <tr><td colspan="9" class="text-center text-muted py-4"><%= T("no_incidents") %></td></tr>
+                        <tr><td colspan="10" class="text-center text-muted py-4"><%= T("no_incidents") %></td></tr>
                         <% } %>
                     </tbody>
                 </table>
