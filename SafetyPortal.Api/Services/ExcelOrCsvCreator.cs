@@ -77,7 +77,7 @@ namespace SafetyPortal.Api.Services
                         {
                             writer.Write(",");
                         }
-                        writer.Write(row[fieldsToExpose[i]].ToString()
+                        writer.Write((row[fieldsToExpose[i]]?.ToString() ?? string.Empty)
                             .Replace("\"", "\"\"").Replace("\"", ""));
                     }
 
@@ -112,7 +112,7 @@ namespace SafetyPortal.Api.Services
                 if (table.Columns[r.Key] != null)
                 {
                     relColumnListTb.Add(r.Key);
-                    table.Columns[r.Key].ColumnName = r.Value;
+                    table.Columns[r.Key]!.ColumnName = r.Value;
                     table.AcceptChanges();
                 }
             }
@@ -220,14 +220,13 @@ namespace SafetyPortal.Api.Services
                     return stream;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                //LoggerWriter.Error(e.Message);
                 return null;
             }
         }
 
-        public static MemoryStream GenerateExcel(DataSet dataToExcel, string newExcelFile, string excelSheetName)
+        public static MemoryStream? GenerateExcel(DataSet dataToExcel, string newExcelFile, string excelSheetName)
         {
             var stream = new MemoryStream();
 
@@ -391,8 +390,8 @@ namespace SafetyPortal.Api.Services
 
                 if (isDisplayNameAttributeDefined)
                 {
-                    DisplayNameAttribute dna =
-                        (DisplayNameAttribute)Attribute.GetCustomAttribute(prop, typeof(DisplayNameAttribute));
+                    DisplayNameAttribute? dna =
+                        (DisplayNameAttribute?)Attribute.GetCustomAttribute(prop, typeof(DisplayNameAttribute));
                     if (dna != null)
                         headers[colCount] = dna.DisplayName;
                 }
@@ -441,12 +440,12 @@ namespace SafetyPortal.Api.Services
                             DisplayFormatAttribute;
                     if (displayFormatAttribute != null && Props[col].GetValue(item, null) != null)
                     {
-                        values[col] = String.Format(displayFormatAttribute.DataFormatString.ToString(),
+                        values[col] = String.Format(displayFormatAttribute.DataFormatString ?? string.Empty,
                             Props[col].GetValue(item, null));
                     }
                     else
                     {
-                        values[col] = Props[col].GetValue(item, null);
+                        values[col] = Props[col].GetValue(item, null)!;
                     }
 
 
