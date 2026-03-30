@@ -59,6 +59,12 @@
                                         onclick="openEdit(<%= u.Id %>, '<%= System.Web.HttpUtility.JavaScriptStringEncode(u.FullName) %>', '<%= u.RoleName %>')">
                                         <i class="bi bi-pencil"></i>
                                     </button>
+                                    <button type="button"
+                                        class="btn btn-outline-info btn-sm py-0 px-2"
+                                        title="<%= T("send_email") %>"
+                                        onclick="openEmail(<%= u.Id %>, '<%= System.Web.HttpUtility.JavaScriptStringEncode(u.Email) %>', '<%= System.Web.HttpUtility.JavaScriptStringEncode(u.FullName) %>')">
+                                        <i class="bi bi-envelope"></i>
+                                    </button>
                                     <a href="Users.aspx?toggle=<%= u.Id %>"
                                        class="btn btn-outline-<%= u.IsActive ? "warning" : "success" %> btn-sm py-0 px-2"
                                        onclick="return confirm('<%= T("confirm_toggle") %>')"
@@ -99,6 +105,45 @@
                     </div>
                     <asp:Button ID="btnCreate" runat="server"
                         CssClass="btn btn-success btn-sm w-100" OnClick="btnCreate_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%-- Send Email Modal --%>
+    <asp:HiddenField ID="hdnEmailUserId" runat="server" />
+    <asp:HiddenField ID="hdnEmailAddress" runat="server" />
+
+    <div class="modal fade" id="modalSendEmail" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-envelope me-2"></i><%= T("send_email") %></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <% if (!string.IsNullOrEmpty(EmailError)) { %>
+                    <div class="alert alert-danger py-2 small"><%= EmailError %></div>
+                    <% } %>
+                    <div class="mb-3">
+                        <label class="form-label"><%= T("email_to_lbl") %></label>
+                        <input type="text" id="txtEmailToDisplay" class="form-control form-control-sm"
+                               readonly disabled />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><%= T("email_subject_lbl") %> <span class="text-danger">*</span></label>
+                        <asp:TextBox ID="txtEmailSubject" runat="server" CssClass="form-control form-control-sm" MaxLength="200" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><%= T("email_body_lbl") %> <span class="text-danger">*</span></label>
+                        <asp:TextBox ID="txtEmailBody" runat="server" CssClass="form-control form-control-sm"
+                            TextMode="MultiLine" Rows="5" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal"><%= T("cancel") %></button>
+                    <asp:Button ID="btnSendEmail" runat="server"
+                        CssClass="btn btn-info btn-sm" OnClick="btnSendEmail_Click" />
                 </div>
             </div>
         </div>
@@ -156,10 +201,23 @@
         new bootstrap.Modal(document.getElementById('modalEditUser')).show();
     }
 
-    // Re-open modal after postback if there was a validation error
+    function openEmail(userId, email, name) {
+        document.getElementById('<%= hdnEmailUserId.ClientID %>').value = userId;
+        document.getElementById('<%= hdnEmailAddress.ClientID %>').value = email;
+        document.getElementById('txtEmailToDisplay').value = name + ' <' + email + '>';
+        new bootstrap.Modal(document.getElementById('modalSendEmail')).show();
+    }
+
+    // Re-open modals after postback if needed
     <% if (!string.IsNullOrEmpty(hdnEditId.Value)) { %>
     window.addEventListener('DOMContentLoaded', function () {
         new bootstrap.Modal(document.getElementById('modalEditUser')).show();
+    });
+    <% } %>
+    <% if (!string.IsNullOrEmpty(hdnEmailUserId.Value) && !string.IsNullOrEmpty(EmailError)) { %>
+    window.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('txtEmailToDisplay').value = '<%= System.Web.HttpUtility.JavaScriptStringEncode(hdnEmailAddress.Value) %>';
+        new bootstrap.Modal(document.getElementById('modalSendEmail')).show();
     });
     <% } %>
 </script>

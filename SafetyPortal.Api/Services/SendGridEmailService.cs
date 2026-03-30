@@ -70,6 +70,14 @@ public class SendGridEmailService : IEmailService
 
     // ── Scenario 3: incident escalation ───────────────────────────────────
 
+    public Task SendDirectAsync(string toEmail, string toName, string subject, string body)
+    {
+        var html = Wrap("#5b6abf", subject,
+            $"Hello {System.Net.WebUtility.HtmlEncode(toName)},",
+            $"<p style='white-space:pre-wrap;'>{System.Net.WebUtility.HtmlEncode(body)}</p>");
+        return Send(toEmail, toName, subject, html);
+    }
+
     public Task SendIncidentEscalationAsync(IncidentEscalationContext ctx)
     {
         var tasks = ctx.Managers

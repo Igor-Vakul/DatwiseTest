@@ -1,8 +1,10 @@
+using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SafetyPortal.Api.Data;
 using SafetyPortal.Api.Dtos.Users;
 using SafetyPortal.Api.Entities;
+using SafetyPortal.Api.Services;
 
 namespace SafetyPortal.Api.Endpoints;
 
@@ -78,6 +80,24 @@ public static class UserManagementEndpoints
             return Results.Ok(new { user.Id, user.IsActive });
         });
 
+        // POST /api/users/{id}/send-email
+        group.MapPost("/{id:int}/send-email", async (int id, SendEmailDto request, SafetyPortalDbContext db) =>
+        {
+            var user = await db.Users.FindAsync(id);
+            if (user is null)
+                return Results.NotFound();
+
+            if (string.IsNullOrWhiteSpace(request.Subject) || string.IsNullOrWhiteSpace(request.Body))
+                return Results.BadRequest(new { error = "Subject and body are required." });
+
+            BackgroundJob.Enqueue<IEmailService>(s =>
+                s.SendDirectAsync(user.Email, user.FullName, request.Subject, request.Body));
+
+            return Results.Ok(new { queued = true });
+        });
+
         return app;
     }
 }
+
+public record SendEmailDto(string Subject, string Body);

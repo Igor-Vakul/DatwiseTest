@@ -21,15 +21,24 @@ namespace SafetyPortal.Web.Admin
         protected System.Web.UI.WebControls.DropDownList ddlEditRole;
         protected System.Web.UI.WebControls.Button       btnSaveEdit;
 
+        // Send email form
+        protected System.Web.UI.WebControls.HiddenField hdnEmailUserId;
+        protected System.Web.UI.WebControls.HiddenField hdnEmailAddress;
+        protected System.Web.UI.WebControls.TextBox     txtEmailSubject;
+        protected System.Web.UI.WebControls.TextBox     txtEmailBody;
+        protected System.Web.UI.WebControls.Button      btnSendEmail;
+
         protected List<UserSummary> Users       { get; private set; } = new List<UserSummary>();
         protected string            Message     { get; private set; } = string.Empty;
         protected string            MessageType { get; private set; } = "info";
+        protected string            EmailError  { get; private set; } = string.Empty;
         protected int               EditingId   { get; private set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            btnCreate.Text  = T("create_user");
+            btnCreate.Text   = T("create_user");
             btnSaveEdit.Text = T("save_user");
+            btnSendEmail.Text = T("send_btn");
 
             // Handle toggle-active GET
             if (!IsPostBack)
@@ -135,6 +144,42 @@ namespace SafetyPortal.Web.Admin
 
             LoadUsers();
             LoadRoles();
+        }
+
+        protected void btnSendEmail_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(hdnEmailUserId.Value, out int uid) || uid == 0)
+            {
+                EmailError = T("email_send_fail");
+                LoadUsers(); LoadRoles();
+                return;
+            }
+
+            var subject = txtEmailSubject.Text.Trim();
+            var body    = txtEmailBody.Text.Trim();
+
+            if (string.IsNullOrEmpty(subject) || string.IsNullOrEmpty(body))
+            {
+                EmailError = T("email_subject_required");
+                LoadUsers(); LoadRoles();
+                return;
+            }
+
+            if (Api.SendEmailToUser(uid, subject, body))
+            {
+                Message          = T("email_sent");
+                MessageType      = "success";
+                hdnEmailUserId.Value = string.Empty;
+                hdnEmailAddress.Value = string.Empty;
+                txtEmailSubject.Text = string.Empty;
+                txtEmailBody.Text    = string.Empty;
+            }
+            else
+            {
+                EmailError = T("email_send_fail");
+            }
+
+            LoadUsers(); LoadRoles();
         }
 
         protected void btnSaveEdit_Click(object sender, EventArgs e)

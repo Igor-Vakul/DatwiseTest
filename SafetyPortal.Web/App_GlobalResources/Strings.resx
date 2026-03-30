@@ -90,7 +90,7 @@
   <data name="report_info"            xml:space="preserve"><value>Report Info</value></data>
   <data name="showing"                xml:space="preserve"><value>Showing</value></data>
   <data name="incidents_found"        xml:space="preserve"><value>incident(s)</value></data>
-  <data name="ca_count"               xml:space="preserve"><value>CA</value></data>
+  <data name="ca_count"               xml:space="preserve"><value>Corrective Actions</value></data>
   <data name="incident_details_hdr"   xml:space="preserve"><value>Incident Details</value></data>
   <!-- Corrective Actions -->
   <data name="ca_title"               xml:space="preserve"><value>Corrective Actions</value></data>
@@ -149,4 +149,12 @@
   <data name="attach_delete_confirm"  xml:space="preserve"><value>Delete this attachment?</value></data>
   <data name="attach_select_file"     xml:space="preserve"><value>Please select at least one file.</value></data>
   <data name="export_excel"           xml:space="preserve"><value>Export Excel</value></data>
+  <data name="send_email"             xml:space="preserve"><value>Send Email</value></data>
+  <data name="email_to_lbl"           xml:space="preserve"><value>To</value></data>
+  <data name="email_subject_lbl"      xml:space="preserve"><value>Subject</value></data>
+  <data name="email_body_lbl"         xml:space="preserve"><value>Message</value></data>
+  <data name="send_btn"               xml:space="preserve"><value>Send</value></data>
+  <data name="email_sent"             xml:space="preserve"><value>Email queued successfully.</value></data>
+  <data name="email_send_fail"        xml:space="preserve"><value>Failed to send email.</value></data>
+  <data name="email_subject_required" xml:space="preserve"><value>Subject and message are required.</value></data>
 </root>
