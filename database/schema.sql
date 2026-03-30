@@ -71,6 +71,24 @@ CREATE TABLE IncidentReports (
 );
 GO
 
+-- ── IncidentAttachments ──────────────────────────────────────────────────
+CREATE TABLE IncidentAttachments (
+    Id                INT           NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    IncidentReportId  INT           NOT NULL,
+    OriginalFileName  NVARCHAR(260) NOT NULL,
+    StoredFileName    NVARCHAR(260) NOT NULL,
+    ContentType       NVARCHAR(100) NOT NULL,
+    FileSizeBytes     BIGINT        NOT NULL,
+    FileCategory      NVARCHAR(20)  NOT NULL,  -- image | document
+    UploadedAt        DATETIME2     NOT NULL,
+    UploadedByUserId  INT           NOT NULL,
+    CONSTRAINT FK_IA_Report    FOREIGN KEY (IncidentReportId)  REFERENCES IncidentReports(Id) ON DELETE CASCADE,
+    CONSTRAINT FK_IA_Uploader  FOREIGN KEY (UploadedByUserId)  REFERENCES Users(Id)
+);
+CREATE INDEX IX_IA_IncidentReportId  ON IncidentAttachments (IncidentReportId);
+CREATE INDEX IX_IA_UploadedByUserId  ON IncidentAttachments (UploadedByUserId);
+GO
+
 -- ── CorrectiveActions ─────────────────────────────────────────────────────
 CREATE TABLE CorrectiveActions (
     Id                INT           NOT NULL IDENTITY(1,1) PRIMARY KEY,
