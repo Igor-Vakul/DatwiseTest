@@ -157,4 +157,5 @@
   <data name="email_sent"             xml:space="preserve"><value>האימייל נוסף לתור בהצלחה.</value></data>
   <data name="email_send_fail"        xml:space="preserve"><value>שליחת האימייל נכשלה.</value></data>
   <data name="email_subject_required" xml:space="preserve"><value>נדרש נושא והודעה.</value></data>
+  <data name="email_self_send"        xml:space="preserve"><value>לא ניתן לשלוח אימייל לעצמך.</value></data>
 </root>

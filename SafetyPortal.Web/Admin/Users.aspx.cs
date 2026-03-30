@@ -155,6 +155,13 @@ namespace SafetyPortal.Web.Admin
                 return;
             }
 
+            if (uid == CurrentUserId)
+            {
+                EmailError = T("email_self_send");
+                LoadUsers(); LoadRoles();
+                return;
+            }
+
             var subject = txtEmailSubject.Text.Trim();
             var body    = txtEmailBody.Text.Trim();
 

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -81,8 +82,11 @@ public static class UserManagementEndpoints
         });
 
         // POST /api/users/{id}/send-email
-        group.MapPost("/{id:int}/send-email", async (int id, SendEmailDto request, SafetyPortalDbContext db) =>
+        group.MapPost("/{id:int}/send-email", async (int id, SendEmailDto request, ClaimsPrincipal principal, SafetyPortalDbContext db) =>
         {
+            if (int.TryParse(principal.FindFirstValue(ClaimTypes.NameIdentifier), out int callerId) && callerId == id)
+                return Results.BadRequest(new { error = "You cannot send an email to yourself." });
+
             var user = await db.Users.FindAsync(id);
             if (user is null)
                 return Results.NotFound();
