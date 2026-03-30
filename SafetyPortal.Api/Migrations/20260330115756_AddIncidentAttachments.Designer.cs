@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SafetyPortal.Api.Data;
 
@@ -11,9 +12,11 @@ using SafetyPortal.Api.Data;
 namespace SafetyPortal.Api.Migrations
 {
     [DbContext(typeof(SafetyPortalDbContext))]
-    partial class SafetyPortalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260330115756_AddIncidentAttachments")]
+    partial class AddIncidentAttachments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

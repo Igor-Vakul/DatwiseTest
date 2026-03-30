@@ -26,5 +26,6 @@ public class IncidentReport
     public string SeverityLevel { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
 
-    public ICollection<CorrectiveAction> CorrectiveActions { get; set; } = new List<CorrectiveAction>();
+    public ICollection<CorrectiveAction>    CorrectiveActions { get; set; } = new List<CorrectiveAction>();
+    public ICollection<IncidentAttachment> Attachments       { get; set; } = new List<IncidentAttachment>();
 }

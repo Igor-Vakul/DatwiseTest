@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Web;
 using System.Web.UI.WebControls;
 using SafetyPortal.Web.Models;
 
@@ -16,11 +19,16 @@ namespace SafetyPortal.Web.Incidents
         protected System.Web.UI.WebControls.TextBox       txtLocation;
         protected System.Web.UI.WebControls.DropDownList  ddlAssign;
         protected System.Web.UI.WebControls.Button        btnSave;
+        protected System.Web.UI.WebControls.FileUpload    fuAttachments;
 
-        protected string ErrorMessage { get; private set; } = string.Empty;
+        protected string ErrorMessage  { get; private set; } = string.Empty;
+        protected string UploadErrors  { get; private set; } = string.Empty;
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Required for file upload
+            Page.Form.Enctype = "multipart/form-data";
+
             btnSave.Text = T("submit_report");
             if (!IsPostBack)
             {
@@ -67,20 +75,57 @@ namespace SafetyPortal.Web.Incidents
 
             var req = new CreateIncidentRequest
             {
-                Title           = title,
-                Description     = desc,
-                CategoryId      = int.Parse(ddlCategory.SelectedValue),
-                DepartmentId    = int.Parse(ddlDept.SelectedValue),
-                IncidentDate    = date.ToString(AppConstants.Validation.ISODateFormat),
-                LocationDetails = txtLocation.Text.Trim(),
-                SeverityLevel   = ddlSeverity.SelectedValue,
+                Title            = title,
+                Description      = desc,
+                CategoryId       = int.Parse(ddlCategory.SelectedValue),
+                DepartmentId     = int.Parse(ddlDept.SelectedValue),
+                IncidentDate     = date.ToString(AppConstants.Validation.ISODateFormat),
+                LocationDetails  = txtLocation.Text.Trim(),
+                SeverityLevel    = ddlSeverity.SelectedValue,
                 AssignedToUserId = assignedTo
             };
 
-            if (Api.CreateIncident(req))
-                Response.Redirect("~/Incidents/List.aspx?created=1", true);
-            else
+            var incidentId = Api.CreateIncidentForId(req);
+            if (incidentId == null)
+            {
                 ErrorMessage = "Failed to submit report. Please try again.";
+                return;
+            }
+
+            // Upload attachments (if any)
+            if (fuAttachments.HasFiles)
+            {
+                var errors = new StringBuilder();
+                foreach (HttpPostedFile file in fuAttachments.PostedFiles)
+                {
+                    if (file.ContentLength == 0) continue;
+
+                    byte[] bytes;
+                    using (var ms = new MemoryStream())
+                    {
+                        file.InputStream.CopyTo(ms);
+                        bytes = ms.ToArray();
+                    }
+
+                    var err = Api.UploadAttachment(
+                        incidentId.Value, bytes,
+                        Path.GetFileName(file.FileName),
+                        file.ContentType);
+
+                    if (err != null)
+                        errors.AppendLine($"• {HttpUtility.HtmlEncode(file.FileName)}: {HttpUtility.HtmlEncode(err)}");
+                }
+
+                if (errors.Length > 0)
+                {
+                    UploadErrors = errors.ToString();
+                    // Incident was created — stay on page to show upload errors,
+                    // but do not block navigation; user can proceed manually
+                    return;
+                }
+            }
+
+            Response.Redirect($"~/Incidents/List.aspx?created=1", true);
         }
     }
 }

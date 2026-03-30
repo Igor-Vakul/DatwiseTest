@@ -56,6 +56,22 @@ namespace SafetyPortal.Web.Models
         public List<CorrectiveActionSummary> CorrectiveActions { get; set; } = new List<CorrectiveActionSummary>();
     }
 
+    public class CreateIncidentResult
+    {
+        public int    Id           { get; set; }
+        public string ReportNumber { get; set; }
+    }
+
+    public class AttachmentInfo
+    {
+        public int      Id               { get; set; }
+        public string   OriginalFileName { get; set; }
+        public string   ContentType      { get; set; }
+        public long     FileSizeBytes    { get; set; }
+        public string   FileCategory     { get; set; }
+        public DateTime UploadedAt       { get; set; }
+    }
+
     public class CreateIncidentRequest
     {
         public string   Title            { get; set; }

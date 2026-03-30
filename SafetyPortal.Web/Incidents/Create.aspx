@@ -67,6 +67,29 @@
                     <asp:DropDownList ID="ddlAssign" runat="server" CssClass="form-select" />
                 </div>
 
+                <hr class="my-3"/>
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        <i class="bi bi-paperclip me-1"></i>Attachments
+                        <small class="text-muted ms-1">(images up to 5 MB, documents up to 20 MB)</small>
+                    </label>
+                    <asp:FileUpload ID="fuAttachments" runat="server" AllowMultiple="true"
+                        CssClass="form-control"
+                        accept=".jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx,.xls,.xlsx" />
+                    <div class="form-text">
+                        Allowed: JPEG, PNG, GIF, WebP, PDF, DOC, DOCX, XLS, XLSX
+                    </div>
+                </div>
+
+                <% if (!string.IsNullOrEmpty(UploadErrors)) { %>
+                <div class="alert alert-warning py-2">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    <strong>Some files were not uploaded:</strong><br/>
+                    <%= UploadErrors %>
+                </div>
+                <% } %>
+
                 <div class="d-flex gap-2">
                     <asp:Button ID="btnSave" runat="server"
                         CssClass="btn btn-success" OnClick="btnSave_Click" />

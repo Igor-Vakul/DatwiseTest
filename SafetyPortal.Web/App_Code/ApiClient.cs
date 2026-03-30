@@ -79,6 +79,63 @@ namespace SafetyPortal.Web
         public bool CreateIncident(CreateIncidentRequest req)
             => Post("/api/incidents", req);
 
+        // Returns the new incident ID, or null on failure
+        public int? CreateIncidentForId(CreateIncidentRequest req)
+        {
+            var json = SendRaw(HttpMethod.Post, "/api/incidents",
+                               JsonConvert.SerializeObject(req, Settings));
+            if (json == null) return null;
+            var result = JsonConvert.DeserializeObject<CreateIncidentResult>(json, DeserializeSettings);
+            return result?.Id;
+        }
+
+        // Upload a single file attachment; returns error message or null on success
+        public string UploadAttachment(int incidentId, byte[] content, string fileName, string contentType)
+        {
+            try
+            {
+                var form        = new MultipartFormDataContent();
+                var fileContent = new ByteArrayContent(content);
+                fileContent.Headers.ContentType =
+                    new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+                form.Add(fileContent, "file", fileName);
+
+                var request = new HttpRequestMessage(
+                    HttpMethod.Post,
+                    $"{_base}/api/incidents/{incidentId}/attachments");
+
+                if (!string.IsNullOrEmpty(_token))
+                    request.Headers.Authorization =
+                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
+
+                request.Content = form;
+
+                var response = System.Threading.Tasks.Task
+                    .Run(() => Global.HttpClient.SendAsync(request))
+                    .GetAwaiter().GetResult();
+
+                if (response.IsSuccessStatusCode) return null;
+
+                var body = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                try
+                {
+                    dynamic err = JsonConvert.DeserializeObject(body);
+                    return err?.error?.ToString() ?? $"Upload failed ({response.StatusCode}).";
+                }
+                catch
+                {
+                    return $"Upload failed ({response.StatusCode}).";
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public List<AttachmentInfo> GetAttachments(int incidentId)
+            => Get<List<AttachmentInfo>>($"/api/incidents/{incidentId}/attachments");
+
         public bool UpdateIncident(int id, UpdateIncidentRequest req)
             => Put($"/api/incidents/{id}", req);
 

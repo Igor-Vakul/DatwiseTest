@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SafetyPortal.Api;
 using SafetyPortal.Api.Auth;
+using Microsoft.AspNetCore.Http.Features;
 using SafetyPortal.Api.Data;
 using SafetyPortal.Api.Endpoints;
 using SafetyPortal.Api.Jobs;
@@ -16,6 +17,17 @@ var builder = WebApplication.CreateBuilder(args);
 // ── Swagger ────────────────────────────────────────────────────────────────
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// ── Form / file upload limits (max single file = 20 MB) ───────────────────
+builder.Services.Configure<FormOptions>(o =>
+{
+    o.MultipartBodyLengthLimit = AppConstants.Attachments.MaxDocumentBytes;
+});
+builder.WebHost.ConfigureKestrel(k =>
+    k.Limits.MaxRequestBodySize = AppConstants.Attachments.MaxDocumentBytes);
+
+// ── Antiforgery (required so .DisableAntiforgery() works per-endpoint) ────
+builder.Services.AddAntiforgery();
 
 // ── Database ───────────────────────────────────────────────────────────────
 builder.Services.AddDbContext<SafetyPortalDbContext>(options =>
@@ -140,5 +152,6 @@ app.MapCorrectiveActionEndpoints();
 app.MapDashboardEndpoints();
 app.MapLookupEndpoints();
 app.MapUserManagementEndpoints();
+app.MapAttachmentEndpoints();
 
 app.Run();
