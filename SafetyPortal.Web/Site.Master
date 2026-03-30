@@ -22,6 +22,7 @@
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </head>
 <body>
+<form id="masterForm" runat="server" enctype="multipart/form-data">
 <div class="sp-wrapper">
 
     <%-- ── Sidebar ──────────────────────────────────────────────────── --%>
@@ -79,9 +80,9 @@
             <div class="d-flex align-items-center gap-2">
                 <%-- Language switcher --%>
                 <% if (IsHebrew) { %>
-                <a href="?lang=en" class="btn btn-outline-secondary btn-sm" title="Switch to English">EN</a>
+                <a href="<%= LangUrlEn %>" class="btn btn-outline-secondary btn-sm" title="Switch to English">EN</a>
                 <% } else { %>
-                <a href="?lang=he" class="btn btn-outline-secondary btn-sm" title="עברית">עב</a>
+                <a href="<%= LangUrlHe %>" class="btn btn-outline-secondary btn-sm" title="עברית">עב</a>
                 <% } %>
 
                 <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2">
@@ -105,5 +106,6 @@
 
 <script src="<%= ResolveUrl("~/Content/lib/bootstrap/js/bootstrap.bundle.min.js") %>"></script>
 <asp:ContentPlaceHolder ID="ScriptsContent" runat="server" />
+</form>
 </body>
 </html>

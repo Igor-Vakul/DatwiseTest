@@ -136,4 +136,16 @@
   <data name="user_updated"           xml:space="preserve"><value>המשתמש עודכן בהצלחה.</value></data>
   <data name="user_update_fail"       xml:space="preserve"><value>עדכון המשתמש נכשל.</value></data>
   <data name="new_password_hint"      xml:space="preserve"><value>השאר ריק לשמירת הסיסמה הנוכחית</value></data>
+  <data name="attachments"            xml:space="preserve"><value>קבצים מצורפים</value></data>
+  <data name="upload_btn"             xml:space="preserve"><value>העלאה</value></data>
+  <data name="attach_files_lbl"       xml:space="preserve"><value>קבצים</value></data>
+  <data name="attach_hint"            xml:space="preserve"><value>תמונות עד 5 MB, מסמכים עד 20 MB</value></data>
+  <data name="attach_allowed"         xml:space="preserve"><value>מותר: JPEG, PNG, GIF, WebP, PDF, DOC, DOCX, XLS, XLSX</value></data>
+  <data name="no_attachments"         xml:space="preserve"><value>אין קבצים מצורפים.</value></data>
+  <data name="attach_file_col"        xml:space="preserve"><value>קובץ</value></data>
+  <data name="attach_type_col"        xml:space="preserve"><value>סוג</value></data>
+  <data name="attach_size_col"        xml:space="preserve"><value>גודל</value></data>
+  <data name="attach_uploaded_col"    xml:space="preserve"><value>הועלה</value></data>
+  <data name="attach_delete_confirm"  xml:space="preserve"><value>למחוק את הקובץ המצורף?</value></data>
+  <data name="attach_select_file"     xml:space="preserve"><value>יש לבחור לפחות קובץ אחד.</value></data>
 </root>

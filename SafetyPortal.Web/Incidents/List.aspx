@@ -10,7 +10,7 @@
 
     <div class="card sp-card mb-3">
         <div class="card-body py-3">
-            <form method="get" runat="server" class="row g-2 align-items-end">
+            <div class="row g-2 align-items-end">
                 <div class="col-md-3">
                     <label class="form-label"><%= T("search") %></label>
                     <asp:TextBox ID="txtSearch" runat="server" CssClass="form-control form-control-sm" />
@@ -50,7 +50,7 @@
                         <i class="bi bi-x"></i>
                     </a>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 

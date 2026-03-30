@@ -136,6 +136,47 @@ namespace SafetyPortal.Web
         public List<AttachmentInfo> GetAttachments(int incidentId)
             => Get<List<AttachmentInfo>>($"/api/incidents/{incidentId}/attachments");
 
+        public bool DeleteAttachment(int incidentId, int attachmentId)
+            => Delete($"/api/incidents/{incidentId}/attachments/{attachmentId}");
+
+        // Downloads a file and writes it directly to the given HTTP response.
+        // Returns false if the API returned a non-2xx response.
+        public bool ProxyDownload(int incidentId, int attachmentId, System.Web.HttpResponse response)
+        {
+            try
+            {
+                using (var request = new HttpRequestMessage(
+                    HttpMethod.Get,
+                    $"{_base}/api/incidents/{incidentId}/attachments/{attachmentId}/download"))
+                {
+                    if (!string.IsNullOrEmpty(_token))
+                        request.Headers.Authorization =
+                            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
+
+                    var apiResponse = System.Threading.Tasks.Task
+                        .Run(() => Global.HttpClient.SendAsync(request, System.Net.Http.HttpCompletionOption.ResponseHeadersRead))
+                        .GetAwaiter().GetResult();
+
+                    if (!apiResponse.IsSuccessStatusCode) return false;
+
+                    var contentType = apiResponse.Content.Headers.ContentType?.ToString() ?? "application/octet-stream";
+                    var disposition = apiResponse.Content.Headers.ContentDisposition;
+                    var fileName    = disposition?.FileNameStar ?? disposition?.FileName ?? "download";
+
+                    response.ContentType = contentType;
+                    response.AddHeader("Content-Disposition", $"attachment; filename=\"{fileName}\"");
+
+                    var stream = apiResponse.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
+                    stream.CopyTo(response.OutputStream);
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public bool UpdateIncident(int id, UpdateIncidentRequest req)
             => Put($"/api/incidents/{id}", req);
 

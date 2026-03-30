@@ -17,7 +17,7 @@
     <div class="card sp-card">
         <div class="card-header"><i class="bi bi-clipboard-plus text-success"></i> <%= T("incident_details_hdr") %></div>
         <div class="card-body">
-            <form method="post" runat="server">
+            <div>
 
                 <div class="mb-3">
                     <label class="form-label"><%= T("incident_title") %> <span class="text-danger">*</span></label>
@@ -97,7 +97,7 @@
                        class="btn btn-outline-secondary"><%= T("cancel") %></a>
                 </div>
 
-            </form>
+            </div>
         </div>
     </div>
 </div>

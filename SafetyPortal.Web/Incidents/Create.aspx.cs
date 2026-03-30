@@ -26,9 +26,6 @@ namespace SafetyPortal.Web.Incidents
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Required for file upload
-            Page.Form.Enctype = "multipart/form-data";
-
             btnSave.Text = T("submit_report");
             if (!IsPostBack)
             {

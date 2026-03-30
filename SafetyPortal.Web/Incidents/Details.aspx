@@ -102,6 +102,97 @@
         </div>
     </div>
 
+    <div class="card sp-card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-paperclip text-secondary"></i> <%= T("attachments") %> (<%= Attachments.Count %>)</span>
+            <button type="button" class="btn btn-sm btn-outline-secondary"
+                    data-bs-toggle="collapse" data-bs-target="#uploadPanel">
+                <i class="bi bi-upload me-1"></i><%= T("upload_btn") %>
+            </button>
+        </div>
+
+        <%-- Upload panel (collapsed by default, stays open on error) --%>
+        <div id="uploadPanel" class="collapse<%= !string.IsNullOrEmpty(UploadError) ? " show" : "" %>">
+            <div class="card-body border-bottom">
+                <% if (!string.IsNullOrEmpty(UploadError)) { %>
+                <div class="alert alert-warning py-2 mb-2">
+                    <i class="bi bi-exclamation-triangle me-1"></i><%= UploadError %>
+                </div>
+                <% } %>
+                <div class="d-flex gap-2 align-items-end flex-wrap">
+                    <div class="flex-grow-1">
+                        <label class="form-label mb-1 small">
+                            <%= T("attach_files_lbl") %>
+                            <span class="text-muted">(<%= T("attach_hint") %>)</span>
+                        </label>
+                        <asp:FileUpload ID="fuDetailsAttachments" runat="server"
+                            AllowMultiple="true" CssClass="form-control form-control-sm"
+                            accept=".jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx,.xls,.xlsx" />
+                    </div>
+                    <asp:Button ID="btnUpload" runat="server"
+                        CssClass="btn btn-success btn-sm"
+                        OnClick="btnUpload_Click" />
+                </div>
+                <div class="form-text"><%= T("attach_allowed") %></div>
+            </div>
+        </div>
+
+        <% if (Attachments.Count == 0) { %>
+        <div class="card-body text-center text-muted py-3"><%= T("no_attachments") %></div>
+        <% } else { %>
+        <div class="card-body p-0">
+            <table class="table sp-table mb-0">
+                <thead>
+                    <tr>
+                        <th><%= T("attach_file_col") %></th>
+                        <th><%= T("attach_type_col") %></th>
+                        <th><%= T("attach_size_col") %></th>
+                        <th><%= T("attach_uploaded_col") %></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% foreach (var att in Attachments) {
+                           var sizeKb    = att.FileSizeBytes / 1024.0;
+                           var sizeLabel = sizeKb >= 1024
+                               ? string.Format("{0:0.#} MB", sizeKb / 1024.0)
+                               : string.Format("{0:0} KB", sizeKb);
+                           var icon = att.FileCategory == "image" ? "bi-image" : "bi-file-earmark-text";
+                           var downloadUrl = ResolveUrl(
+                               "~/Handlers/DownloadAttachment.ashx?incidentId=" + Incident.Id +
+                               "&attachmentId=" + att.Id);
+                    %>
+                    <tr>
+                        <td>
+                            <i class="bi <%= icon %> me-1 text-muted"></i>
+                            <%= System.Web.HttpUtility.HtmlEncode(att.OriginalFileName) %>
+                        </td>
+                        <td><small class="text-muted"><%= att.ContentType %></small></td>
+                        <td><small><%= sizeLabel %></small></td>
+                        <td><small><%= att.UploadedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm") %></small></td>
+                        <td class="text-end">
+                            <a href="<%= downloadUrl %>"
+                               class="btn btn-outline-primary btn-sm py-0 px-2 me-1"
+                               title="Download">
+                                <i class="bi bi-download"></i>
+                            </a>
+                            <% if (IsManagerOrAdmin) { %>
+                            <a href="Details.aspx?id=<%= Incident.Id %>&deleteAttachment=<%= att.Id %>"
+                               class="btn btn-outline-danger btn-sm py-0 px-2"
+                               title="Delete"
+                               onclick="return confirm('<%= T("attach_delete_confirm") %>')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        <% } %>
+    </div>
+
     <div class="card sp-card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <span><i class="bi bi-check2-square text-primary"></i> <%= T("ca_title") %> (<%= Incident.CorrectiveActions.Count %>)</span>
@@ -156,8 +247,7 @@
     <div class="modal fade" id="modalAddAction" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form method="post" runat="server">
-                    <div class="modal-header">
+                <div class="modal-header">
                         <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i><%= T("new_action") %></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
@@ -199,7 +289,6 @@
                         <asp:Button ID="btnAddAction" runat="server"
                             CssClass="btn btn-success btn-sm" OnClick="btnAddAction_Click" />
                     </div>
-                </form>
             </div>
         </div>
     </div>
