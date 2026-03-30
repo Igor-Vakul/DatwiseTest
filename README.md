@@ -25,6 +25,9 @@ A **Safety Officer (מנהל בטיחות)** at an industrial facility faces sev
 **Advanced extensions implemented:**
 1. 🔐 **Information Security** — JWT-based authentication, role-based authorization (Admin / SafetyManager / Supervisor / Employee), API endpoints protected by policy
 2. 📊 **Report Visualization & Dashboard** — KPI cards, doughnut/bar/line charts (Chart.js), recent incidents table
+3. ⏱️ **Background Jobs (Hangfire)** — Fire-and-forget email notifications, daily recurring reminders, delayed escalation scheduling
+4. 📎 **File Attachments** — Upload/download/delete incident attachments with magic-byte validation and size limits
+5. 📥 **Excel Export** — Filtered export of incidents and corrective actions using EPPlus
 
 ---
 
@@ -73,6 +76,9 @@ IncidentCategories ─────┘
 | Dashboard | `GET /api/dashboard/stats` |
 | Lookup | `GET /api/lookup/departments`, `/categories`, `/users`, `/roles` |
 | Users (Admin) | `GET/POST /api/users`, `PUT /api/users/{id}/toggle-active` |
+| Attachments | `POST/GET /api/incidents/{id}/attachments`, `GET /{attId}/download`, `DELETE /{attId}` |
+| Export | `GET /api/incidents/export`, `GET /api/corrective-actions/export` |
+| Hangfire | `GET /hangfire` (Admin dashboard), `GET/POST /jobs/login`, `GET /jobs/logout` |
 
 ### Security Architecture
 
@@ -93,6 +99,46 @@ IncidentCategories ─────┘
 | `Incidents/Edit.aspx` | All roles | Edit existing incident |
 | `CorrectiveActions/List.aspx` | All roles | All actions with overdue highlight |
 | `Admin/Users.aspx` | Admin only | Create/toggle users |
+| `Incidents/Details.aspx` | All roles | View details, corrective actions, upload/download/delete attachments |
+
+---
+
+### Background Jobs (Hangfire)
+
+Hangfire is wired into `SafetyPortal.Api` and uses the same SQL Server database for job storage.
+
+| Scenario | Type | Description |
+|----------|------|-------------|
+| Incident created | Fire-and-forget | Email notification sent to the assigned user immediately |
+| Incident updated | Fire-and-forget | Email notification sent to the assigned user immediately |
+| Corrective action due | Recurring (daily 08:00) | Reminder email sent 3 days before the due date |
+| Incident escalation | Delayed (3 days) | If incident is still Open after 3 days, all Admins/SafetyManagers are notified |
+
+#### Hangfire Dashboard Access
+
+The Hangfire dashboard is available at `/hangfire` and is protected — **Admin role only**.
+
+1. Navigate to `https://localhost:7182/jobs/login`
+2. Log in with an Admin account (e.g. `admin@datwise.local` / `Admin123!`)
+3. You will be redirected to `https://localhost:7182/hangfire`
+
+The dashboard shows queued, processing, succeeded and failed jobs in real time.
+
+> **Note:** The login at `/jobs/login` uses a separate cookie (`HangfireAuth`) that is independent from the main Web Forms session. This is required because the Hangfire dashboard is served by the API project, not the Web project.
+
+#### Email Configuration (SendGrid)
+
+Email sending requires a SendGrid API key. Configure it in `SafetyPortal.Api/appsettings.json`:
+
+```json
+"SendGrid": {
+  "ApiKey": "YOUR_SENDGRID_API_KEY",
+  "FromEmail": "noreply@yourdomain.com",
+  "FromName": "SafetyPortal"
+}
+```
+
+If the API key is not set, job execution will fail silently (jobs are still queued and visible in the dashboard).
 
 ---
 
