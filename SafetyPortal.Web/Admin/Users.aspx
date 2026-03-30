@@ -7,7 +7,7 @@
 </asp:Content>
 
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
-<form method="post" runat="server">
+<div>
 
     <% if (!string.IsNullOrEmpty(Message)) { %>
     <div class="alert alert-<%= MessageType %> alert-dismissible fade show py-2">
@@ -139,7 +139,7 @@
         </div>
     </div>
 
-</form>
+</div>
 </asp:Content>
 
 <asp:Content ContentPlaceHolderID="ScriptsContent" runat="server">

@@ -15,7 +15,8 @@ public class SafetyPortalDbContext : DbContext
     public DbSet<Department> Departments => Set<Department>();
     public DbSet<IncidentCategory> IncidentCategories => Set<IncidentCategory>();
     public DbSet<IncidentReport> IncidentReports => Set<IncidentReport>();
-    public DbSet<CorrectiveAction> CorrectiveActions => Set<CorrectiveAction>();
+    public DbSet<CorrectiveAction>    CorrectiveActions    => Set<CorrectiveAction>();
+    public DbSet<IncidentAttachment> IncidentAttachments => Set<IncidentAttachment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -193,6 +194,27 @@ public class SafetyPortalDbContext : DbContext
             entity.HasOne(x => x.AssignedToUser)
                 .WithMany(x => x.AssignedCorrectiveActions)
                 .HasForeignKey(x => x.AssignedToUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<IncidentAttachment>(entity =>
+        {
+            entity.ToTable("IncidentAttachments");
+            entity.HasKey(x => x.Id);
+
+            entity.Property(x => x.OriginalFileName).HasMaxLength(260).IsRequired();
+            entity.Property(x => x.StoredFileName).HasMaxLength(260).IsRequired();
+            entity.Property(x => x.ContentType).HasMaxLength(100).IsRequired();
+            entity.Property(x => x.FileCategory).HasMaxLength(20).IsRequired();
+
+            entity.HasOne(x => x.IncidentReport)
+                .WithMany(x => x.Attachments)
+                .HasForeignKey(x => x.IncidentReportId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(x => x.UploadedByUser)
+                .WithMany()
+                .HasForeignKey(x => x.UploadedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }

@@ -20,6 +20,14 @@ public static class AppConstants
         public const int SafetyManagerId = 2;
     }
 
+    public static class Attachments
+    {
+        public const long MaxImageBytes     = 5  * 1024 * 1024;  // 5 MB
+        public const long MaxDocumentBytes  = 20 * 1024 * 1024;  // 20 MB
+        public const int  SignatureBytesLen = 16;
+        public const string StorageFolder   = "attachments";
+    }
+
     public static class Jobs
     {
         /// <summary>Send reminder N days before corrective action due date.</summary>
