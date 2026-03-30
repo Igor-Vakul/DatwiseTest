@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="xml:space" use="fixed" value="preserve" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- Nav -->
+  <data name="nav_dashboard"          xml:space="preserve"><value>לוח בקרה</value></data>
+  <data name="nav_incidents"          xml:space="preserve"><value>תקריות</value></data>
+  <data name="nav_corrective_actions" xml:space="preserve"><value>פעולות מתקנות</value></data>
+  <data name="nav_users"              xml:space="preserve"><value>משתמשים</value></data>
+  <data name="nav_logout"             xml:space="preserve"><value>התנתק</value></data>
+  <data name="nav_main"               xml:space="preserve"><value>ראשי</value></data>
+  <data name="nav_safety"             xml:space="preserve"><value>בטיחות</value></data>
+  <data name="nav_admin"              xml:space="preserve"><value>ניהול</value></data>
+  <!-- Login -->
+  <data name="login_subtitle"         xml:space="preserve"><value>ניהול בטיחות בעבודה</value></data>
+  <data name="email"                  xml:space="preserve"><value>כתובת אימייל</value></data>
+  <data name="password"               xml:space="preserve"><value>סיסמה</value></data>
+  <data name="sign_in"                xml:space="preserve"><value>כניסה</value></data>
+  <data name="demo_accounts"          xml:space="preserve"><value>חשבונות לדוגמה:</value></data>
+  <data name="invalid_login"          xml:space="preserve"><value>אימייל או סיסמה שגויים.</value></data>
+  <data name="enter_credentials"      xml:space="preserve"><value>נא להזין אימייל וסיסמה.</value></data>
+  <!-- Common -->
+  <data name="search"                 xml:space="preserve"><value>חיפוש</value></data>
+  <data name="filter"                 xml:space="preserve"><value>סינון</value></data>
+  <data name="reset"                  xml:space="preserve"><value>איפוס</value></data>
+  <data name="save"                   xml:space="preserve"><value>שמור</value></data>
+  <data name="cancel"                 xml:space="preserve"><value>ביטול</value></data>
+  <data name="edit"                   xml:space="preserve"><value>ערוך</value></data>
+  <data name="back"                   xml:space="preserve"><value>חזרה</value></data>
+  <data name="active"                 xml:space="preserve"><value>פעיל</value></data>
+  <data name="inactive"               xml:space="preserve"><value>לא פעיל</value></data>
+  <data name="actions"                xml:space="preserve"><value>פעולות</value></data>
+  <data name="status"                 xml:space="preserve"><value>סטטוס</value></data>
+  <data name="priority"               xml:space="preserve"><value>עדיפות</value></data>
+  <data name="department"             xml:space="preserve"><value>מחלקה</value></data>
+  <data name="category"               xml:space="preserve"><value>קטגוריה</value></data>
+  <data name="all_departments"        xml:space="preserve"><value>כל המחלקות</value></data>
+  <data name="all_categories"         xml:space="preserve"><value>כל הקטגוריות</value></data>
+  <data name="all_statuses"           xml:space="preserve"><value>כל הסטטוסים</value></data>
+  <data name="all_severities"         xml:space="preserve"><value>כל רמות החומרה</value></data>
+  <data name="deactivate"             xml:space="preserve"><value>השבת</value></data>
+  <data name="activate"               xml:space="preserve"><value>הפעל</value></data>
+  <data name="of"                     xml:space="preserve"><value>מתוך</value></data>
+  <data name="page"                   xml:space="preserve"><value>עמוד</value></data>
+  <data name="confirm_complete"       xml:space="preserve"><value>לסמן כהושלם?</value></data>
+  <data name="confirm_toggle"         xml:space="preserve"><value>לשנות סטטוס משתמש?</value></data>
+  <!-- Incidents -->
+  <data name="incidents_title"        xml:space="preserve"><value>דוחות תקריות</value></data>
+  <data name="report_number"          xml:space="preserve"><value>מספר דוח</value></data>
+  <data name="incident_title"         xml:space="preserve"><value>כותרת</value></data>
+  <data name="incident_date"          xml:space="preserve"><value>תאריך תקרית</value></data>
+  <data name="severity"               xml:space="preserve"><value>חומרה</value></data>
+  <data name="assigned_to"            xml:space="preserve"><value>משויך ל</value></data>
+  <data name="new_incident"           xml:space="preserve"><value>תקרית חדשה</value></data>
+  <data name="new_incident_title"     xml:space="preserve"><value>דיווח תקרית חדשה</value></data>
+  <data name="edit_incident"          xml:space="preserve"><value>ערוך תקרית</value></data>
+  <data name="incident_details"       xml:space="preserve"><value>פרטי תקרית</value></data>
+  <data name="description"            xml:space="preserve"><value>תיאור</value></data>
+  <data name="location"               xml:space="preserve"><value>פרטי מיקום</value></data>
+  <data name="reported_by"            xml:space="preserve"><value>דווח על ידי</value></data>
+  <data name="reported_at"            xml:space="preserve"><value>תאריך דיווח</value></data>
+  <data name="unassigned"             xml:space="preserve"><value>לא משויך</value></data>
+  <data name="no_incidents"           xml:space="preserve"><value>לא נמצאו תקריות.</value></data>
+  <data name="no_incidents_yet"       xml:space="preserve"><value>טרם נרשמו תקריות.</value></data>
+  <data name="submit_report"          xml:space="preserve"><value>שלח דוח</value></data>
+  <data name="save_changes"           xml:space="preserve"><value>שמור שינויים</value></data>
+  <data name="view_all"               xml:space="preserve"><value>הצג הכל</value></data>
+  <data name="back_to_list"           xml:space="preserve"><value>חזרה לרשימה</value></data>
+  <data name="incident_not_found"     xml:space="preserve"><value>התקרית לא נמצאה.</value></data>
+  <data name="report_info"            xml:space="preserve"><value>מידע על הדוח</value></data>
+  <data name="showing"                xml:space="preserve"><value>מציג</value></data>
+  <data name="incidents_found"        xml:space="preserve"><value>תקרית/ות</value></data>
+  <data name="ca_count"               xml:space="preserve"><value>פ"מ</value></data>
+  <data name="incident_details_hdr"   xml:space="preserve"><value>פרטי תקרית</value></data>
+  <!-- Corrective Actions -->
+  <data name="ca_title"               xml:space="preserve"><value>פעולות מתקנות</value></data>
+  <data name="action_col"             xml:space="preserve"><value>פעולה</value></data>
+  <data name="due_date"               xml:space="preserve"><value>תאריך יעד</value></data>
+  <data name="add_action"             xml:space="preserve"><value>הוסף פעולה</value></data>
+  <data name="new_action"             xml:space="preserve"><value>פעולה מתקנת חדשה</value></data>
+  <data name="save_action"            xml:space="preserve"><value>שמור פעולה</value></data>
+  <data name="no_actions"             xml:space="preserve"><value>אין פעולות מתקנות עדיין.</value></data>
+  <data name="no_actions_found"       xml:space="preserve"><value>לא נמצאו פעולות מתקנות.</value></data>
+  <data name="incident_col"           xml:space="preserve"><value>תקרית</value></data>
+  <data name="actions_found"          xml:space="preserve"><value>פעולות נמצאו</value></data>
+  <data name="action_title_lbl"       xml:space="preserve"><value>כותרת פעולה</value></data>
+  <data name="mark_complete"          xml:space="preserve"><value>סמן כהושלם</value></data>
+  <!-- Dashboard -->
+  <data name="dashboard_title"        xml:space="preserve"><value>לוח בקרה</value></data>
+  <data name="total_incidents"        xml:space="preserve"><value>סה"כ תקריות</value></data>
+  <data name="open_incidents"         xml:space="preserve"><value>פתוחות</value></data>
+  <data name="closed_incidents"       xml:space="preserve"><value>סגורות</value></data>
+  <data name="high_critical"          xml:space="preserve"><value>גבוה / קריטי</value></data>
+  <data name="pending_actions"        xml:space="preserve"><value>פעולות ממתינות</value></data>
+  <data name="overdue_actions"        xml:space="preserve"><value>פעולות באיחור</value></data>
+  <data name="recent_incidents"       xml:space="preserve"><value>תקריות אחרונות</value></data>
+  <data name="by_category"            xml:space="preserve"><value>תקריות לפי קטגוריה</value></data>
+  <data name="by_department"          xml:space="preserve"><value>תקריות לפי מחלקה</value></data>
+  <data name="trend"                  xml:space="preserve"><value>מגמת תקריות (6 חודשים אחרונים)</value></data>
+  <data name="date_col"               xml:space="preserve"><value>תאריך</value></data>
+  <!-- Admin / Users -->
+  <data name="users_title"            xml:space="preserve"><value>ניהול משתמשים</value></data>
+  <data name="all_users"              xml:space="preserve"><value>כל המשתמשים</value></data>
+  <data name="full_name"              xml:space="preserve"><value>שם מלא</value></data>
+  <data name="email_label"            xml:space="preserve"><value>אימייל</value></data>
+  <data name="password_label"         xml:space="preserve"><value>סיסמה</value></data>
+  <data name="role"                   xml:space="preserve"><value>תפקיד</value></data>
+  <data name="new_user"               xml:space="preserve"><value>משתמש חדש</value></data>
+  <data name="create_user"            xml:space="preserve"><value>צור משתמש</value></data>
+  <data name="fields_required"        xml:space="preserve"><value>כל השדות הם חובה.</value></data>
+  <data name="password_min"           xml:space="preserve"><value>הסיסמה חייבת להכיל לפחות 6 תווים.</value></data>
+  <data name="user_created"           xml:space="preserve"><value>המשתמש נוצר בהצלחה.</value></data>
+  <data name="user_create_fail"       xml:space="preserve"><value>יצירת משתמש נכשלה (האימייל עשוי להיות קיים כבר).</value></data>
+  <data name="edit_user"              xml:space="preserve"><value>ערוך משתמש</value></data>
+  <data name="save_user"              xml:space="preserve"><value>שמור שינויים</value></data>
+  <data name="user_updated"           xml:space="preserve"><value>המשתמש עודכן בהצלחה.</value></data>
+  <data name="user_update_fail"       xml:space="preserve"><value>עדכון המשתמש נכשל.</value></data>
+  <data name="new_password_hint"      xml:space="preserve"><value>השאר ריק לשמירת הסיסמה הנוכחית</value></data>
+</root>

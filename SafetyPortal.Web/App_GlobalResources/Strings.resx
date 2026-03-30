@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="xml:space" use="fixed" value="preserve" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- Nav -->
+  <data name="nav_dashboard"          xml:space="preserve"><value>Dashboard</value></data>
+  <data name="nav_incidents"          xml:space="preserve"><value>Incidents</value></data>
+  <data name="nav_corrective_actions" xml:space="preserve"><value>Corrective Actions</value></data>
+  <data name="nav_users"              xml:space="preserve"><value>Users</value></data>
+  <data name="nav_logout"             xml:space="preserve"><value>Logout</value></data>
+  <data name="nav_main"               xml:space="preserve"><value>Main</value></data>
+  <data name="nav_safety"             xml:space="preserve"><value>Safety</value></data>
+  <data name="nav_admin"              xml:space="preserve"><value>Admin</value></data>
+  <!-- Login -->
+  <data name="login_subtitle"         xml:space="preserve"><value>Workplace Safety Management</value></data>
+  <data name="email"                  xml:space="preserve"><value>Email address</value></data>
+  <data name="password"               xml:space="preserve"><value>Password</value></data>
+  <data name="sign_in"                xml:space="preserve"><value>Sign In</value></data>
+  <data name="demo_accounts"          xml:space="preserve"><value>Demo accounts:</value></data>
+  <data name="invalid_login"          xml:space="preserve"><value>Invalid email or password.</value></data>
+  <data name="enter_credentials"      xml:space="preserve"><value>Please enter email and password.</value></data>
+  <!-- Common -->
+  <data name="search"                 xml:space="preserve"><value>Search</value></data>
+  <data name="filter"                 xml:space="preserve"><value>Filter</value></data>
+  <data name="reset"                  xml:space="preserve"><value>Reset</value></data>
+  <data name="save"                   xml:space="preserve"><value>Save</value></data>
+  <data name="cancel"                 xml:space="preserve"><value>Cancel</value></data>
+  <data name="edit"                   xml:space="preserve"><value>Edit</value></data>
+  <data name="back"                   xml:space="preserve"><value>Back</value></data>
+  <data name="active"                 xml:space="preserve"><value>Active</value></data>
+  <data name="inactive"               xml:space="preserve"><value>Inactive</value></data>
+  <data name="actions"                xml:space="preserve"><value>Actions</value></data>
+  <data name="status"                 xml:space="preserve"><value>Status</value></data>
+  <data name="priority"               xml:space="preserve"><value>Priority</value></data>
+  <data name="department"             xml:space="preserve"><value>Department</value></data>
+  <data name="category"               xml:space="preserve"><value>Category</value></data>
+  <data name="all_departments"        xml:space="preserve"><value>All Departments</value></data>
+  <data name="all_categories"         xml:space="preserve"><value>All Categories</value></data>
+  <data name="all_statuses"           xml:space="preserve"><value>All Statuses</value></data>
+  <data name="all_severities"         xml:space="preserve"><value>All Severities</value></data>
+  <data name="deactivate"             xml:space="preserve"><value>Deactivate</value></data>
+  <data name="activate"               xml:space="preserve"><value>Activate</value></data>
+  <data name="of"                     xml:space="preserve"><value>of</value></data>
+  <data name="page"                   xml:space="preserve"><value>Page</value></data>
+  <data name="confirm_complete"       xml:space="preserve"><value>Mark as Completed?</value></data>
+  <data name="confirm_toggle"         xml:space="preserve"><value>Toggle user status?</value></data>
+  <!-- Incidents -->
+  <data name="incidents_title"        xml:space="preserve"><value>Incident Reports</value></data>
+  <data name="report_number"          xml:space="preserve"><value>Report #</value></data>
+  <data name="incident_title"         xml:space="preserve"><value>Title</value></data>
+  <data name="incident_date"          xml:space="preserve"><value>Incident Date</value></data>
+  <data name="severity"               xml:space="preserve"><value>Severity</value></data>
+  <data name="assigned_to"            xml:space="preserve"><value>Assigned To</value></data>
+  <data name="new_incident"           xml:space="preserve"><value>New Incident</value></data>
+  <data name="new_incident_title"     xml:space="preserve"><value>New Incident Report</value></data>
+  <data name="edit_incident"          xml:space="preserve"><value>Edit Incident</value></data>
+  <data name="incident_details"       xml:space="preserve"><value>Incident Details</value></data>
+  <data name="description"            xml:space="preserve"><value>Description</value></data>
+  <data name="location"               xml:space="preserve"><value>Location Details</value></data>
+  <data name="reported_by"            xml:space="preserve"><value>Reported By</value></data>
+  <data name="reported_at"            xml:space="preserve"><value>Reported At</value></data>
+  <data name="unassigned"             xml:space="preserve"><value>Unassigned</value></data>
+  <data name="no_incidents"           xml:space="preserve"><value>No incidents found.</value></data>
+  <data name="no_incidents_yet"       xml:space="preserve"><value>No incidents recorded yet.</value></data>
+  <data name="submit_report"          xml:space="preserve"><value>Submit Report</value></data>
+  <data name="save_changes"           xml:space="preserve"><value>Save Changes</value></data>
+  <data name="view_all"               xml:space="preserve"><value>View All</value></data>
+  <data name="back_to_list"           xml:space="preserve"><value>Back to List</value></data>
+  <data name="incident_not_found"     xml:space="preserve"><value>Incident not found.</value></data>
+  <data name="report_info"            xml:space="preserve"><value>Report Info</value></data>
+  <data name="showing"                xml:space="preserve"><value>Showing</value></data>
+  <data name="incidents_found"        xml:space="preserve"><value>incident(s)</value></data>
+  <data name="ca_count"               xml:space="preserve"><value>CA</value></data>
+  <data name="incident_details_hdr"   xml:space="preserve"><value>Incident Details</value></data>
+  <!-- Corrective Actions -->
+  <data name="ca_title"               xml:space="preserve"><value>Corrective Actions</value></data>
+  <data name="action_col"             xml:space="preserve"><value>Action</value></data>
+  <data name="due_date"               xml:space="preserve"><value>Due Date</value></data>
+  <data name="add_action"             xml:space="preserve"><value>Add Action</value></data>
+  <data name="new_action"             xml:space="preserve"><value>New Corrective Action</value></data>
+  <data name="save_action"            xml:space="preserve"><value>Save Action</value></data>
+  <data name="no_actions"             xml:space="preserve"><value>No corrective actions yet.</value></data>
+  <data name="no_actions_found"       xml:space="preserve"><value>No corrective actions found.</value></data>
+  <data name="incident_col"           xml:space="preserve"><value>Incident</value></data>
+  <data name="actions_found"          xml:space="preserve"><value>action(s) found</value></data>
+  <data name="action_title_lbl"       xml:space="preserve"><value>Action Title</value></data>
+  <data name="mark_complete"          xml:space="preserve"><value>Mark complete</value></data>
+  <!-- Dashboard -->
+  <data name="dashboard_title"        xml:space="preserve"><value>Dashboard</value></data>
+  <data name="total_incidents"        xml:space="preserve"><value>Total Incidents</value></data>
+  <data name="open_incidents"         xml:space="preserve"><value>Open</value></data>
+  <data name="closed_incidents"       xml:space="preserve"><value>Closed</value></data>
+  <data name="high_critical"          xml:space="preserve"><value>High / Critical</value></data>
+  <data name="pending_actions"        xml:space="preserve"><value>Pending Actions</value></data>
+  <data name="overdue_actions"        xml:space="preserve"><value>Overdue Actions</value></data>
+  <data name="recent_incidents"       xml:space="preserve"><value>Recent Incidents</value></data>
+  <data name="by_category"            xml:space="preserve"><value>Incidents by Category</value></data>
+  <data name="by_department"          xml:space="preserve"><value>Incidents by Department</value></data>
+  <data name="trend"                  xml:space="preserve"><value>Incidents Trend (last 6 months)</value></data>
+  <data name="date_col"               xml:space="preserve"><value>Date</value></data>
+  <!-- Admin / Users -->
+  <data name="users_title"            xml:space="preserve"><value>User Management</value></data>
+  <data name="all_users"              xml:space="preserve"><value>All Users</value></data>
+  <data name="full_name"              xml:space="preserve"><value>Full Name</value></data>
+  <data name="email_label"            xml:space="preserve"><value>Email</value></data>
+  <data name="password_label"         xml:space="preserve"><value>Password</value></data>
+  <data name="role"                   xml:space="preserve"><value>Role</value></data>
+  <data name="new_user"               xml:space="preserve"><value>New User</value></data>
+  <data name="create_user"            xml:space="preserve"><value>Create User</value></data>
+  <data name="fields_required"        xml:space="preserve"><value>All fields are required.</value></data>
+  <data name="password_min"           xml:space="preserve"><value>Password must be at least 6 characters.</value></data>
+  <data name="user_created"           xml:space="preserve"><value>User created successfully.</value></data>
+  <data name="user_create_fail"       xml:space="preserve"><value>Failed to create user (email may already exist).</value></data>
+  <data name="edit_user"              xml:space="preserve"><value>Edit User</value></data>
+  <data name="save_user"              xml:space="preserve"><value>Save Changes</value></data>
+  <data name="user_updated"           xml:space="preserve"><value>User updated successfully.</value></data>
+  <data name="user_update_fail"       xml:space="preserve"><value>Failed to update user.</value></data>
+  <data name="new_password_hint"      xml:space="preserve"><value>Leave blank to keep current password</value></data>
+</root>

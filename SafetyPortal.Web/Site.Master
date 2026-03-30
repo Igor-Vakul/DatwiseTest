@@ -1,0 +1,109 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Master.cs" Inherits="SafetyPortal.Web.SiteMaster" %>
+<!DOCTYPE html>
+<html lang="<%= IsHebrew ? "he" : "en" %>" dir="<%= Dir %>">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SafetyPortal – <asp:ContentPlaceHolder ID="TitleContent" runat="server">Dashboard</asp:ContentPlaceHolder></title>
+    <% if (IsHebrew) { %>
+    <link href="<%= ResolveUrl("~/Content/lib/bootstrap/css/bootstrap.rtl.min.css") %>" rel="stylesheet" />
+    <% } else { %>
+    <link href="<%= ResolveUrl("~/Content/lib/bootstrap/css/bootstrap.min.css") %>" rel="stylesheet" />
+    <% } %>
+    <link href="<%= ResolveUrl("~/Content/lib/bootstrap-icons/bootstrap-icons.min.css") %>" rel="stylesheet" />
+    <link href="<%= ResolveUrl("~/Content/Site.css") %>" rel="stylesheet" />
+    <% if (IsHebrew) { %>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; }
+        .sidebar-brand h4, .sidebar-section, .nav-link span { letter-spacing: 0; }
+        .sp-topbar .page-title { text-align: right; }
+    </style>
+    <% } %>
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
+</head>
+<body>
+<div class="sp-wrapper">
+
+    <%-- ── Sidebar ──────────────────────────────────────────────────── --%>
+    <nav id="sidebar">
+        <a href="<%= ResolveUrl("~/Dashboard.aspx") %>" class="sidebar-brand d-flex align-items-center gap-2">
+            <i class="bi bi-shield-check text-primary fs-5"></i>
+            <div>
+                <h4>SafetyPortal</h4>
+                <span>by Datwise</span>
+            </div>
+        </a>
+
+        <ul class="nav flex-column mt-2 flex-grow-1">
+            <li class="sidebar-section"><%= T("nav_main") %></li>
+            <li class="nav-item">
+                <a class="nav-link <%= IsActive("Dashboard.aspx") %>" href="<%= ResolveUrl("~/Dashboard.aspx") %>">
+                    <i class="bi bi-speedometer2"></i><span><%= T("nav_dashboard") %></span>
+                </a>
+            </li>
+
+            <li class="sidebar-section mt-2"><%= T("nav_safety") %></li>
+            <li class="nav-item">
+                <a class="nav-link <%= IsActive("Incidents/List.aspx") %>" href="<%= ResolveUrl("~/Incidents/List.aspx") %>">
+                    <i class="bi bi-exclamation-triangle"></i><span><%= T("nav_incidents") %></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <%= IsActive("CorrectiveActions/List.aspx") %>" href="<%= ResolveUrl("~/CorrectiveActions/List.aspx") %>">
+                    <i class="bi bi-check2-square"></i><span><%= T("nav_corrective_actions") %></span>
+                </a>
+            </li>
+
+            <% if (IsAdmin) { %>
+            <li class="sidebar-section mt-2"><%= T("nav_admin") %></li>
+            <li class="nav-item">
+                <a class="nav-link <%= IsActive("Admin/Users.aspx") %>" href="<%= ResolveUrl("~/Admin/Users.aspx") %>">
+                    <i class="bi bi-people"></i><span><%= T("nav_users") %></span>
+                </a>
+            </li>
+            <% } %>
+        </ul>
+
+        <div class="p-2 border-top border-secondary">
+            <small class="text-muted px-2" style="font-size:.7rem">v1.0 • Datwise © 2026</small>
+        </div>
+    </nav>
+
+    <%-- ── Main ────────────────────────────────────────────────────────── --%>
+    <div id="main-content">
+        <%-- Top bar --%>
+        <div class="sp-topbar">
+            <h6 class="page-title flex-grow-1">
+                <asp:ContentPlaceHolder ID="PageTitle" runat="server">SafetyPortal</asp:ContentPlaceHolder>
+            </h6>
+            <div class="d-flex align-items-center gap-2">
+                <%-- Language switcher --%>
+                <% if (IsHebrew) { %>
+                <a href="?lang=en" class="btn btn-outline-secondary btn-sm" title="Switch to English">EN</a>
+                <% } else { %>
+                <a href="?lang=he" class="btn btn-outline-secondary btn-sm" title="עברית">עב</a>
+                <% } %>
+
+                <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2">
+                    <i class="bi bi-person-circle me-1"></i><%= UserFullName %>
+                    &nbsp;<span class="badge bg-primary" style="font-size:.65rem"><%= UserRole %></span>
+                </span>
+                <a href="<%= ResolveUrl("~/Login.aspx?action=logout") %>"
+                   class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-box-arrow-right"></i> <%= T("nav_logout") %>
+                </a>
+            </div>
+        </div>
+
+        <%-- Page body --%>
+        <div class="sp-page-body">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+        </div>
+    </div>
+
+</div>
+
+<script src="<%= ResolveUrl("~/Content/lib/bootstrap/js/bootstrap.bundle.min.js") %>"></script>
+<asp:ContentPlaceHolder ID="ScriptsContent" runat="server" />
+</body>
+</html>

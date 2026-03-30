@@ -1,0 +1,83 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using SafetyPortal.Api.Data;
+using SafetyPortal.Api.Dtos.Users;
+using SafetyPortal.Api.Entities;
+
+namespace SafetyPortal.Api.Endpoints;
+
+public static class UserManagementEndpoints
+{
+    public static IEndpointRouteBuilder MapUserManagementEndpoints(this IEndpointRouteBuilder app)
+    {
+        var group = app.MapGroup("/api/users").WithTags("Users").RequireAuthorization("AdminOnly");
+
+        // GET /api/users
+        group.MapGet("/", async (SafetyPortalDbContext db) =>
+        {
+            var users = await db.Users
+                .Include(x => x.Role)
+                .OrderBy(x => x.FullName)
+                .Select(x => new UserSummaryDto(x.Id, x.FullName, x.Email, x.Role.Name, x.IsActive))
+                .ToListAsync();
+            return Results.Ok(users);
+        });
+
+        // POST /api/users
+        group.MapPost("/", async (CreateUserDto request, SafetyPortalDbContext db) =>
+        {
+            if (await db.Users.AnyAsync(x => x.Email == request.Email))
+                return Results.Conflict(new { message = "Email already exists." });
+
+            var hasher = new PasswordHasher<User>();
+            var user = new User
+            {
+                FullName = request.FullName,
+                Email = request.Email,
+                RoleId = request.RoleId,
+                IsActive = true
+            };
+            user.PasswordHash = hasher.HashPassword(user, request.Password);
+
+            db.Users.Add(user);
+            await db.SaveChangesAsync();
+
+            return Results.Created($"/api/users/{user.Id}", new { user.Id });
+        });
+
+        // PUT /api/users/{id}
+        group.MapPut("/{id:int}", async (int id, UpdateUserDto request, SafetyPortalDbContext db) =>
+        {
+            var user = await db.Users.FindAsync(id);
+            if (user is null)
+                return Results.NotFound();
+
+            user.FullName = request.FullName;
+            user.RoleId   = request.RoleId;
+
+            if (!string.IsNullOrWhiteSpace(request.Password))
+            {
+                var hasher = new PasswordHasher<User>();
+                user.PasswordHash = hasher.HashPassword(user, request.Password);
+            }
+
+            await db.SaveChangesAsync();
+            return Results.NoContent();
+        });
+
+        // PUT /api/users/{id}/toggle-active
+        group.MapPut("/{id:int}/toggle-active", async (int id, SafetyPortalDbContext db) =>
+        {
+            var user = await db.Users.FindAsync(id);
+            if (user is null)
+                return Results.NotFound();
+
+            user.IsActive = !user.IsActive;
+            await db.SaveChangesAsync();
+
+            return Results.Ok(new { user.Id, user.IsActive });
+        });
+
+        return app;
+    }
+}

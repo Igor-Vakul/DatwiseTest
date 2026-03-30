@@ -1,0 +1,185 @@
+/* SafetyPortal – custom styles on top of Bootstrap 5 */
+
+/* ── Layout ─────────────────────────────────────────────────────────────── */
+html, body { height: 100%; }
+
+.sp-wrapper { display: flex; min-height: 100vh; }
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+#sidebar {
+    width: 240px;
+    min-width: 240px;
+    background: #1a2035;
+    display: flex;
+    flex-direction: column;
+    transition: width .2s;
+}
+
+#sidebar .sidebar-brand {
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    text-decoration: none;
+}
+
+#sidebar .sidebar-brand h4 {
+    color: #fff;
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+#sidebar .sidebar-brand span {
+    color: #6ea8fe;
+    font-size: .75rem;
+}
+
+#sidebar .nav-link {
+    color: rgba(255,255,255,.7);
+    padding: .6rem 1rem;
+    border-radius: .375rem;
+    margin: .1rem .5rem;
+    font-size: .9rem;
+    transition: background .15s, color .15s;
+}
+
+#sidebar .nav-link:hover,
+#sidebar .nav-link.active {
+    background: rgba(255,255,255,.1);
+    color: #fff;
+}
+
+#sidebar .nav-link i { margin-right: .5rem; }
+
+#sidebar .sidebar-section {
+    padding: .5rem 1rem .2rem;
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: rgba(255,255,255,.4);
+}
+
+/* ── Main content ────────────────────────────────────────────────────────── */
+#main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    background: #f4f6fb;
+}
+
+.sp-topbar {
+    background: #fff;
+    border-bottom: 1px solid #e3e7f0;
+    padding: .6rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+}
+
+.sp-topbar .page-title { font-weight: 600; color: #1a2035; margin: 0; }
+
+.sp-page-body { padding: 1.5rem; flex: 1; }
+
+/* ── KPI Cards ───────────────────────────────────────────────────────────── */
+.kpi-card {
+    border: none;
+    border-radius: .75rem;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,.07);
+    transition: transform .15s, box-shadow .15s;
+}
+
+.kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.1); }
+
+.kpi-icon {
+    width: 52px; height: 52px;
+    border-radius: .6rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+}
+
+.kpi-label { font-size: .8rem; color: #6c757d; }
+.kpi-value { font-size: 1.8rem; font-weight: 700; line-height: 1.1; }
+
+/* ── Severity badges ─────────────────────────────────────────────────────── */
+.badge-severity-low      { background-color: #198754; color: #fff; }
+.badge-severity-medium   { background-color: #ffc107; color: #212529; }
+.badge-severity-high     { background-color: #fd7e14; color: #fff; }
+.badge-severity-critical { background-color: #dc3545; color: #fff; }
+
+/* ── Status badges ───────────────────────────────────────────────────────── */
+.badge-status-open       { background-color: #0d6efd; color: #fff; }
+.badge-status-inprogress { background-color: #6610f2; color: #fff; }
+.badge-status-closed     { background-color: #198754; color: #fff; }
+.badge-status-pending    { background-color: #6c757d; color: #fff; }
+.badge-status-completed  { background-color: #198754; color: #fff; }
+.badge-status-overdue    { background-color: #dc3545; color: #fff; }
+
+/* ── Priority badges ─────────────────────────────────────────────────────── */
+.badge-priority-low      { background-color: #6c757d; color: #fff; }
+.badge-priority-medium   { background-color: #0dcaf0; color: #212529; }
+.badge-priority-high     { background-color: #fd7e14; color: #fff; }
+.badge-priority-critical { background-color: #dc3545; color: #fff; }
+
+/* ── Tables ──────────────────────────────────────────────────────────────── */
+.sp-table thead th {
+    background: #f8f9fd;
+    font-weight: 600;
+    font-size: .82rem;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    color: #6c757d;
+    border-bottom: 2px solid #e3e7f0;
+}
+
+.sp-table tbody tr:hover { background: #f8f9fd; }
+
+/* ── Cards ───────────────────────────────────────────────────────────────── */
+.sp-card {
+    border: none;
+    border-radius: .75rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,.07);
+}
+
+.sp-card .card-header {
+    background: #fff;
+    border-bottom: 1px solid #e3e7f0;
+    border-radius: .75rem .75rem 0 0 !important;
+    padding: .9rem 1.25rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+/* ── Forms ───────────────────────────────────────────────────────────────── */
+.form-label { font-weight: 500; font-size: .875rem; }
+
+/* ── Login page ──────────────────────────────────────────────────────────── */
+.login-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a2035 0%, #0d6efd 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,.2);
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    #sidebar { width: 56px; min-width: 56px; }
+    #sidebar .sidebar-brand h4,
+    #sidebar .nav-link span,
+    #sidebar .sidebar-section { display: none; }
+    #sidebar .nav-link i { margin: 0; }
+    #sidebar .nav-link { text-align: center; }
+}
