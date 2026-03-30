@@ -284,3 +284,20 @@ Admin
 | `SafetyManagerOrAdmin` | Admin, SafetyManager |
 | `SupervisorOrAbove` | Admin, SafetyManager, Supervisor |
 | `Authenticated` | All logged-in users |
+
+### Permissions Matrix
+
+| Action | Employee | Supervisor | SafetyManager | Admin |
+|--------|:--------:|:----------:|:-------------:|:-----:|
+| View incidents | ✅ | ✅ | ✅ | ✅ |
+| Create incidents | ✅ | ✅ | ✅ | ✅ |
+| Edit incidents | ✅ | ✅ | ✅ | ✅ |
+| Upload attachments | ✅ | ✅ | ✅ | ✅ |
+| Download attachments | ✅ | ✅ | ✅ | ✅ |
+| Add corrective actions | ❌ | ✅ | ✅ | ✅ |
+| Mark action complete | ❌ | ✅ | ✅ | ✅ |
+| Delete incidents | ❌ | ❌ | ✅ | ✅ |
+| Delete attachments | ❌ | ❌ | ✅ | ✅ |
+| Delete corrective actions | ❌ | ❌ | ✅ | ✅ |
+| User management | ❌ | ❌ | ❌ | ✅ |
+| Hangfire dashboard | ❌ | ❌ | ❌ | ✅ |
