@@ -136,6 +136,42 @@ namespace SafetyPortal.Web
         public List<AttachmentInfo> GetAttachments(int incidentId)
             => Get<List<AttachmentInfo>>($"/api/incidents/{incidentId}/attachments");
 
+        // Downloads an Excel export and writes it directly to the HTTP response.
+        // Returns false if the API returned a non-2xx response.
+        public bool ProxyExport(string apiPath, System.Web.HttpResponse response)
+        {
+            try
+            {
+                using (var request = new HttpRequestMessage(HttpMethod.Get, $"{_base}{apiPath}"))
+                {
+                    if (!string.IsNullOrEmpty(_token))
+                        request.Headers.Authorization =
+                            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
+
+                    var apiResponse = System.Threading.Tasks.Task
+                        .Run(() => Global.HttpClient.SendAsync(request, System.Net.Http.HttpCompletionOption.ResponseHeadersRead))
+                        .GetAwaiter().GetResult();
+
+                    if (!apiResponse.IsSuccessStatusCode) return false;
+
+                    var disposition = apiResponse.Content.Headers.ContentDisposition;
+                    var fileName    = disposition?.FileNameStar ?? disposition?.FileName
+                                      ?? "export.xlsx";
+
+                    response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    response.AddHeader("Content-Disposition", $"attachment; filename=\"{fileName}\"");
+
+                    var stream = apiResponse.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
+                    stream.CopyTo(response.OutputStream);
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public bool DeleteAttachment(int incidentId, int attachmentId)
             => Delete($"/api/incidents/{incidentId}/attachments/{attachmentId}");
 

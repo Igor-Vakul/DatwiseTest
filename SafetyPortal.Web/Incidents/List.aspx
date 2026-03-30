@@ -60,9 +60,15 @@
                 <i class="bi bi-table text-primary"></i>
                 <%= T("showing") %> <strong><%= TotalCount %></strong> <%= T("incidents_found") %>
             </span>
-            <a href="<%= ResolveUrl("~/Incidents/Create.aspx") %>" class="btn btn-success btn-sm">
-                <i class="bi bi-plus-lg me-1"></i><%= T("new_incident") %>
-            </a>
+            <div class="d-flex gap-2">
+                <a href="<%= ResolveUrl("~/Handlers/ExportExcel.ashx?type=incidents&" + FilterQs) %>"
+                   class="btn btn-outline-success btn-sm" title="<%= T("export_excel") %>">
+                    <i class="bi bi-file-earmark-excel me-1"></i><%= T("export_excel") %>
+                </a>
+                <a href="<%= ResolveUrl("~/Incidents/Create.aspx") %>" class="btn btn-success btn-sm">
+                    <i class="bi bi-plus-lg me-1"></i><%= T("new_incident") %>
+                </a>
+            </div>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">

@@ -75,6 +75,69 @@ public static class IncidentEndpoints
             return Results.Ok(new { Items = items, TotalCount = totalCount, Page = page, PageSize = pageSize });
         });
 
+        // GET /api/incidents/export — filtered Excel download
+        group.MapGet("/export", async (
+            SafetyPortalDbContext db,
+            string? search = null,
+            string? status = null,
+            string? severityLevel = null,
+            int? departmentId = null,
+            int? categoryId = null) =>
+        {
+            var query = db.IncidentReports
+                .Include(x => x.Category)
+                .Include(x => x.Department)
+                .Include(x => x.ReportedByUser)
+                .Include(x => x.AssignedToUser)
+                .Include(x => x.CorrectiveActions)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(x =>
+                    x.Title.Contains(search) ||
+                    x.ReportNumber.Contains(search) ||
+                    x.Description.Contains(search));
+
+            if (!string.IsNullOrWhiteSpace(status))
+                query = query.Where(x => x.Status == status);
+
+            if (!string.IsNullOrWhiteSpace(severityLevel))
+                query = query.Where(x => x.SeverityLevel == severityLevel);
+
+            if (departmentId.HasValue)
+                query = query.Where(x => x.DepartmentId == departmentId);
+
+            if (categoryId.HasValue)
+                query = query.Where(x => x.CategoryId == categoryId);
+
+            var rows = await query
+                .OrderByDescending(x => x.ReportedAt)
+                .Select(x => new IncidentExportRow
+                {
+                    ReportNumber           = x.ReportNumber,
+                    Title                  = x.Title,
+                    CategoryName           = x.Category.Name,
+                    DepartmentName         = x.Department.Name,
+                    ReportedBy             = x.ReportedByUser.FullName,
+                    AssignedTo             = x.AssignedToUser != null ? x.AssignedToUser.FullName : "",
+                    IncidentDate           = x.IncidentDate,
+                    SeverityLevel          = x.SeverityLevel,
+                    Status                 = x.Status,
+                    Location               = x.LocationDetails ?? "",
+                    CorrectiveActionsCount = x.CorrectiveActions.Count
+                })
+                .ToListAsync();
+
+            var bytes = await ExcelOrCsvCreator.CreateExcel(rows, "incidents", "Incidents");
+            if (bytes is null)
+                return Results.BadRequest(new { error = "No data to export." });
+
+            var fileName = $"incidents_{DateTime.Today:yyyy-MM-dd}.xlsx";
+            return Results.File(bytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                fileName);
+        });
+
         // GET /api/incidents/{id}
         group.MapGet("/{id:int}", async (int id, SafetyPortalDbContext db) =>
         {

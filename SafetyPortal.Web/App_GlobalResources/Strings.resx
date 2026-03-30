@@ -148,4 +148,5 @@
   <data name="attach_uploaded_col"    xml:space="preserve"><value>Uploaded</value></data>
   <data name="attach_delete_confirm"  xml:space="preserve"><value>Delete this attachment?</value></data>
   <data name="attach_select_file"     xml:space="preserve"><value>Please select at least one file.</value></data>
+  <data name="export_excel"           xml:space="preserve"><value>Export Excel</value></data>
 </root>

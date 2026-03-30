@@ -148,4 +148,5 @@
   <data name="attach_uploaded_col"    xml:space="preserve"><value>הועלה</value></data>
   <data name="attach_delete_confirm"  xml:space="preserve"><value>למחוק את הקובץ המצורף?</value></data>
   <data name="attach_select_file"     xml:space="preserve"><value>יש לבחור לפחות קובץ אחד.</value></data>
+  <data name="export_excel"           xml:space="preserve"><value>ייצוא Excel</value></data>
 </root>

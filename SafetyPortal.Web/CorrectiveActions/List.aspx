@@ -31,9 +31,15 @@
     </div>
 
     <div class="card sp-card">
-        <div class="card-header">
-            <i class="bi bi-table text-primary"></i>
-            <strong><%= Actions.Count %></strong> <%= T("actions_found") %>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>
+                <i class="bi bi-table text-primary"></i>
+                <strong><%= Actions.Count %></strong> <%= T("actions_found") %>
+            </span>
+            <a href="<%= ResolveUrl("~/Handlers/ExportExcel.ashx?type=actions&" + ExportQs) %>"
+               class="btn btn-outline-success btn-sm" title="<%= T("export_excel") %>">
+                <i class="bi bi-file-earmark-excel me-1"></i><%= T("export_excel") %>
+            </a>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">

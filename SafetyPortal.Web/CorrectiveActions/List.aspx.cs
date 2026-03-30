@@ -9,7 +9,8 @@ namespace SafetyPortal.Web.CorrectiveActions
         protected System.Web.UI.WebControls.DropDownList ddlStatus;
         protected System.Web.UI.WebControls.Button       btnFilter;
 
-        protected List<CorrectiveActionSummary> Actions { get; private set; } = new List<CorrectiveActionSummary>();
+        protected List<CorrectiveActionSummary> Actions   { get; private set; } = new List<CorrectiveActionSummary>();
+        protected string                         ExportQs  { get; private set; } = string.Empty;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -35,6 +36,9 @@ namespace SafetyPortal.Web.CorrectiveActions
 
         private void LoadActions()
         {
+            if (!string.IsNullOrEmpty(ddlStatus.SelectedValue))
+                ExportQs = "status=" + System.Web.HttpUtility.UrlEncode(ddlStatus.SelectedValue);
+
             Actions = Api.GetCorrectiveActions(
                 status: ddlStatus.SelectedValue
             ) ?? new List<CorrectiveActionSummary>();
