@@ -97,6 +97,7 @@
                         <th><%= T("severity") %></th>
                         <th><%= T("status") %></th>
                         <th><%= T("date_col") %></th>
+                        <th class="text-center"><i class="bi bi-paperclip" title="Attachments"></i></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -107,10 +108,19 @@
                         <td><span class="badge badge-severity-<%= inc.SeverityLevel.ToLower() %>"><%= inc.SeverityLevel %></span></td>
                         <td><span class="badge badge-status-<%= inc.Status.ToLower() %>"><%= inc.Status %></span></td>
                         <td><%= inc.IncidentDate.ToString("dd MMM yyyy") %></td>
+                        <td class="text-center">
+                            <% if (inc.AttachmentsCount > 0) { %>
+                            <span class="badge bg-secondary-subtle text-secondary">
+                                <i class="bi bi-paperclip"></i> <%= inc.AttachmentsCount %>
+                            </span>
+                            <% } else { %>
+                            <span class="text-muted">—</span>
+                            <% } %>
+                        </td>
                     </tr>
                     <% } %>
                     <% if (Stats.RecentIncidents.Count == 0) { %>
-                    <tr><td colspan="5" class="text-center text-muted py-3"><%= T("no_incidents_yet") %></td></tr>
+                    <tr><td colspan="6" class="text-center text-muted py-3"><%= T("no_incidents_yet") %></td></tr>
                     <% } %>
                 </tbody>
             </table>

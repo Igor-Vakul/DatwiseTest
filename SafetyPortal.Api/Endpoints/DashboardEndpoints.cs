@@ -48,6 +48,7 @@ public static class DashboardEndpoints
                 .ToList();
 
             var recentIncidents = await db.IncidentReports
+                .Include(x => x.Attachments)
                 .OrderByDescending(x => x.ReportedAt)
                 .Take(AppConstants.Dashboard.RecentIncidentsCount)
                 .Select(x => new
@@ -57,7 +58,8 @@ public static class DashboardEndpoints
                     x.Title,
                     x.SeverityLevel,
                     x.Status,
-                    x.IncidentDate
+                    x.IncidentDate,
+                    AttachmentsCount = x.Attachments.Count
                 })
                 .ToListAsync();
 
