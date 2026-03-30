@@ -31,9 +31,15 @@
     </div>
 
     <div class="card sp-card">
-        <div class="card-header">
-            <i class="bi bi-table text-primary"></i>
-            <strong><%= Actions.Count %></strong> <%= T("actions_found") %>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>
+                <i class="bi bi-table text-primary"></i>
+                <strong><%= Actions.Count %></strong> <%= T("actions_found") %>
+            </span>
+            <a href="<%= ResolveUrl("~/Handlers/ExportExcel.ashx?type=actions&" + ExportQs) %>"
+               class="btn btn-outline-success btn-sm" title="<%= T("export_excel") %>">
+                <i class="bi bi-file-earmark-excel me-1"></i><%= T("export_excel") %>
+            </a>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -46,7 +52,7 @@
                             <th><%= T("due_date") %></th>
                             <th><%= T("priority") %></th>
                             <th><%= T("status") %></th>
-                            <% if (IsManagerOrAdmin) { %><th><%= T("update") %></th><% } %>
+                            <% if (IsSupervisorOrAbove) { %><th><%= T("update") %></th><% } %>
                         </tr>
                     </thead>
                     <tbody>
@@ -71,7 +77,7 @@
                             </td>
                             <td><span class="badge badge-priority-<%= a.PriorityLevel.ToLower() %>"><%= a.PriorityLevel %></span></td>
                             <td><span class="badge badge-status-<%= a.Status.ToLower() %>"><%= a.Status %></span></td>
-                            <% if (IsManagerOrAdmin) { %>
+                            <% if (IsSupervisorOrAbove) { %>
                             <td>
                                 <% if (a.Status != "Completed") { %>
                                 <a href="List.aspx?complete=<%= a.Id %>&status=<%= ddlStatus.SelectedValue %>"

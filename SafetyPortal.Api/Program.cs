@@ -93,6 +93,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly",            p => p.RequireRole("Admin"));
     options.AddPolicy("SafetyManagerOrAdmin", p => p.RequireRole("Admin", "SafetyManager"));
+    options.AddPolicy("SupervisorOrAbove",    p => p.RequireRole("Admin", "SafetyManager", "Supervisor"));
     options.AddPolicy("Authenticated",        p => p.RequireAuthenticatedUser());
 });
 

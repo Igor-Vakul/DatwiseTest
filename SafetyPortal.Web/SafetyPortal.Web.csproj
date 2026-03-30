@@ -183,6 +183,12 @@
     <Compile Include="Handlers\DownloadAttachment.ashx.cs">
       <DependentUpon>DownloadAttachment.ashx</DependentUpon>
     </Compile>
+    <Content Include="Handlers\ExportExcel.ashx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Compile Include="Handlers\ExportExcel.ashx.cs">
+      <DependentUpon>ExportExcel.ashx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

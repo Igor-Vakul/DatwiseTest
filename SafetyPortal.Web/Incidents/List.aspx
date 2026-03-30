@@ -60,9 +60,15 @@
                 <i class="bi bi-table text-primary"></i>
                 <%= T("showing") %> <strong><%= TotalCount %></strong> <%= T("incidents_found") %>
             </span>
-            <a href="<%= ResolveUrl("~/Incidents/Create.aspx") %>" class="btn btn-success btn-sm">
-                <i class="bi bi-plus-lg me-1"></i><%= T("new_incident") %>
-            </a>
+            <div class="d-flex gap-2">
+                <a href="<%= ResolveUrl("~/Handlers/ExportExcel.ashx?type=incidents&" + FilterQs) %>"
+                   class="btn btn-outline-success btn-sm" title="<%= T("export_excel") %>">
+                    <i class="bi bi-file-earmark-excel me-1"></i><%= T("export_excel") %>
+                </a>
+                <a href="<%= ResolveUrl("~/Incidents/Create.aspx") %>" class="btn btn-success btn-sm">
+                    <i class="bi bi-plus-lg me-1"></i><%= T("new_incident") %>
+                </a>
+            </div>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -78,6 +84,7 @@
                             <th><%= T("date_col") %></th>
                             <th><%= T("actions") %></th>
                             <th class="text-center"><%= T("ca_count") %></th>
+                            <th class="text-center"><i class="bi bi-paperclip" title="Attachments"></i></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -111,10 +118,19 @@
                                 <span class="text-muted">—</span>
                                 <% } %>
                             </td>
+                            <td class="text-center">
+                                <% if (inc.AttachmentsCount > 0) { %>
+                                <span class="badge bg-secondary-subtle text-secondary">
+                                    <i class="bi bi-paperclip"></i> <%= inc.AttachmentsCount %>
+                                </span>
+                                <% } else { %>
+                                <span class="text-muted">—</span>
+                                <% } %>
+                            </td>
                         </tr>
                         <% } %>
                         <% if (Incidents.Count == 0) { %>
-                        <tr><td colspan="9" class="text-center text-muted py-4"><%= T("no_incidents") %></td></tr>
+                        <tr><td colspan="10" class="text-center text-muted py-4"><%= T("no_incidents") %></td></tr>
                         <% } %>
                     </tbody>
                 </table>

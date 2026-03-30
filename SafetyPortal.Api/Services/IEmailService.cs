@@ -11,6 +11,9 @@ public interface IEmailService
 
     // ── Scenario 3: incident escalation ───────────────────────────────────
     Task SendIncidentEscalationAsync(IncidentEscalationContext ctx);
+
+    // ── Ad-hoc: direct message to a user ──────────────────────────────────
+    Task SendDirectAsync(string toEmail, string toName, string subject, string body);
 }
 
 // ── Context records ────────────────────────────────────────────────────────

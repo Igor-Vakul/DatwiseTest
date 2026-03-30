@@ -32,6 +32,7 @@ namespace SafetyPortal.Web.Models
         public string   SeverityLevel          { get; set; }
         public string   Status                 { get; set; }
         public int      CorrectiveActionsCount { get; set; }
+        public int      AttachmentsCount       { get; set; }
     }
 
     public class IncidentDetail
@@ -159,12 +160,13 @@ namespace SafetyPortal.Web.Models
 
     public class RecentIncidentItem
     {
-        public int      Id            { get; set; }
-        public string   ReportNumber  { get; set; }
-        public string   Title         { get; set; }
-        public string   SeverityLevel { get; set; }
-        public string   Status        { get; set; }
-        public DateTime IncidentDate  { get; set; }
+        public int      Id               { get; set; }
+        public string   ReportNumber     { get; set; }
+        public string   Title            { get; set; }
+        public string   SeverityLevel    { get; set; }
+        public string   Status           { get; set; }
+        public DateTime IncidentDate     { get; set; }
+        public int      AttachmentsCount { get; set; }
     }
 
     // ── Lookups ───────────────────────────────────────────────────────────

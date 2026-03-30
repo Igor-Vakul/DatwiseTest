@@ -90,7 +90,7 @@
   <data name="report_info"            xml:space="preserve"><value>מידע על הדוח</value></data>
   <data name="showing"                xml:space="preserve"><value>מציג</value></data>
   <data name="incidents_found"        xml:space="preserve"><value>תקרית/ות</value></data>
-  <data name="ca_count"               xml:space="preserve"><value>פ"מ</value></data>
+  <data name="ca_count"               xml:space="preserve"><value>פעולות מתקנות</value></data>
   <data name="incident_details_hdr"   xml:space="preserve"><value>פרטי תקרית</value></data>
   <!-- Corrective Actions -->
   <data name="ca_title"               xml:space="preserve"><value>פעולות מתקנות</value></data>
@@ -148,4 +148,14 @@
   <data name="attach_uploaded_col"    xml:space="preserve"><value>הועלה</value></data>
   <data name="attach_delete_confirm"  xml:space="preserve"><value>למחוק את הקובץ המצורף?</value></data>
   <data name="attach_select_file"     xml:space="preserve"><value>יש לבחור לפחות קובץ אחד.</value></data>
+  <data name="export_excel"           xml:space="preserve"><value>ייצוא Excel</value></data>
+  <data name="send_email"             xml:space="preserve"><value>שלח אימייל</value></data>
+  <data name="email_to_lbl"           xml:space="preserve"><value>אל</value></data>
+  <data name="email_subject_lbl"      xml:space="preserve"><value>נושא</value></data>
+  <data name="email_body_lbl"         xml:space="preserve"><value>הודעה</value></data>
+  <data name="send_btn"               xml:space="preserve"><value>שלח</value></data>
+  <data name="email_sent"             xml:space="preserve"><value>האימייל נוסף לתור בהצלחה.</value></data>
+  <data name="email_send_fail"        xml:space="preserve"><value>שליחת האימייל נכשלה.</value></data>
+  <data name="email_subject_required" xml:space="preserve"><value>נדרש נושא והודעה.</value></data>
+  <data name="email_self_send"        xml:space="preserve"><value>לא ניתן לשלוח אימייל לעצמך.</value></data>
 </root>

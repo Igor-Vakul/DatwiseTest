@@ -47,7 +47,8 @@ namespace SafetyPortal.Web
         protected string CurrentUser      => SessionHelper.GetFullName(Session);
         protected int    CurrentUserId    => SessionHelper.GetUserId(Session);
         protected bool   IsAdmin          => SessionHelper.IsAdmin(Session);
-        protected bool   IsManagerOrAdmin => SessionHelper.IsManagerOrAdmin(Session);
+        protected bool   IsManagerOrAdmin    => SessionHelper.IsManagerOrAdmin(Session);
+        protected bool   IsSupervisorOrAbove => SessionHelper.IsSupervisorOrAbove(Session);
         protected bool   IsHebrew         => LanguageHelper.IsHebrew(Session);
         protected string Dir              => IsHebrew ? "rtl" : "ltr";
 

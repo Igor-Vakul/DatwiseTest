@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SafetyPortal.Api.Data;
 using SafetyPortal.Api.Dtos.CorrectiveActions;
 using SafetyPortal.Api.Entities;
+using SafetyPortal.Api.Services;
 
 namespace SafetyPortal.Api.Endpoints;
 
@@ -42,7 +43,44 @@ public static class CorrectiveActionEndpoints
             return Results.Ok(items);
         });
 
-        // POST /api/corrective-actions
+        // GET /api/corrective-actions/export — filtered Excel download
+        group.MapGet("/export", async (SafetyPortalDbContext db, int? reportId = null, string? status = null) =>
+        {
+            var query = db.CorrectiveActions
+                .Include(x => x.Report)
+                .Include(x => x.AssignedToUser)
+                .AsQueryable();
+
+            if (reportId.HasValue)
+                query = query.Where(x => x.ReportId == reportId);
+
+            if (!string.IsNullOrWhiteSpace(status))
+                query = query.Where(x => x.Status == status);
+
+            var rows = await query
+                .OrderBy(x => x.DueDate)
+                .Select(x => new CorrectiveActionExportRow
+                {
+                    ReportNumber = x.Report.ReportNumber,
+                    ActionTitle  = x.ActionTitle,
+                    AssignedTo   = x.AssignedToUser.FullName,
+                    DueDate      = x.DueDate.ToString("dd/MM/yyyy"),
+                    Priority     = x.PriorityLevel,
+                    Status       = x.Status
+                })
+                .ToListAsync();
+
+            var bytes = await ExcelOrCsvCreator.CreateExcel(rows, "corrective-actions", "Corrective Actions");
+            if (bytes is null)
+                return Results.BadRequest(new { error = "No data to export." });
+
+            var fileName = $"corrective-actions_{DateTime.Today:yyyy-MM-dd}.xlsx";
+            return Results.File(bytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                fileName);
+        });
+
+        // POST /api/corrective-actions — Supervisor and above
         group.MapPost("/", async (CreateCorrectiveActionDto request, SafetyPortalDbContext db) =>
         {
             var action = new CorrectiveAction
@@ -60,9 +98,10 @@ public static class CorrectiveActionEndpoints
             await db.SaveChangesAsync();
 
             return Results.Created($"/api/corrective-actions/{action.Id}", new { action.Id });
-        });
+        })
+        .RequireAuthorization("SupervisorOrAbove");
 
-        // PUT /api/corrective-actions/{id}/status
+        // PUT /api/corrective-actions/{id}/status — Supervisor and above
         group.MapPut("/{id:int}/status", async (int id, UpdateActionStatusDto request, SafetyPortalDbContext db) =>
         {
             var action = await db.CorrectiveActions.FindAsync(id);
@@ -75,9 +114,10 @@ public static class CorrectiveActionEndpoints
 
             await db.SaveChangesAsync();
             return Results.NoContent();
-        });
+        })
+        .RequireAuthorization("SupervisorOrAbove");
 
-        // DELETE /api/corrective-actions/{id}
+        // DELETE /api/corrective-actions/{id} — SafetyManager and above
         group.MapDelete("/{id:int}", async (int id, SafetyPortalDbContext db) =>
         {
             var action = await db.CorrectiveActions.FindAsync(id);
@@ -87,7 +127,8 @@ public static class CorrectiveActionEndpoints
             db.CorrectiveActions.Remove(action);
             await db.SaveChangesAsync();
             return Results.NoContent();
-        });
+        })
+        .RequireAuthorization("SafetyManagerOrAdmin");
 
         return app;
     }
