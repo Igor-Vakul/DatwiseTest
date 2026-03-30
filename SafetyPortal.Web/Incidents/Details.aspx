@@ -196,7 +196,7 @@
     <div class="card sp-card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <span><i class="bi bi-check2-square text-primary"></i> <%= T("ca_title") %> (<%= Incident.CorrectiveActions.Count %>)</span>
-            <% if (IsManagerOrAdmin) { %>
+            <% if (IsSupervisorOrAbove) { %>
             <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAddAction">
                 <i class="bi bi-plus-lg me-1"></i><%= T("add_action") %>
             </button>
@@ -211,7 +211,7 @@
                         <th><%= T("due_date") %></th>
                         <th><%= T("priority") %></th>
                         <th><%= T("status") %></th>
-                        <% if (IsManagerOrAdmin) { %><th></th><% } %>
+                        <% if (IsSupervisorOrAbove) { %><th></th><% } %>
                     </tr>
                 </thead>
                 <tbody>
@@ -222,7 +222,7 @@
                         <td><%= ca.DueDate %></td>
                         <td><span class="badge badge-priority-<%= ca.PriorityLevel.ToLower() %>"><%= ca.PriorityLevel %></span></td>
                         <td><span class="badge badge-status-<%= ca.Status.ToLower() %>"><%= ca.Status %></span></td>
-                        <% if (IsManagerOrAdmin) { %>
+                        <% if (IsSupervisorOrAbove) { %>
                         <td>
                             <% if (ca.Status != "Completed") { %>
                             <a href="Details.aspx?id=<%= Incident.Id %>&completeAction=<%= ca.Id %>"
@@ -243,7 +243,7 @@
         </div>
     </div>
 
-    <% if (IsManagerOrAdmin) { %>
+    <% if (IsSupervisorOrAbove) { %>
     <div class="modal fade" id="modalAddAction" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">

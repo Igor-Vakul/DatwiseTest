@@ -257,3 +257,30 @@ c:\DatWiseTest\
 | UI/UX | Bootstrap 5, responsive sidebar, color-coded badges, Chart.js charts |
 | Management thinking | Role-based access, risk levels (severity/priority), overdue highlighting |
 | Creativity | Server-side JWT session bridge between .NET FW and .NET 10 API |
+
+---
+
+## Role Hierarchy
+
+```
+Admin
+  └── SafetyManager
+        └── Supervisor
+              └── Employee
+```
+
+| Role | Capabilities |
+|------|-------------|
+| **Admin** | Full access: user management, delete incidents/attachments/actions, Hangfire dashboard |
+| **SafetyManager** | All except user management: create/edit/delete incidents, manage corrective actions, delete attachments |
+| **Supervisor** | Create/edit incidents, add corrective actions, mark actions complete, upload attachments |
+| **Employee** | View and create incidents only — read-only access to corrective actions |
+
+### Authorization Policies
+
+| Policy | Roles |
+|--------|-------|
+| `AdminOnly` | Admin |
+| `SafetyManagerOrAdmin` | Admin, SafetyManager |
+| `SupervisorOrAbove` | Admin, SafetyManager, Supervisor |
+| `Authenticated` | All logged-in users |

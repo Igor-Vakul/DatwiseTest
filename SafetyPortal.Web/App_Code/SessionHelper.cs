@@ -56,5 +56,11 @@ namespace SafetyPortal.Web
             var role = GetRole(session);
             return role == "Admin" || role == "SafetyManager";
         }
+
+        public static bool IsSupervisorOrAbove(HttpSessionState session)
+        {
+            var role = GetRole(session);
+            return role == "Admin" || role == "SafetyManager" || role == "Supervisor";
+        }
     }
 }

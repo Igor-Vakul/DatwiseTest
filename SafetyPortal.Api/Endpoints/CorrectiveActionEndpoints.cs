@@ -80,7 +80,7 @@ public static class CorrectiveActionEndpoints
                 fileName);
         });
 
-        // POST /api/corrective-actions
+        // POST /api/corrective-actions — Supervisor and above
         group.MapPost("/", async (CreateCorrectiveActionDto request, SafetyPortalDbContext db) =>
         {
             var action = new CorrectiveAction
@@ -98,9 +98,10 @@ public static class CorrectiveActionEndpoints
             await db.SaveChangesAsync();
 
             return Results.Created($"/api/corrective-actions/{action.Id}", new { action.Id });
-        });
+        })
+        .RequireAuthorization("SupervisorOrAbove");
 
-        // PUT /api/corrective-actions/{id}/status
+        // PUT /api/corrective-actions/{id}/status — Supervisor and above
         group.MapPut("/{id:int}/status", async (int id, UpdateActionStatusDto request, SafetyPortalDbContext db) =>
         {
             var action = await db.CorrectiveActions.FindAsync(id);
@@ -113,9 +114,10 @@ public static class CorrectiveActionEndpoints
 
             await db.SaveChangesAsync();
             return Results.NoContent();
-        });
+        })
+        .RequireAuthorization("SupervisorOrAbove");
 
-        // DELETE /api/corrective-actions/{id}
+        // DELETE /api/corrective-actions/{id} — SafetyManager and above
         group.MapDelete("/{id:int}", async (int id, SafetyPortalDbContext db) =>
         {
             var action = await db.CorrectiveActions.FindAsync(id);
@@ -125,7 +127,8 @@ public static class CorrectiveActionEndpoints
             db.CorrectiveActions.Remove(action);
             await db.SaveChangesAsync();
             return Results.NoContent();
-        });
+        })
+        .RequireAuthorization("SafetyManagerOrAdmin");
 
         return app;
     }
