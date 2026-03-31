@@ -36,6 +36,7 @@ CREATE TABLE Departments (
     Id           INT           NOT NULL IDENTITY(1,1) PRIMARY KEY,
     Name         NVARCHAR(100) NOT NULL,
     LocationName NVARCHAR(100) NULL,
+    Color        NVARCHAR(7)   NOT NULL DEFAULT '#6c757d',
     IsActive     BIT           NOT NULL DEFAULT 1,
     CONSTRAINT UQ_Departments_Name UNIQUE (Name)
 );
@@ -46,6 +47,7 @@ CREATE TABLE IncidentCategories (
     Id          INT           NOT NULL IDENTITY(1,1) PRIMARY KEY,
     Name        NVARCHAR(100) NOT NULL,
     Description NVARCHAR(255) NULL,
+    IsActive    BIT           NOT NULL DEFAULT 1,
     CONSTRAINT UQ_IncidentCategories_Name UNIQUE (Name)
 );
 GO
@@ -138,22 +140,22 @@ GO
 
 -- Departments
 SET IDENTITY_INSERT Departments ON;
-INSERT INTO Departments (Id, Name, LocationName, IsActive) VALUES
-    (1, 'Production',        'Plant A', 1),
-    (2, 'Warehouse',         'Plant A', 1),
-    (3, 'Maintenance',       'Plant B', 1),
-    (4, 'Logistics',         'Plant B', 1),
-    (5, 'Quality Assurance', 'HQ',      1);
+INSERT INTO Departments (Id, Name, LocationName, Color, IsActive) VALUES
+    (1, 'Production',        'Plant A', '#4e79a7', 1),
+    (2, 'Warehouse',         'Plant A', '#f28e2b', 1),
+    (3, 'Maintenance',       'Plant B', '#e15759', 1),
+    (4, 'Logistics',         'Plant B', '#76b7b2', 1),
+    (5, 'Quality Assurance', 'HQ',      '#59a14f', 1);
 SET IDENTITY_INSERT Departments OFF;
 GO
 
 -- Incident Categories
 SET IDENTITY_INSERT IncidentCategories ON;
-INSERT INTO IncidentCategories (Id, Name, Description) VALUES
-    (1, 'Near Miss',         'Event that could have caused injury or damage but did not'),
-    (2, 'Hazard',            'Identified workplace hazard'),
-    (3, 'Unsafe Condition',  'Unsafe physical condition in workplace'),
-    (4, 'Unsafe Act',        'Unsafe employee action or behavior');
+INSERT INTO IncidentCategories (Id, Name, Description, IsActive) VALUES
+    (1, 'Near Miss',         'Event that could have caused injury or damage but did not', 1),
+    (2, 'Hazard',            'Identified workplace hazard',                               1),
+    (3, 'Unsafe Condition',  'Unsafe physical condition in workplace',                    1),
+    (4, 'Unsafe Act',        'Unsafe employee action or behavior',                        1);
 SET IDENTITY_INSERT IncidentCategories OFF;
 GO
 
