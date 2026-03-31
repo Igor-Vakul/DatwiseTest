@@ -80,6 +80,12 @@
   <data name="reported_by"            xml:space="preserve"><value>Reported By</value></data>
   <data name="reported_at"            xml:space="preserve"><value>Reported At</value></data>
   <data name="unassigned"             xml:space="preserve"><value>Unassigned</value></data>
+  <data name="active_incidents"        xml:space="preserve"><value>Active</value></data>
+  <data name="archived_incidents"     xml:space="preserve"><value>Archived</value></data>
+  <data name="archive"                xml:space="preserve"><value>Archive</value></data>
+  <data name="unarchive"              xml:space="preserve"><value>Unarchive</value></data>
+  <data name="confirm_archive"        xml:space="preserve"><value>Move this incident to archive?</value></data>
+  <data name="confirm_unarchive"      xml:space="preserve"><value>Restore this incident from archive?</value></data>
   <data name="no_incidents"           xml:space="preserve"><value>No incidents found.</value></data>
   <data name="no_incidents_yet"       xml:space="preserve"><value>No incidents recorded yet.</value></data>
   <data name="submit_report"          xml:space="preserve"><value>Submit Report</value></data>

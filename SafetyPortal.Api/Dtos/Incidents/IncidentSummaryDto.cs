@@ -11,5 +11,6 @@ public record IncidentSummaryDto(
     string SeverityLevel,
     string Status,
     int CorrectiveActionsCount,
-    int AttachmentsCount
+    int AttachmentsCount,
+    bool IsArchived
 );

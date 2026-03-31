@@ -59,7 +59,8 @@ namespace SafetyPortal.Web
         public PagedResult<IncidentSummary> GetIncidents(
             int page = 1, int pageSize = AppConstants.Pagination.DefaultPageSize,
             string search = null, string status = null,
-            string severityLevel = null, int? departmentId = null, int? categoryId = null)
+            string severityLevel = null, int? departmentId = null, int? categoryId = null,
+            bool archived = false)
         {
             var qs = BuildQuery(
                 ("page",          page.ToString()),
@@ -68,10 +69,14 @@ namespace SafetyPortal.Web
                 ("status",        status),
                 ("severityLevel", severityLevel),
                 ("departmentId",  departmentId?.ToString()),
-                ("categoryId",    categoryId?.ToString())
+                ("categoryId",    categoryId?.ToString()),
+                ("archived",      archived.ToString().ToLower())
             );
             return Get<PagedResult<IncidentSummary>>($"/api/incidents{qs}");
         }
+
+        public bool ToggleIncidentArchive(int id)
+            => Put($"/api/incidents/{id}/archive", (object)null);
 
         public IncidentDetail GetIncident(int id)
             => Get<IncidentDetail>($"/api/incidents/{id}");

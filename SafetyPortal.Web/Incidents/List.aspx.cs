@@ -19,6 +19,7 @@ namespace SafetyPortal.Web.Incidents
         protected int                   CurrentPage  { get; private set; } = 1;
         protected int                   TotalPages   { get; private set; } = 1;
         protected string                FilterQs     { get; private set; } = string.Empty;
+        protected bool                  ShowArchived { get; private set; } = false;
 
         private const int PageSize = AppConstants.Pagination.DefaultPageSize;
 
@@ -27,10 +28,25 @@ namespace SafetyPortal.Web.Incidents
             btnSearch.Text = T("filter");
             ddlStatus.Items[0].Text   = T("all_statuses");
             ddlSeverity.Items[0].Text = T("all_severities");
+
             if (!IsPostBack)
             {
-                LoadLookups();
+                // Toggle archive via GET ?toggle_archive=id
+                var toggleId = Request.QueryString["toggle_archive"];
+                if (!string.IsNullOrEmpty(toggleId) && int.TryParse(toggleId, out int tid)
+                    && IsManagerOrAdmin)
+                {
+                    Api.ToggleIncidentArchive(tid);
+                    // Redirect back preserving other filters but without the toggle param
+                    var redirect = "List.aspx?" + (Request.QueryString["archived"] == "true"
+                        ? "archived=true&" : "");
+                    Response.Redirect(redirect, true);
+                    return;
+                }
+
+                ShowArchived = Request.QueryString["archived"] == "true";
                 CurrentPage = int.TryParse(Request.QueryString["page"], out int p) ? Math.Max(1, p) : 1;
+                LoadLookups();
                 RestoreFiltersFromQs();
                 LoadIncidents();
             }
@@ -75,7 +91,8 @@ namespace SafetyPortal.Web.Incidents
                 status:        ddlStatus.SelectedValue,
                 severityLevel: ddlSeverity.SelectedValue,
                 departmentId:  deptId,
-                categoryId:    catId
+                categoryId:    catId,
+                archived:      ShowArchived
             ) ?? new PagedResult<IncidentSummary>();
 
             Incidents   = result.Items;
@@ -86,6 +103,7 @@ namespace SafetyPortal.Web.Incidents
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {
+            ShowArchived = Request.QueryString["archived"] == "true";
             CurrentPage = 1;
             LoadIncidents();
         }
@@ -93,6 +111,7 @@ namespace SafetyPortal.Web.Incidents
         private string BuildFilterQs()
         {
             var parts = new List<string>();
+            if (ShowArchived) parts.Add("archived=true");
             if (!string.IsNullOrEmpty(txtSearch.Text))           parts.Add("search="   + System.Web.HttpUtility.UrlEncode(txtSearch.Text));
             if (!string.IsNullOrEmpty(ddlStatus.SelectedValue))  parts.Add("status="   + ddlStatus.SelectedValue);
             if (!string.IsNullOrEmpty(ddlSeverity.SelectedValue))parts.Add("severity=" + ddlSeverity.SelectedValue);

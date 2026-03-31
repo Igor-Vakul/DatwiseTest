@@ -20,5 +20,6 @@ public record IncidentDetailDto(
     string? LocationDetails,
     string SeverityLevel,
     string Status,
+    bool IsArchived,
     List<CorrectiveActionSummaryDto> CorrectiveActions
 );

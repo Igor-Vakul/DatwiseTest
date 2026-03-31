@@ -149,6 +149,9 @@ public class SafetyPortalDbContext : DbContext
                 .HasMaxLength(30)
                 .IsRequired();
 
+            entity.Property(x => x.IsArchived)
+                .HasDefaultValue(false);
+
             entity.HasIndex(x => x.ReportNumber)
                 .IsUnique();
 

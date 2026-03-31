@@ -17,6 +17,7 @@ public static class IncidentEndpoints
         var group = app.MapGroup("/api/incidents").WithTags("Incidents").RequireAuthorization();
 
         // GET /api/incidents — list with search + filters + pagination
+        // archived: null = active only (default), true = archived only
         group.MapGet("/", async (
             SafetyPortalDbContext db,
             int page = AppConstants.Pagination.DefaultPage,
@@ -25,7 +26,8 @@ public static class IncidentEndpoints
             string? status = null,
             string? severityLevel = null,
             int? departmentId = null,
-            int? categoryId = null) =>
+            int? categoryId = null,
+            bool archived = false) =>
         {
             var query = db.IncidentReports
                 .Include(x => x.Category)
@@ -33,6 +35,7 @@ public static class IncidentEndpoints
                 .Include(x => x.ReportedByUser)
                 .Include(x => x.CorrectiveActions)
                 .Include(x => x.Attachments)
+                .Where(x => x.IsArchived == archived)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -70,7 +73,8 @@ public static class IncidentEndpoints
                     x.SeverityLevel,
                     x.Status,
                     x.CorrectiveActions.Count,
-                    x.Attachments.Count
+                    x.Attachments.Count,
+                    x.IsArchived
                 ))
                 .ToListAsync();
 
@@ -173,6 +177,7 @@ public static class IncidentEndpoints
                 incident.LocationDetails,
                 incident.SeverityLevel,
                 incident.Status,
+                incident.IsArchived,
                 incident.CorrectiveActions.Select(ca => new CorrectiveActionSummaryDto(
                     ca.Id,
                     ca.ReportId,
@@ -262,6 +267,19 @@ public static class IncidentEndpoints
 
             return Results.NoContent();
         });
+
+        // PUT /api/incidents/{id}/archive — toggle archive flag, Admin/SafetyManager only
+        group.MapPut("/{id:int}/archive", async (int id, SafetyPortalDbContext db) =>
+        {
+            var incident = await db.IncidentReports.FindAsync(id);
+            if (incident is null)
+                return Results.NotFound();
+
+            incident.IsArchived = !incident.IsArchived;
+            await db.SaveChangesAsync();
+            return Results.Ok(new { incident.Id, incident.IsArchived });
+        })
+        .RequireAuthorization("SafetyManagerOrAdmin");
 
         // DELETE /api/incidents/{id} — Admin/SafetyManager only
         group.MapDelete("/{id:int}", async (int id, SafetyPortalDbContext db) =>

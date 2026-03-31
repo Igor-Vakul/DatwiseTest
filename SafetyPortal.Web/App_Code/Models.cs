@@ -33,6 +33,7 @@ namespace SafetyPortal.Web.Models
         public string   Status                 { get; set; }
         public int      CorrectiveActionsCount { get; set; }
         public int      AttachmentsCount       { get; set; }
+        public bool     IsArchived             { get; set; }
     }
 
     public class IncidentDetail
@@ -54,6 +55,7 @@ namespace SafetyPortal.Web.Models
         public string   LocationDetails    { get; set; }
         public string   SeverityLevel      { get; set; }
         public string   Status             { get; set; }
+        public bool     IsArchived         { get; set; }
         public List<CorrectiveActionSummary> CorrectiveActions { get; set; } = new List<CorrectiveActionSummary>();
     }
 

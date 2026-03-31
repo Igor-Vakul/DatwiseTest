@@ -8,6 +8,24 @@
 
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
 
+    <%-- Archive / Active tabs --%>
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <a class="nav-link <%= !ShowArchived ? "active" : "" %>"
+               href="<%= ResolveUrl("~/Incidents/List.aspx") %>">
+                <i class="bi bi-list-ul me-1"></i><%= T("active_incidents") %>
+            </a>
+        </li>
+        <% if (IsManagerOrAdmin) { %>
+        <li class="nav-item">
+            <a class="nav-link <%= ShowArchived ? "active" : "" %>"
+               href="<%= ResolveUrl("~/Incidents/List.aspx?archived=true") %>">
+                <i class="bi bi-archive me-1"></i><%= T("archived_incidents") %>
+            </a>
+        </li>
+        <% } %>
+    </ul>
+
     <div class="card sp-card mb-3">
         <div class="card-body py-3">
             <div class="row g-2 align-items-end">
@@ -45,7 +63,7 @@
                 <div class="col-md-1 d-flex gap-1">
                     <asp:Button ID="btnSearch" runat="server"
                         CssClass="btn btn-primary btn-sm" OnClick="btnSearch_Click" />
-                    <a href="<%= ResolveUrl("~/Incidents/List.aspx") %>"
+                    <a href="<%= ResolveUrl(ShowArchived ? "~/Incidents/List.aspx?archived=true" : "~/Incidents/List.aspx") %>"
                        class="btn btn-outline-secondary btn-sm" title="<%= T("reset") %>">
                         <i class="bi bi-x"></i>
                     </a>
@@ -59,15 +77,20 @@
             <span>
                 <i class="bi bi-table text-primary"></i>
                 <%= T("showing") %> <strong><%= TotalCount %></strong> <%= T("incidents_found") %>
+                <% if (ShowArchived) { %>
+                <span class="badge bg-secondary ms-1"><%= T("archived_incidents") %></span>
+                <% } %>
             </span>
             <div class="d-flex gap-2">
                 <a href="<%= ResolveUrl("~/Handlers/ExportExcel.ashx?type=incidents&" + FilterQs) %>"
                    class="btn btn-outline-success btn-sm" title="<%= T("export_excel") %>">
                     <i class="bi bi-file-earmark-excel me-1"></i><%= T("export_excel") %>
                 </a>
+                <% if (!ShowArchived) { %>
                 <a href="<%= ResolveUrl("~/Incidents/Create.aspx") %>" class="btn btn-success btn-sm">
                     <i class="bi bi-plus-lg me-1"></i><%= T("new_incident") %>
                 </a>
+                <% } %>
             </div>
         </div>
         <div class="card-body p-0">
@@ -89,7 +112,7 @@
                     </thead>
                     <tbody>
                         <% foreach (var inc in Incidents) { %>
-                        <tr>
+                        <tr class="<%= inc.IsArchived ? "table-secondary" : "" %>">
                             <td><a href="<%= ResolveUrl("~/Incidents/Details.aspx?id=" + inc.Id) %>">
                                 <code><%= inc.ReportNumber %></code></a></td>
                             <td class="text-truncate" style="max-width:200px"
@@ -106,10 +129,20 @@
                                    class="btn btn-outline-primary btn-sm py-0 px-2" title="View">
                                     <i class="bi bi-eye"></i>
                                 </a>
+                                <% if (!inc.IsArchived) { %>
                                 <a href="<%= ResolveUrl("~/Incidents/Edit.aspx?id=" + inc.Id) %>"
                                    class="btn btn-outline-secondary btn-sm py-0 px-2" title="<%= T("edit") %>">
                                     <i class="bi bi-pencil"></i>
                                 </a>
+                                <% } %>
+                                <% if (IsManagerOrAdmin) { %>
+                                <a href="<%= ResolveUrl("~/Incidents/List.aspx?toggle_archive=" + inc.Id + (ShowArchived ? "&archived=true" : "")) %>"
+                                   class="btn btn-outline-<%= inc.IsArchived ? "success" : "warning" %> btn-sm py-0 px-2"
+                                   title="<%= inc.IsArchived ? T("unarchive") : T("archive") %>"
+                                   onclick="return confirm('<%= inc.IsArchived ? T("confirm_unarchive") : T("confirm_archive") %>');">
+                                    <i class="bi bi-<%= inc.IsArchived ? "arrow-counterclockwise" : "archive" %>"></i>
+                                </a>
+                                <% } %>
                             </td>
                             <td class="text-center">
                                 <% if (inc.CorrectiveActionsCount > 0) { %>

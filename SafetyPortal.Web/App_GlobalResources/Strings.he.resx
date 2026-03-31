@@ -80,6 +80,12 @@
   <data name="reported_by"            xml:space="preserve"><value>דווח על ידי</value></data>
   <data name="reported_at"            xml:space="preserve"><value>תאריך דיווח</value></data>
   <data name="unassigned"             xml:space="preserve"><value>לא משויך</value></data>
+  <data name="active_incidents"        xml:space="preserve"><value>פעילות</value></data>
+  <data name="archived_incidents"     xml:space="preserve"><value>ארכיון</value></data>
+  <data name="archive"                xml:space="preserve"><value>העבר לארכיון</value></data>
+  <data name="unarchive"              xml:space="preserve"><value>שחזר מארכיון</value></data>
+  <data name="confirm_archive"        xml:space="preserve"><value>להעביר תקרית זו לארכיון?</value></data>
+  <data name="confirm_unarchive"      xml:space="preserve"><value>לשחזר תקרית זו מהארכיון?</value></data>
   <data name="no_incidents"           xml:space="preserve"><value>לא נמצאו תקריות.</value></data>
   <data name="no_incidents_yet"       xml:space="preserve"><value>טרם נרשמו תקריות.</value></data>
   <data name="submit_report"          xml:space="preserve"><value>שלח דוח</value></data>

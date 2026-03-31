@@ -65,6 +65,7 @@ CREATE TABLE IncidentReports (
     LocationDetails  NVARCHAR(200) NULL,
     SeverityLevel    NVARCHAR(20)  NOT NULL,  -- Low | Medium | High | Critical
     Status           NVARCHAR(30)  NOT NULL,  -- Open | InProgress | Closed
+    IsArchived       BIT           NOT NULL DEFAULT 0,
     CONSTRAINT UQ_IncidentReports_Number UNIQUE (ReportNumber),
     CONSTRAINT FK_IR_Category   FOREIGN KEY (CategoryId)       REFERENCES IncidentCategories(Id),
     CONSTRAINT FK_IR_Dept       FOREIGN KEY (DepartmentId)     REFERENCES Departments(Id),
