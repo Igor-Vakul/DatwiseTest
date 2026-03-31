@@ -1,5 +1,6 @@
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Users.aspx.cs"
-         Inherits="SafetyPortal.Web.Admin.UsersAdmin" MasterPageFile="~/Site.Master" %>
+         Inherits="SafetyPortal.Web.Admin.UsersAdmin" MasterPageFile="~/Site.Master"
+         ValidateRequest="false" %>
 
 <asp:Content ContentPlaceHolderID="TitleContent" runat="server"><%= T("users_title") %></asp:Content>
 <asp:Content ContentPlaceHolderID="PageTitle"    runat="server">

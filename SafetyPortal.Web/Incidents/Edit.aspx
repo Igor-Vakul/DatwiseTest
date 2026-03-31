@@ -1,5 +1,6 @@
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Edit.aspx.cs"
-         Inherits="SafetyPortal.Web.Incidents.IncidentEdit" MasterPageFile="~/Site.Master" %>
+         Inherits="SafetyPortal.Web.Incidents.IncidentEdit" MasterPageFile="~/Site.Master"
+         ValidateRequest="false" %>
 
 <asp:Content ContentPlaceHolderID="TitleContent" runat="server"><%= T("edit_incident") %></asp:Content>
 <asp:Content ContentPlaceHolderID="PageTitle"    runat="server">
