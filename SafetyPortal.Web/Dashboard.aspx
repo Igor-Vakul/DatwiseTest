@@ -147,18 +147,39 @@
     const trendData = <%=TrendJson%>;
     const palette = ['#0d6efd','#6610f2','#fd7e14','#198754','#dc3545','#0dcaf0','#6c757d','#ffc107'];
 
+    function donutLegendLabels(chart) {
+        const ds    = chart.data.datasets[0];
+        const total = ds.data.reduce((a, b) => a + b, 0);
+        return chart.data.labels.map((label, i) => ({
+            text:        `${label}: ${ds.data[i]} (${total > 0 ? Math.round(ds.data[i] / total * 100) : 0}%)`,
+            fillStyle:   ds.backgroundColor[i],
+            strokeStyle: ds.backgroundColor[i],
+            lineWidth:   0,
+            index:       i
+        }));
+    }
+
     const donutChart = new Chart(document.getElementById('chartCategory'), {
         type: 'doughnut',
         data: {
             labels: donutDatasets.category.map(x => x.label),
             datasets: [{ data: donutDatasets.category.map(x => x.count), backgroundColor: palette, borderWidth: 2 }]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12 } } } }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { boxWidth: 12, generateLabels: donutLegendLabels }
+                }
+            }
+        }
     });
 
     document.getElementById('donutGroupBy').addEventListener('change', function () {
         const data = donutDatasets[this.value];
-        donutChart.data.labels   = data.map(x => x.label);
+        donutChart.data.labels           = data.map(x => x.label);
         donutChart.data.datasets[0].data = data.map(x => x.count);
         donutChart.update();
     });
