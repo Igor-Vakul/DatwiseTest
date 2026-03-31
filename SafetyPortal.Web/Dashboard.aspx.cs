@@ -12,6 +12,10 @@ namespace SafetyPortal.Web
         protected string         DeptJson     { get; private set; } = "[]";
         protected string         TrendJson    { get; private set; } = "[]";
 
+        // Prevents </script> from breaking out of a <script> block when JSON is inlined
+        private static string SafeJson(string json)
+            => json.Replace("</", "<\\/");
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;
@@ -20,12 +24,12 @@ namespace SafetyPortal.Web
             {
                 Stats = Api.GetDashboardStats() ?? new DashboardStats();
 
-                CategoryJson = JsonConvert.SerializeObject(
-                    Stats.ByCategory.ConvertAll(x => new { label = x.Label, count = x.Count }));
-                DeptJson = JsonConvert.SerializeObject(
-                    Stats.ByDepartment.ConvertAll(x => new { label = x.Label, count = x.Count }));
-                TrendJson = JsonConvert.SerializeObject(
-                    Stats.ByMonth.ConvertAll(x => new { month = x.Month, count = x.Count }));
+                CategoryJson = SafeJson(JsonConvert.SerializeObject(
+                    Stats.ByCategory.ConvertAll(x => new { label = x.Label, count = x.Count })));
+                DeptJson = SafeJson(JsonConvert.SerializeObject(
+                    Stats.ByDepartment.ConvertAll(x => new { label = x.Label, count = x.Count })));
+                TrendJson = SafeJson(JsonConvert.SerializeObject(
+                    Stats.ByMonth.ConvertAll(x => new { month = x.Month, count = x.Count })));
             }
             catch
             {

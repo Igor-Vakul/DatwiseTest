@@ -18,6 +18,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// ── DataAnnotations validation for Minimal API DTOs ───────────────────────
+builder.Services.AddValidation();
+
 // ── Form / file upload limits (max single file = 20 MB) ───────────────────
 builder.Services.Configure<FormOptions>(o =>
 {

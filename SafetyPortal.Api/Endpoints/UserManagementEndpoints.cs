@@ -104,4 +104,7 @@ public static class UserManagementEndpoints
     }
 }
 
-public record SendEmailDto(string Subject, string Body);
+public record SendEmailDto(
+    [System.ComponentModel.DataAnnotations.Required, System.ComponentModel.DataAnnotations.StringLength(200)] string Subject,
+    [System.ComponentModel.DataAnnotations.Required, System.ComponentModel.DataAnnotations.StringLength(5000)] string Body
+);

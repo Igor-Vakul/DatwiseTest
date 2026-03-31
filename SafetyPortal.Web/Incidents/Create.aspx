@@ -11,7 +11,7 @@
 <div class="col-lg-8">
 
     <% if (!string.IsNullOrEmpty(ErrorMessage)) { %>
-    <div class="alert alert-danger"><i class="bi bi-exclamation-circle me-1"></i><%= ErrorMessage %></div>
+    <div class="alert alert-danger"><i class="bi bi-exclamation-circle me-1"></i><%= System.Web.HttpUtility.HtmlEncode(ErrorMessage) %></div>
     <% } %>
 
     <div class="card sp-card">

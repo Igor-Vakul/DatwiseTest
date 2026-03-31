@@ -11,7 +11,7 @@
 
     <% if (!string.IsNullOrEmpty(Message)) { %>
     <div class="alert alert-<%= MessageType %> alert-dismissible fade show py-2">
-        <%= Message %>
+        <%= System.Web.HttpUtility.HtmlEncode(Message) %>
         <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
     </div>
     <% } %>
@@ -38,7 +38,7 @@
                             <tr class="<%= u.IsActive ? "" : "table-secondary" %>">
                                 <td><small class="text-muted"><%= u.Id %></small></td>
                                 <td><%= System.Web.HttpUtility.HtmlEncode(u.FullName) %></td>
-                                <td><small><%= u.Email %></small></td>
+                                <td><small><%= System.Web.HttpUtility.HtmlEncode(u.Email) %></small></td>
                                 <td>
                                     <% string roleColor = u.RoleName == "Admin" ? "danger" :
                                            u.RoleName == "SafetyManager" ? "primary" :
@@ -123,7 +123,7 @@
                 </div>
                 <div class="modal-body">
                     <% if (!string.IsNullOrEmpty(EmailError)) { %>
-                    <div class="alert alert-danger py-2 small"><%= EmailError %></div>
+                    <div class="alert alert-danger py-2 small"><%= System.Web.HttpUtility.HtmlEncode(EmailError) %></div>
                     <% } %>
                     <div class="mb-3">
                         <label class="form-label"><%= T("email_to_lbl") %></label>

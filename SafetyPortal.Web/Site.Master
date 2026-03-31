@@ -86,7 +86,7 @@
                 <% } %>
 
                 <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2">
-                    <i class="bi bi-person-circle me-1"></i><%= UserFullName %>
+                    <i class="bi bi-person-circle me-1"></i><%= System.Web.HttpUtility.HtmlEncode(UserFullName) %>
                     &nbsp;<span class="badge bg-primary" style="font-size:.65rem"><%= UserRole %></span>
                 </span>
                 <a href="<%= ResolveUrl("~/Login.aspx?action=logout") %>"

@@ -1,10 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace SafetyPortal.Api.Dtos.CorrectiveActions;
 
 public record CreateCorrectiveActionDto(
-    int ReportId,
-    string ActionTitle,
-    string? ActionDescription,
-    int AssignedToUserId,
+    [Range(1, int.MaxValue)] int ReportId,
+    [Required, StringLength(200)] string ActionTitle,
+    [StringLength(500)] string? ActionDescription,
+    [Range(1, int.MaxValue)] int AssignedToUserId,
     DateOnly DueDate,
-    string PriorityLevel
+    [Required, StringLength(20)] string PriorityLevel
 );

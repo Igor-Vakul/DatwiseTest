@@ -67,7 +67,7 @@
                                 title="<%= System.Web.HttpUtility.HtmlEncode(a.ActionTitle) %>">
                                 <%= System.Web.HttpUtility.HtmlEncode(a.ActionTitle) %>
                             </td>
-                            <td><%= a.AssignedToFullName %></td>
+                            <td><%= System.Web.HttpUtility.HtmlEncode(a.AssignedToFullName) %></td>
                             <td>
                                 <% if (IsOverdue(a)) { %>
                                 <span class="text-danger fw-semibold"><i class="bi bi-alarm me-1"></i><%= a.DueDate %></span>

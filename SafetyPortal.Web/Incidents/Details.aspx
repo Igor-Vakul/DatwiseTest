@@ -35,19 +35,19 @@
                         <div class="col-sm-6">
                             <div class="d-flex align-items-center gap-2 mb-2">
                                 <i class="bi bi-tag text-muted"></i>
-                                <div><small class="text-muted d-block"><%= T("category") %></small><strong><%= Incident.CategoryName %></strong></div>
+                                <div><small class="text-muted d-block"><%= T("category") %></small><strong><%= System.Web.HttpUtility.HtmlEncode(Incident.CategoryName) %></strong></div>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="d-flex align-items-center gap-2 mb-2">
                                 <i class="bi bi-building text-muted"></i>
-                                <div><small class="text-muted d-block"><%= T("department") %></small><strong><%= Incident.DepartmentName %></strong></div>
+                                <div><small class="text-muted d-block"><%= T("department") %></small><strong><%= System.Web.HttpUtility.HtmlEncode(Incident.DepartmentName) %></strong></div>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="d-flex align-items-center gap-2 mb-2">
                                 <i class="bi bi-geo-alt text-muted"></i>
-                                <div><small class="text-muted d-block"><%= T("location") %></small><strong><%= Incident.LocationDetails ?? "—" %></strong></div>
+                                <div><small class="text-muted d-block"><%= T("location") %></small><strong><%= System.Web.HttpUtility.HtmlEncode(Incident.LocationDetails ?? "—") %></strong></div>
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -59,13 +59,13 @@
                         <div class="col-sm-6">
                             <div class="d-flex align-items-center gap-2 mb-2">
                                 <i class="bi bi-person text-muted"></i>
-                                <div><small class="text-muted d-block"><%= T("reported_by") %></small><strong><%= Incident.ReportedByFullName %></strong></div>
+                                <div><small class="text-muted d-block"><%= T("reported_by") %></small><strong><%= System.Web.HttpUtility.HtmlEncode(Incident.ReportedByFullName) %></strong></div>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="d-flex align-items-center gap-2 mb-2">
                                 <i class="bi bi-person-check text-muted"></i>
-                                <div><small class="text-muted d-block"><%= T("assigned_to") %></small><strong><%= Incident.AssignedToFullName ?? T("unassigned") %></strong></div>
+                                <div><small class="text-muted d-block"><%= T("assigned_to") %></small><strong><%= System.Web.HttpUtility.HtmlEncode(Incident.AssignedToFullName ?? T("unassigned")) %></strong></div>
                             </div>
                         </div>
                     </div>
@@ -116,7 +116,7 @@
             <div class="card-body border-bottom">
                 <% if (!string.IsNullOrEmpty(UploadError)) { %>
                 <div class="alert alert-warning py-2 mb-2">
-                    <i class="bi bi-exclamation-triangle me-1"></i><%= UploadError %>
+                    <i class="bi bi-exclamation-triangle me-1"></i><%= System.Web.HttpUtility.HtmlEncode(UploadError) %>
                 </div>
                 <% } %>
                 <div class="d-flex gap-2 align-items-end flex-wrap">
@@ -167,7 +167,7 @@
                             <i class="bi <%= icon %> me-1 text-muted"></i>
                             <%= System.Web.HttpUtility.HtmlEncode(att.OriginalFileName) %>
                         </td>
-                        <td><small class="text-muted"><%= att.ContentType %></small></td>
+                        <td><small class="text-muted"><%= System.Web.HttpUtility.HtmlEncode(att.ContentType) %></small></td>
                         <td><small><%= sizeLabel %></small></td>
                         <td><small><%= att.UploadedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm") %></small></td>
                         <td class="text-end">
@@ -218,7 +218,7 @@
                     <% foreach (var ca in Incident.CorrectiveActions) { %>
                     <tr>
                         <td><%= System.Web.HttpUtility.HtmlEncode(ca.ActionTitle) %></td>
-                        <td><%= ca.AssignedToFullName %></td>
+                        <td><%= System.Web.HttpUtility.HtmlEncode(ca.AssignedToFullName) %></td>
                         <td><%= ca.DueDate %></td>
                         <td><span class="badge badge-priority-<%= ca.PriorityLevel.ToLower() %>"><%= ca.PriorityLevel %></span></td>
                         <td><span class="badge badge-status-<%= ca.Status.ToLower() %>"><%= ca.Status %></span></td>
@@ -253,7 +253,7 @@
                     </div>
                     <div class="modal-body">
                         <% if (!string.IsNullOrEmpty(ActionError)) { %>
-                        <div class="alert alert-danger py-2 small"><%= ActionError %></div>
+                        <div class="alert alert-danger py-2 small"><%= System.Web.HttpUtility.HtmlEncode(ActionError) %></div>
                         <% } %>
                         <div class="mb-3">
                             <label class="form-label"><%= T("action_title_lbl") %> <span class="text-danger">*</span></label>

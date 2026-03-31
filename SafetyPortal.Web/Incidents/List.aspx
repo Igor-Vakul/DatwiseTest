@@ -96,8 +96,8 @@
                                 title="<%= System.Web.HttpUtility.HtmlEncode(inc.Title) %>">
                                 <%= System.Web.HttpUtility.HtmlEncode(inc.Title) %>
                             </td>
-                            <td><span class="badge bg-secondary-subtle text-secondary"><%= inc.CategoryName %></span></td>
-                            <td><small class="text-muted"><%= inc.DepartmentName %></small></td>
+                            <td><span class="badge bg-secondary-subtle text-secondary"><%= System.Web.HttpUtility.HtmlEncode(inc.CategoryName) %></span></td>
+                            <td><small class="text-muted"><%= System.Web.HttpUtility.HtmlEncode(inc.DepartmentName) %></small></td>
                             <td><span class="badge badge-severity-<%= inc.SeverityLevel.ToLower() %>"><%= inc.SeverityLevel %></span></td>
                             <td><span class="badge badge-status-<%= inc.Status.ToLower() %>"><%= inc.Status %></span></td>
                             <td><small><%= inc.IncidentDate.ToString("dd MMM yy") %></small></td>
