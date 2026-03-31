@@ -19,7 +19,7 @@
     <div class="card sp-card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <span><i class="bi bi-tags text-primary"></i> All Categories</span>
-            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#catModal"
+            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#catModal"
                     onclick="openCreate()">
                 <i class="bi bi-plus-lg me-1"></i>New Category
             </button>
@@ -47,12 +47,12 @@
                             </a>
                         </td>
                         <td>
-                            <button class="btn btn-outline-secondary btn-sm py-0 px-2"
+                            <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2"
                                     onclick="openEdit(<%= c.Id %>,'<%= System.Web.HttpUtility.JavaScriptStringEncode(c.Name) %>','<%= System.Web.HttpUtility.JavaScriptStringEncode(c.Description ?? "") %>',<%= c.IsActive ? "true" : "false" %>)"
                                     data-bs-toggle="modal" data-bs-target="#catModal">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button class="btn btn-outline-danger btn-sm py-0 px-2"
+                            <button type="button" class="btn btn-outline-danger btn-sm py-0 px-2"
                                     onclick="confirmDelete(<%= c.Id %>,'<%= System.Web.HttpUtility.JavaScriptStringEncode(c.Name) %>')">
                                 <i class="bi bi-trash"></i>
                             </button>

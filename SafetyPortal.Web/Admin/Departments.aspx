@@ -19,7 +19,7 @@
     <div class="card sp-card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <span><i class="bi bi-building text-primary"></i> All Departments</span>
-            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#deptModal"
+            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#deptModal"
                     onclick="openCreate()">
                 <i class="bi bi-plus-lg me-1"></i>New Department
             </button>
@@ -54,12 +54,12 @@
                             </a>
                         </td>
                         <td>
-                            <button class="btn btn-outline-secondary btn-sm py-0 px-2"
+                            <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2"
                                     onclick="openEdit(<%= d.Id %>,'<%= System.Web.HttpUtility.JavaScriptStringEncode(d.Name) %>','<%= System.Web.HttpUtility.JavaScriptStringEncode(d.LocationName ?? "") %>','<%= d.Color %>',<%= d.IsActive ? "true" : "false" %>)"
                                     data-bs-toggle="modal" data-bs-target="#deptModal">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button class="btn btn-outline-danger btn-sm py-0 px-2"
+                            <button type="button" class="btn btn-outline-danger btn-sm py-0 px-2"
                                     onclick="confirmDelete(<%= d.Id %>,'<%= System.Web.HttpUtility.JavaScriptStringEncode(d.Name) %>')">
                                 <i class="bi bi-trash"></i>
                             </button>
