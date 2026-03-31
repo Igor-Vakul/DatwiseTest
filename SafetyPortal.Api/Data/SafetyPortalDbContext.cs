@@ -17,6 +17,7 @@ public class SafetyPortalDbContext : DbContext
     public DbSet<IncidentReport> IncidentReports => Set<IncidentReport>();
     public DbSet<CorrectiveAction>    CorrectiveActions    => Set<CorrectiveAction>();
     public DbSet<IncidentAttachment> IncidentAttachments => Set<IncidentAttachment>();
+    public DbSet<AuditLog>           AuditLogs           => Set<AuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -58,6 +59,12 @@ public class SafetyPortalDbContext : DbContext
             entity.Property(x => x.PasswordHash)
                 .HasMaxLength(500)
                 .IsRequired();
+
+            entity.Property(x => x.FailedLoginAttempts)
+                .HasDefaultValue(0);
+
+            entity.Property(x => x.LockedUntil)
+                .IsRequired(false);
 
             entity.HasIndex(x => x.Email)
                 .IsUnique();
@@ -216,6 +223,20 @@ public class SafetyPortalDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(x => x.UploadedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<AuditLog>(entity =>
+        {
+            entity.ToTable("AuditLogs");
+            entity.HasKey(x => x.Id);
+
+            entity.Property(x => x.EventType).HasMaxLength(50).IsRequired();
+            entity.Property(x => x.UserEmail).HasMaxLength(150);
+            entity.Property(x => x.IpAddress).HasMaxLength(45);
+            entity.Property(x => x.Details).HasMaxLength(500);
+
+            entity.HasIndex(x => x.OccurredAt);
+            entity.HasIndex(x => x.EventType);
         });
     }
 }

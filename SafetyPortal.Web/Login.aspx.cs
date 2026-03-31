@@ -88,8 +88,15 @@ namespace SafetyPortal.Web
             SessionHelper.SetUser(Session, resp);
 
             var returnUrl = hdnReturnUrl.Value;
-            if (string.IsNullOrWhiteSpace(returnUrl) || !returnUrl.StartsWith("/"))
+            // Prevent open redirect: only allow relative paths that start with /
+            // but NOT protocol-relative URLs like //evil.com
+            if (string.IsNullOrWhiteSpace(returnUrl)
+                || !returnUrl.StartsWith("/")
+                || returnUrl.StartsWith("//")
+                || returnUrl.StartsWith("/\\"))
+            {
                 returnUrl = "~/Dashboard.aspx";
+            }
 
             Response.Redirect(returnUrl, true);
         }

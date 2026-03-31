@@ -9,11 +9,27 @@ namespace SafetyPortal.Web
         private static readonly Regex HtmlTagRegex =
             new Regex(@"<[^>]*>", RegexOptions.Compiled | RegexOptions.Singleline);
 
+        private static readonly Regex PasswordPolicyRegex =
+            new Regex(AppConstants.Validation.PasswordRegex, RegexOptions.Compiled);
+
         /// <summary>Strips all HTML tags from user input.</summary>
         protected static string StripHtml(string input)
         {
             if (string.IsNullOrEmpty(input)) return input;
             return HtmlTagRegex.Replace(input, string.Empty);
+        }
+
+        /// <summary>
+        /// Returns null if password meets policy, otherwise an error key for T().
+        /// Policy: min 8 chars, uppercase, lowercase, digit, special character.
+        /// </summary>
+        protected static string ValidatePassword(string password)
+        {
+            if (string.IsNullOrEmpty(password) || password.Length < AppConstants.Validation.MinPasswordLength)
+                return "password_min";
+            if (!PasswordPolicyRegex.IsMatch(password))
+                return "password_policy";
+            return null;
         }
 
         protected override void InitializeCulture()

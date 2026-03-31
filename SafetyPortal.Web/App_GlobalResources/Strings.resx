@@ -128,7 +128,8 @@
   <data name="new_user"               xml:space="preserve"><value>New User</value></data>
   <data name="create_user"            xml:space="preserve"><value>Create User</value></data>
   <data name="fields_required"        xml:space="preserve"><value>All fields are required.</value></data>
-  <data name="password_min"           xml:space="preserve"><value>Password must be at least 6 characters.</value></data>
+  <data name="password_min"           xml:space="preserve"><value>Password must be at least 8 characters.</value></data>
+  <data name="password_policy"        xml:space="preserve"><value>Password must contain uppercase, lowercase, digit and special character.</value></data>
   <data name="user_created"           xml:space="preserve"><value>User created successfully.</value></data>
   <data name="user_create_fail"       xml:space="preserve"><value>Failed to create user (email may already exist).</value></data>
   <data name="edit_user"              xml:space="preserve"><value>Edit User</value></data>

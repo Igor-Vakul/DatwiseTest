@@ -1,7 +1,9 @@
 using System.Text;
+using System.Threading.RateLimiting;
 using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SafetyPortal.Api;
@@ -17,6 +19,30 @@ var builder = WebApplication.CreateBuilder(args);
 // ── Swagger ────────────────────────────────────────────────────────────────
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// ── Rate limiting ──────────────────────────────────────────────────────────
+builder.Services.AddRateLimiter(options =>
+{
+    // Login: max 10 attempts per IP per minute, then 429
+    options.AddFixedWindowLimiter("login", o =>
+    {
+        o.Window            = TimeSpan.FromMinutes(1);
+        o.PermitLimit       = 10;
+        o.QueueLimit        = 0;
+        o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    });
+
+    // General API: 300 req/min per IP (DoS guard)
+    options.AddFixedWindowLimiter("api", o =>
+    {
+        o.Window            = TimeSpan.FromMinutes(1);
+        o.PermitLimit       = 300;
+        o.QueueLimit        = 0;
+        o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    });
+
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
 
 // ── DataAnnotations validation for Minimal API DTOs ───────────────────────
 builder.Services.AddValidation();
@@ -128,6 +154,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("WebApp");
+app.UseRateLimiter();
+
+// ── Security headers ───────────────────────────────────────────────────────
+app.Use(async (ctx, next) =>
+{
+    ctx.Response.Headers["X-Content-Type-Options"]  = "nosniff";
+    ctx.Response.Headers["X-Frame-Options"]         = "DENY";
+    ctx.Response.Headers["Referrer-Policy"]         = "strict-origin-when-cross-origin";
+    ctx.Response.Headers["Permissions-Policy"]      = "camera=(), microphone=(), geolocation=()";
+    ctx.Response.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
+    // CSP: API serves JSON only — block everything except same-origin
+    ctx.Response.Headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'";
+    await next();
+});
 app.UseAuthentication();
 app.UseAuthorization();
 

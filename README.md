@@ -45,7 +45,7 @@ A **Safety Officer (מנהל בטיחות)** at an industrial facility faces sev
                                                                   ┌──────────────────────────────┐
                                                                   │     SQL Server Express       │
                                                                   │     SafetyPortalDb           │
-                                                                  │     6 tables + seeded data   │
+                                                                  │     8 tables + seeded data   │
                                                                   └──────────────────────────────┘
 ```
 
@@ -62,8 +62,10 @@ A **Safety Officer (מנהל בטיחות)** at an industrial facility faces sev
 Roles ◄──── Users ─────┐
                         │
 Departments ────────────┤──── IncidentReports ──── CorrectiveActions
-                        │
-IncidentCategories ─────┘
+                        │         │
+IncidentCategories ─────┘         └──── IncidentAttachments
+
+AuditLogs  (standalone — login events, failed attempts, lockouts)
 ```
 
 ### API Endpoints
@@ -86,6 +88,61 @@ IncidentCategories ─────┘
 - **Authorization policies**: `AdminOnly`, `SafetyManagerOrAdmin`, `Authenticated`
 - **Server-side session** stores JWT in Web Forms (not exposed to browser)
 - **Role-based UI**: Admin menu visible only to Admins; delete/manage buttons gated by role
+
+#### Rate Limiting
+
+| Policy | Limit | Scope |
+|--------|-------|-------|
+| `login` | 10 requests / minute / IP | `POST /api/auth/login` only |
+| `api` | 300 requests / minute / IP | All other API endpoints |
+
+Requests exceeding the limit receive `429 Too Many Requests`.
+
+#### Account Lockout
+
+After **5 consecutive failed** login attempts the account is locked for **15 minutes**.
+The lockout state (`FailedLoginAttempts`, `LockedUntil`) is stored in the `Users` table.
+A successful login resets the counter.
+Locked accounts receive `423 Locked` with a message indicating remaining time.
+
+#### Security HTTP Headers
+
+Applied to every API response and every Web Forms page:
+
+| Header | Value |
+|--------|-------|
+| `X-Content-Type-Options` | `nosniff` |
+| `X-Frame-Options` | `DENY` |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` |
+| `Permissions-Policy` | `camera=(), microphone=(), geolocation=()` |
+| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains` |
+| `Content-Security-Policy` | `default-src 'none'; frame-ancestors 'none'` (API) |
+| `X-Powered-By` | removed |
+
+#### Open Redirect Prevention
+
+`Login.aspx` validates the `returnUrl` parameter: only paths starting with `/` that do **not** begin with `//` or `/\` are accepted. All other values redirect to `~/Dashboard.aspx`.
+
+#### Password Policy
+
+Enforced at both the Web Forms layer (`BasePage.ValidatePassword`) and the API layer (`[RegularExpression]` DataAnnotation on DTOs):
+
+- Minimum **8 characters**
+- At least one **uppercase** letter
+- At least one **lowercase** letter
+- At least one **digit**
+- At least one **special character** (`!@#$%^&*` etc.)
+
+#### Audit Log
+
+All authentication events are persisted to the `AuditLogs` table with timestamp, event type, user email, user ID, and source IP:
+
+| EventType | Trigger |
+|-----------|---------|
+| `LoginFailed` | Wrong password or unknown email |
+| `AccountLocked` | Account locked after 5 failed attempts |
+| `LoginBlocked` | Login attempt while account is already locked |
+| `LoginSuccess` | Successful authentication |
 
 #### XSS / HTML Injection Protection
 

@@ -17,12 +17,14 @@ GO
 
 -- ── Users ──────────────────────────────────────────────────────────────────
 CREATE TABLE Users (
-    Id           INT           NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    FullName     NVARCHAR(100) NOT NULL,
-    Email        NVARCHAR(150) NOT NULL,
-    PasswordHash NVARCHAR(500) NOT NULL,
-    IsActive     BIT           NOT NULL DEFAULT 1,
-    RoleId       INT           NOT NULL,
+    Id                   INT           NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    FullName             NVARCHAR(100) NOT NULL,
+    Email                NVARCHAR(150) NOT NULL,
+    PasswordHash         NVARCHAR(500) NOT NULL,
+    IsActive             BIT           NOT NULL DEFAULT 1,
+    RoleId               INT           NOT NULL,
+    FailedLoginAttempts  INT           NOT NULL DEFAULT 0,
+    LockedUntil          DATETIME2     NULL,
     CONSTRAINT UQ_Users_Email  UNIQUE (Email),
     CONSTRAINT FK_Users_Roles  FOREIGN KEY (RoleId) REFERENCES Roles(Id)
         ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -87,6 +89,20 @@ CREATE TABLE IncidentAttachments (
 );
 CREATE INDEX IX_IA_IncidentReportId  ON IncidentAttachments (IncidentReportId);
 CREATE INDEX IX_IA_UploadedByUserId  ON IncidentAttachments (UploadedByUserId);
+GO
+
+-- ── AuditLogs ────────────────────────────────────────────────────────────
+CREATE TABLE AuditLogs (
+    Id          INT           NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    OccurredAt  DATETIME2     NOT NULL DEFAULT SYSUTCDATETIME(),
+    EventType   NVARCHAR(50)  NOT NULL,  -- LoginFailed | LoginBlocked | AccountLocked | LoginSuccess
+    UserEmail   NVARCHAR(150) NULL,
+    UserId      INT           NULL,
+    IpAddress   NVARCHAR(45)  NULL,
+    Details     NVARCHAR(500) NULL
+);
+CREATE INDEX IX_AuditLogs_OccurredAt ON AuditLogs (OccurredAt);
+CREATE INDEX IX_AuditLogs_EventType  ON AuditLogs (EventType);
 GO
 
 -- ── CorrectiveActions ─────────────────────────────────────────────────────

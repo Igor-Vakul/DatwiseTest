@@ -128,7 +128,8 @@
   <data name="new_user"               xml:space="preserve"><value>משתמש חדש</value></data>
   <data name="create_user"            xml:space="preserve"><value>צור משתמש</value></data>
   <data name="fields_required"        xml:space="preserve"><value>כל השדות הם חובה.</value></data>
-  <data name="password_min"           xml:space="preserve"><value>הסיסמה חייבת להכיל לפחות 6 תווים.</value></data>
+  <data name="password_min"           xml:space="preserve"><value>הסיסמה חייבת להכיל לפחות 8 תווים.</value></data>
+  <data name="password_policy"        xml:space="preserve"><value>הסיסמה חייבת לכלול אות גדולה, אות קטנה, ספרה ותו מיוחד.</value></data>
   <data name="user_created"           xml:space="preserve"><value>המשתמש נוצר בהצלחה.</value></data>
   <data name="user_create_fail"       xml:space="preserve"><value>יצירת משתמש נכשלה (האימייל עשוי להיות קיים כבר).</value></data>
   <data name="edit_user"              xml:space="preserve"><value>ערוך משתמש</value></data>

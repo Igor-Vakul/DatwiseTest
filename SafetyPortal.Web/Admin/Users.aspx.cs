@@ -111,9 +111,10 @@ namespace SafetyPortal.Web.Admin
                 return;
             }
 
-            if (pass.Length < AppConstants.Validation.MinPasswordLength)
+            var passError = ValidatePassword(pass);
+            if (passError != null)
             {
-                Message     = T("password_min");
+                Message     = T(passError);
                 MessageType = "danger";
                 LoadUsers();
                 LoadRoles();
@@ -211,13 +212,17 @@ namespace SafetyPortal.Web.Admin
             }
 
             var pass = txtEditPassword.Text;
-            if (!string.IsNullOrEmpty(pass) && pass.Length < AppConstants.Validation.MinPasswordLength)
+            if (!string.IsNullOrEmpty(pass))
             {
-                Message     = T("password_min");
-                MessageType = "danger";
-                LoadUsers();
-                LoadRoles();
-                return;
+                var passError = ValidatePassword(pass);
+                if (passError != null)
+                {
+                    Message     = T(passError);
+                    MessageType = "danger";
+                    LoadUsers();
+                    LoadRoles();
+                    return;
+                }
             }
 
             var req = new UpdateUserRequest
