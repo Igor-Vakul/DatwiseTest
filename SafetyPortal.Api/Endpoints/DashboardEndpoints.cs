@@ -11,10 +11,12 @@ public static class DashboardEndpoints
         {
             var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
-            var totalIncidents    = await db.IncidentReports.CountAsync();
-            var openIncidents     = await db.IncidentReports.CountAsync(x => x.Status == "Open" || x.Status == "InProgress");
-            var closedIncidents   = await db.IncidentReports.CountAsync(x => x.Status == "Closed");
-            var highCritical      = await db.IncidentReports.CountAsync(x =>
+            var active = db.IncidentReports.Where(x => !x.IsArchived);
+
+            var totalIncidents    = await active.CountAsync();
+            var openIncidents     = await active.CountAsync(x => x.Status == "Open" || x.Status == "InProgress");
+            var closedIncidents   = await active.CountAsync(x => x.Status == "Closed");
+            var highCritical      = await active.CountAsync(x =>
                                         (x.Status == "Open" || x.Status == "InProgress") &&
                                         (x.SeverityLevel == "High" || x.SeverityLevel == "Critical"));
 
@@ -22,13 +24,13 @@ public static class DashboardEndpoints
                                         x.Status != "Completed" && x.DueDate < today);
             var pendingActions    = await db.CorrectiveActions.CountAsync(x => x.Status == "Pending");
 
-            var byCategory = await db.IncidentReports
+            var byCategory = await active
                 .Include(x => x.Category)
                 .GroupBy(x => x.Category.Name)
                 .Select(g => new { CategoryName = g.Key, Count = g.Count() })
                 .ToListAsync();
 
-            var byDepartment = await db.IncidentReports
+            var byDepartment = await active
                 .Include(x => x.Department)
                 .GroupBy(x => x.Department.Name)
                 .Select(g => new { DepartmentName = g.Key, Count = g.Count() })
@@ -36,7 +38,7 @@ public static class DashboardEndpoints
 
             var sixMonthsAgo = DateTime.UtcNow.AddMonths(-(AppConstants.Dashboard.TrendMonthsLookback - 1));
             // Materialize year/month keys first — string interpolation with :D2 cannot be translated to SQL
-            var byMonthRaw = await db.IncidentReports
+            var byMonthRaw = await active
                 .Where(x => x.IncidentDate >= sixMonthsAgo)
                 .GroupBy(x => new { x.IncidentDate.Year, x.IncidentDate.Month })
                 .Select(g => new { g.Key.Year, g.Key.Month, Count = g.Count() })
@@ -47,7 +49,7 @@ public static class DashboardEndpoints
                 .Select(x => new { Month = $"{x.Year}-{x.Month:D2}", Count = x.Count })
                 .ToList();
 
-            var recentIncidents = await db.IncidentReports
+            var recentIncidents = await active
                 .Include(x => x.Attachments)
                 .OrderByDescending(x => x.ReportedAt)
                 .Take(AppConstants.Dashboard.RecentIncidentsCount)
