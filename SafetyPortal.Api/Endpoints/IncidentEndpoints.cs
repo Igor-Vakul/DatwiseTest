@@ -17,17 +17,9 @@ public static class IncidentEndpoints
         var group = app.MapGroup("/api/incidents").WithTags("Incidents").RequireAuthorization();
 
         // GET /api/incidents — list with search + filters + pagination
-        // archived: null = active only (default), true = archived only
         group.MapGet("/", async (
-            SafetyPortalDbContext db,
-            int page = AppConstants.Pagination.DefaultPage,
-            int pageSize = AppConstants.Pagination.DefaultPageSize,
-            string? search = null,
-            string? status = null,
-            string? severityLevel = null,
-            int? departmentId = null,
-            int? categoryId = null,
-            bool archived = false) =>
+            [AsParameters] IncidentFilterQuery f,
+            SafetyPortalDbContext db) =>
         {
             var query = db.IncidentReports
                 .Include(x => x.Category)
@@ -35,33 +27,33 @@ public static class IncidentEndpoints
                 .Include(x => x.ReportedByUser)
                 .Include(x => x.CorrectiveActions)
                 .Include(x => x.Attachments)
-                .Where(x => x.IsArchived == archived)
+                .Where(x => x.IsArchived == f.Archived)
                 .AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(search))
+            if (!string.IsNullOrWhiteSpace(f.Search))
                 query = query.Where(x =>
-                    x.Title.Contains(search) ||
-                    x.ReportNumber.Contains(search) ||
-                    x.Description.Contains(search));
+                    x.Title.Contains(f.Search) ||
+                    x.ReportNumber.Contains(f.Search) ||
+                    x.Description.Contains(f.Search));
 
-            if (!string.IsNullOrWhiteSpace(status))
-                query = query.Where(x => x.Status == status);
+            if (!string.IsNullOrWhiteSpace(f.Status))
+                query = query.Where(x => x.Status == f.Status);
 
-            if (!string.IsNullOrWhiteSpace(severityLevel))
-                query = query.Where(x => x.SeverityLevel == severityLevel);
+            if (!string.IsNullOrWhiteSpace(f.SeverityLevel))
+                query = query.Where(x => x.SeverityLevel == f.SeverityLevel);
 
-            if (departmentId.HasValue)
-                query = query.Where(x => x.DepartmentId == departmentId);
+            if (f.DepartmentId.HasValue)
+                query = query.Where(x => x.DepartmentId == f.DepartmentId);
 
-            if (categoryId.HasValue)
-                query = query.Where(x => x.CategoryId == categoryId);
+            if (f.CategoryId.HasValue)
+                query = query.Where(x => x.CategoryId == f.CategoryId);
 
             var totalCount = await query.CountAsync();
 
             var items = await query
                 .OrderByDescending(x => x.ReportedAt)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((f.Page - 1) * f.PageSize)
+                .Take(f.PageSize)
                 .Select(x => new IncidentSummaryDto(
                     x.Id,
                     x.ReportNumber,
@@ -78,17 +70,13 @@ public static class IncidentEndpoints
                 ))
                 .ToListAsync();
 
-            return Results.Ok(new { Items = items, TotalCount = totalCount, Page = page, PageSize = pageSize });
+            return Results.Ok(new { Items = items, TotalCount = totalCount, Page = f.Page, PageSize = f.PageSize });
         });
 
         // GET /api/incidents/export — filtered Excel download
         group.MapGet("/export", async (
-            SafetyPortalDbContext db,
-            string? search = null,
-            string? status = null,
-            string? severityLevel = null,
-            int? departmentId = null,
-            int? categoryId = null) =>
+            [AsParameters] IncidentFilterQuery f,
+            SafetyPortalDbContext db) =>
         {
             var query = db.IncidentReports
                 .Include(x => x.Category)
@@ -96,25 +84,26 @@ public static class IncidentEndpoints
                 .Include(x => x.ReportedByUser)
                 .Include(x => x.AssignedToUser)
                 .Include(x => x.CorrectiveActions)
+                .Where(x => x.IsArchived == f.Archived)
                 .AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(search))
+            if (!string.IsNullOrWhiteSpace(f.Search))
                 query = query.Where(x =>
-                    x.Title.Contains(search) ||
-                    x.ReportNumber.Contains(search) ||
-                    x.Description.Contains(search));
+                    x.Title.Contains(f.Search) ||
+                    x.ReportNumber.Contains(f.Search) ||
+                    x.Description.Contains(f.Search));
 
-            if (!string.IsNullOrWhiteSpace(status))
-                query = query.Where(x => x.Status == status);
+            if (!string.IsNullOrWhiteSpace(f.Status))
+                query = query.Where(x => x.Status == f.Status);
 
-            if (!string.IsNullOrWhiteSpace(severityLevel))
-                query = query.Where(x => x.SeverityLevel == severityLevel);
+            if (!string.IsNullOrWhiteSpace(f.SeverityLevel))
+                query = query.Where(x => x.SeverityLevel == f.SeverityLevel);
 
-            if (departmentId.HasValue)
-                query = query.Where(x => x.DepartmentId == departmentId);
+            if (f.DepartmentId.HasValue)
+                query = query.Where(x => x.DepartmentId == f.DepartmentId);
 
-            if (categoryId.HasValue)
-                query = query.Where(x => x.CategoryId == categoryId);
+            if (f.CategoryId.HasValue)
+                query = query.Where(x => x.CategoryId == f.CategoryId);
 
             var rows = await query
                 .OrderByDescending(x => x.ReportedAt)
