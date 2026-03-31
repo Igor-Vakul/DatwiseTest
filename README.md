@@ -87,6 +87,27 @@ IncidentCategories ─────┘
 - **Server-side session** stores JWT in Web Forms (not exposed to browser)
 - **Role-based UI**: Admin menu visible only to Admins; delete/manage buttons gated by role
 
+#### XSS / HTML Injection Protection
+
+Protection is applied at two independent layers so that neither layer alone is a single point of failure.
+
+| Layer | Where | What it does |
+|-------|-------|-------------|
+| **Input sanitization** | Web Forms code-behind, on every form submit | `StripHtml()` (compiled regex `<[^>]*>`) removes all HTML tags from every free-text field before the value is sent to the API |
+| **Output encoding** | Every `.aspx` template that renders a string | `System.Web.HttpUtility.HtmlEncode()` wraps every `<%= ... %>` expression that outputs user-controlled or database-sourced text |
+| **JSON injection guard** | `Dashboard.aspx.cs` | `SafeJson()` replaces `</` → `<\/` in JSON strings inlined into `<script>` blocks, preventing `</script>` breakout |
+| **API input validation** | All Minimal API DTOs | `[Required]`, `[StringLength]`, `[EmailAddress]`, `[Range]` DataAnnotations + `builder.Services.AddValidation()` enforce length limits and reject malformed input at the API boundary |
+
+**Fields sanitized on input (`StripHtml`):**
+
+| Page | Fields |
+|------|--------|
+| `Login.aspx` | Email |
+| `Incidents/Create.aspx` | Title, Description, Location Details |
+| `Incidents/Edit.aspx` | Title, Description, Location Details |
+| `Incidents/Details.aspx` | Corrective Action Title, Corrective Action Description |
+| `Admin/Users.aspx` | Full Name (create & edit), Email, Email Subject, Email Body |
+
 ### Web Forms Pages
 
 | Page | Access | Description |
