@@ -135,7 +135,7 @@
                                     <i class="bi bi-pencil"></i>
                                 </a>
                                 <% } %>
-                                <% if (IsManagerOrAdmin) { %>
+                                <% if (IsManagerOrAdmin && (inc.IsArchived || inc.Status == "Closed")) { %>
                                 <a href="<%= ResolveUrl("~/Incidents/List.aspx?toggle_archive=" + inc.Id + (ShowArchived ? "&archived=true" : "")) %>"
                                    class="btn btn-outline-<%= inc.IsArchived ? "success" : "warning" %> btn-sm py-0 px-2"
                                    title="<%= inc.IsArchived ? T("unarchive") : T("archive") %>"

@@ -264,6 +264,9 @@ public static class IncidentEndpoints
             if (incident is null)
                 return Results.NotFound();
 
+            if (!incident.IsArchived && incident.Status != "Closed")
+                return Results.BadRequest(new { error = "Only closed incidents can be archived." });
+
             incident.IsArchived = !incident.IsArchived;
             await db.SaveChangesAsync();
             return Results.Ok(new { incident.Id, incident.IsArchived });
