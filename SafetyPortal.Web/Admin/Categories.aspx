@@ -30,6 +30,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Description</th>
+                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -39,8 +40,15 @@
                         <td><strong><%= System.Web.HttpUtility.HtmlEncode(c.Name) %></strong></td>
                         <td><small class="text-muted"><%= System.Web.HttpUtility.HtmlEncode(c.Description ?? "—") %></small></td>
                         <td>
+                            <a href="?toggle=<%= c.Id %>"
+                               class="badge <%= c.IsActive ? "bg-success-subtle text-success" : "bg-secondary-subtle text-secondary" %> text-decoration-none"
+                               title="Click to toggle">
+                                <%= c.IsActive ? "Active" : "Inactive" %>
+                            </a>
+                        </td>
+                        <td>
                             <button class="btn btn-outline-secondary btn-sm py-0 px-2"
-                                    onclick="openEdit(<%= c.Id %>,'<%= System.Web.HttpUtility.JavaScriptStringEncode(c.Name) %>','<%= System.Web.HttpUtility.JavaScriptStringEncode(c.Description ?? "") %>')"
+                                    onclick="openEdit(<%= c.Id %>,'<%= System.Web.HttpUtility.JavaScriptStringEncode(c.Name) %>','<%= System.Web.HttpUtility.JavaScriptStringEncode(c.Description ?? "") %>',<%= c.IsActive ? "true" : "false" %>)"
                                     data-bs-toggle="modal" data-bs-target="#catModal">
                                 <i class="bi bi-pencil"></i>
                             </button>
@@ -52,7 +60,7 @@
                     </tr>
                     <% } %>
                     <% if (Categories.Count == 0) { %>
-                    <tr><td colspan="3" class="text-center text-muted py-4">No categories found.</td></tr>
+                    <tr><td colspan="4" class="text-center text-muted py-4">No categories found.</td></tr>
                     <% } %>
                 </tbody>
             </table>
@@ -77,6 +85,12 @@
                         <label class="form-label">Description</label>
                         <asp:TextBox ID="txtDescription" runat="server" CssClass="form-control"
                                      TextMode="MultiLine" Rows="3" MaxLength="255" />
+                    </div>
+                    <div class="mb-3" id="activeRow" style="display:none">
+                        <div class="form-check">
+                            <asp:CheckBox ID="chkActive" runat="server" CssClass="form-check-input" />
+                            <label class="form-check-label">Active</label>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -119,13 +133,17 @@
         document.getElementById('<%= hfEditId.ClientID %>').value = '0';
         document.getElementById('<%= txtName.ClientID %>').value = '';
         document.getElementById('<%= txtDescription.ClientID %>').value = '';
+        document.getElementById('<%= chkActive.ClientID %>').checked = true;
+        document.getElementById('activeRow').style.display = 'none';
     }
 
-    function openEdit(id, name, description) {
+    function openEdit(id, name, description, isActive) {
         document.getElementById('catModalTitle').textContent = 'Edit Category';
         document.getElementById('<%= hfEditId.ClientID %>').value = id;
         document.getElementById('<%= txtName.ClientID %>').value = name;
         document.getElementById('<%= txtDescription.ClientID %>').value = description;
+        document.getElementById('<%= chkActive.ClientID %>').checked = isActive;
+        document.getElementById('activeRow').style.display = '';
     }
 
     function confirmDelete(id, name) {

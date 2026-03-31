@@ -56,13 +56,26 @@ public static class AdminDepartmentEndpoints
             return Results.NoContent();
         });
 
+        group.MapPut("/{id:int}/toggle-active", async (int id, SafetyPortalDbContext db) =>
+        {
+            var dept = await db.Departments.FindAsync(id);
+            if (dept is null) return Results.NotFound();
+
+            dept.IsActive = !dept.IsActive;
+            await db.SaveChangesAsync();
+            return Results.Ok(new { dept.Id, dept.IsActive });
+        });
+
         group.MapDelete("/{id:int}", async (int id, SafetyPortalDbContext db) =>
         {
             var dept = await db.Departments.FindAsync(id);
             if (dept is null) return Results.NotFound();
 
-            if (await db.IncidentReports.AnyAsync(x => x.DepartmentId == id))
-                return Results.BadRequest(new { error = "Cannot delete department with existing incidents." });
+            var hasOpen = await db.IncidentReports.AnyAsync(x =>
+                x.DepartmentId == id &&
+                (x.Status == "Open" || x.Status == "InProgress"));
+            if (hasOpen)
+                return Results.BadRequest(new { error = "Cannot delete department with open incidents." });
 
             db.Departments.Remove(dept);
             await db.SaveChangesAsync();

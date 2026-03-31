@@ -47,11 +47,11 @@
                             </span>
                         </td>
                         <td>
-                            <% if (d.IsActive) { %>
-                            <span class="badge bg-success-subtle text-success">Active</span>
-                            <% } else { %>
-                            <span class="badge bg-secondary-subtle text-secondary">Inactive</span>
-                            <% } %>
+                            <a href="?toggle=<%= d.Id %>"
+                               class="badge <%= d.IsActive ? "bg-success-subtle text-success" : "bg-secondary-subtle text-secondary" %> text-decoration-none"
+                               title="Click to toggle">
+                                <%= d.IsActive ? "Active" : "Inactive" %>
+                            </a>
                         </td>
                         <td>
                             <button class="btn btn-outline-secondary btn-sm py-0 px-2"

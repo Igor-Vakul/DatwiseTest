@@ -115,6 +115,9 @@ public class SafetyPortalDbContext : DbContext
             entity.Property(x => x.Description)
                 .HasMaxLength(255);
 
+            entity.Property(x => x.IsActive)
+                .HasDefaultValue(true);
+
             entity.HasIndex(x => x.Name)
                 .IsUnique();
 

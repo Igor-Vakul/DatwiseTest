@@ -7,12 +7,13 @@ namespace SafetyPortal.Web.Admin
 {
     public partial class CategoriesAdmin : AdminPage
     {
-        protected System.Web.UI.WebControls.TextBox txtName;
-        protected System.Web.UI.WebControls.TextBox txtDescription;
-        protected System.Web.UI.HiddenField         hfEditId;
-        protected System.Web.UI.HiddenField         hfDeleteId;
-        protected System.Web.UI.WebControls.Button  btnSave;
-        protected System.Web.UI.WebControls.Button  btnDelete;
+        protected System.Web.UI.WebControls.TextBox  txtName;
+        protected System.Web.UI.WebControls.TextBox  txtDescription;
+        protected System.Web.UI.WebControls.CheckBox chkActive;
+        protected System.Web.UI.HiddenField          hfEditId;
+        protected System.Web.UI.HiddenField          hfDeleteId;
+        protected System.Web.UI.WebControls.Button   btnSave;
+        protected System.Web.UI.WebControls.Button   btnDelete;
 
         protected List<CategoryAdminItem> Categories { get; private set; } = new List<CategoryAdminItem>();
         protected string Message     { get; private set; } = string.Empty;
@@ -20,6 +21,14 @@ namespace SafetyPortal.Web.Admin
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            var toggleId = Request.QueryString["toggle"];
+            if (!string.IsNullOrEmpty(toggleId) && int.TryParse(toggleId, out int tid))
+            {
+                Api.ToggleCategoryActive(tid);
+                Response.Redirect("Categories.aspx", true);
+                return;
+            }
+
             if (!IsPostBack)
                 LoadCategories();
         }
@@ -39,7 +48,7 @@ namespace SafetyPortal.Web.Admin
 
             bool ok = editId == 0
                 ? Api.CreateCategory(name, desc)
-                : Api.UpdateCategory(editId, name, desc);
+                : Api.UpdateCategory(editId, name, desc, chkActive.Checked);
 
             Message     = ok ? "Saved successfully." : "Save failed.";
             MessageType = ok ? "success" : "danger";
@@ -50,7 +59,7 @@ namespace SafetyPortal.Web.Admin
         {
             if (!int.TryParse(hfDeleteId.Value, out int id) || id == 0) return;
             bool ok     = Api.DeleteCategory(id);
-            Message     = ok ? "Category deleted." : "Cannot delete — category has existing incidents.";
+            Message     = ok ? "Category deleted." : "Cannot delete — category has open incidents.";
             MessageType = ok ? "success" : "danger";
             LoadCategories();
         }

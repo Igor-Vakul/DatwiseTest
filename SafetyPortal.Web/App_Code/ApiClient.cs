@@ -259,6 +259,9 @@ namespace SafetyPortal.Web
         public bool UpdateDepartment(int id, string name, string locationName, string color, bool isActive)
             => Put($"/api/admin/departments/{id}", new { Name = name, LocationName = locationName, Color = color, IsActive = isActive });
 
+        public bool ToggleDepartmentActive(int id)
+            => Put($"/api/admin/departments/{id}/toggle-active", (object)null);
+
         public bool DeleteDepartment(int id)
             => Delete($"/api/admin/departments/{id}");
 
@@ -269,8 +272,11 @@ namespace SafetyPortal.Web
         public bool CreateCategory(string name, string description)
             => Post("/api/admin/categories", new { Name = name, Description = description });
 
-        public bool UpdateCategory(int id, string name, string description)
-            => Put($"/api/admin/categories/{id}", new { Name = name, Description = description });
+        public bool UpdateCategory(int id, string name, string description, bool isActive)
+            => Put($"/api/admin/categories/{id}", new { Name = name, Description = description, IsActive = isActive });
+
+        public bool ToggleCategoryActive(int id)
+            => Put($"/api/admin/categories/{id}/toggle-active", (object)null);
 
         public bool DeleteCategory(int id)
             => Delete($"/api/admin/categories/{id}");

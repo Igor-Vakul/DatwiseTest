@@ -22,6 +22,14 @@ namespace SafetyPortal.Web.Admin
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            var toggleId = Request.QueryString["toggle"];
+            if (!string.IsNullOrEmpty(toggleId) && int.TryParse(toggleId, out int tid))
+            {
+                Api.ToggleDepartmentActive(tid);
+                Response.Redirect("Departments.aspx", true);
+                return;
+            }
+
             if (!IsPostBack)
                 LoadDepartments();
         }
@@ -55,7 +63,7 @@ namespace SafetyPortal.Web.Admin
         {
             if (!int.TryParse(hfDeleteId.Value, out int id) || id == 0) return;
             bool ok     = Api.DeleteDepartment(id);
-            Message     = ok ? "Department deleted." : "Cannot delete — department has existing incidents.";
+            Message     = ok ? "Department deleted." : "Cannot delete — department has open incidents.";
             MessageType = ok ? "success" : "danger";
             LoadDepartments();
         }
