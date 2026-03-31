@@ -186,7 +186,15 @@
 
     new Chart(document.getElementById('chartDept'), {
         type: 'bar',
-        data: { labels: deptData.map(x => x.label), datasets: [{ data: deptData.map(x => x.count), backgroundColor: '#0d6efd99', borderColor: '#0d6efd', borderWidth: 1 }] },
+        data: {
+            labels: deptData.map(x => x.label),
+            datasets: [{
+                data:            deptData.map(x => x.count),
+                backgroundColor: deptData.map(x => x.color + '99'),
+                borderColor:     deptData.map(x => x.color),
+                borderWidth: 1
+            }]
+        },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
     });
     new Chart(document.getElementById('chartTrend'), {

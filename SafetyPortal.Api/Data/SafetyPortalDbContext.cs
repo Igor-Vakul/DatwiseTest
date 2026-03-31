@@ -87,6 +87,10 @@ public class SafetyPortalDbContext : DbContext
             entity.Property(x => x.LocationName)
                 .HasMaxLength(100);
 
+            entity.Property(x => x.Color)
+                .HasMaxLength(7)
+                .HasDefaultValue("#6c757d");
+
             entity.HasIndex(x => x.Name)
                 .IsUnique();
 

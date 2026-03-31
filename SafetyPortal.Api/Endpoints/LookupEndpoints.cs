@@ -14,7 +14,7 @@ public static class LookupEndpoints
             var depts = await db.Departments
                 .Where(x => x.IsActive)
                 .OrderBy(x => x.Name)
-                .Select(x => new { x.Id, x.Name, x.LocationName })
+                .Select(x => new { x.Id, x.Name, x.LocationName, x.Color })
                 .ToListAsync();
             return Results.Ok(depts);
         });

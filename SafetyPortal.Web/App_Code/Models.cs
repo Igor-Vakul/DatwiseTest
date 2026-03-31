@@ -152,6 +152,7 @@ namespace SafetyPortal.Web.Models
     {
         public string CategoryName   { get; set; }
         public string DepartmentName { get; set; }
+        public string Color          { get; set; }
         public int    Count          { get; set; }
         public string Label          => CategoryName ?? DepartmentName;
     }
@@ -185,6 +186,23 @@ namespace SafetyPortal.Web.Models
         public int    Id           { get; set; }
         public string Name         { get; set; }
         public string LocationName { get; set; }
+        public string Color        { get; set; } = "#6c757d";
+    }
+
+    public class DepartmentAdminItem
+    {
+        public int    Id           { get; set; }
+        public string Name         { get; set; }
+        public string LocationName { get; set; }
+        public string Color        { get; set; }
+        public bool   IsActive     { get; set; }
+    }
+
+    public class CategoryAdminItem
+    {
+        public int    Id          { get; set; }
+        public string Name        { get; set; }
+        public string Description { get; set; }
     }
 
     public class CategoryItem

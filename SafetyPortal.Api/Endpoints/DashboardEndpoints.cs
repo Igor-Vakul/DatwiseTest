@@ -32,8 +32,8 @@ public static class DashboardEndpoints
 
             var byDepartment = await active
                 .Include(x => x.Department)
-                .GroupBy(x => x.Department.Name)
-                .Select(g => new { DepartmentName = g.Key, Count = g.Count() })
+                .GroupBy(x => new { x.Department.Name, x.Department.Color })
+                .Select(g => new { DepartmentName = g.Key.Name, Color = g.Key.Color, Count = g.Count() })
                 .ToListAsync();
 
             var bySeverity = await active

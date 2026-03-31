@@ -196,6 +196,8 @@ app.MapCorrectiveActionEndpoints();
 app.MapDashboardEndpoints();
 app.MapLookupEndpoints();
 app.MapUserManagementEndpoints();
+app.MapAdminDepartmentEndpoints();
+app.MapAdminCategoryEndpoints();
 app.MapAttachmentEndpoints();
 
 app.Run();
