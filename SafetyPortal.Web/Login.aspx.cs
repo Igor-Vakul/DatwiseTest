@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Web.UI;
 
 namespace SafetyPortal.Web
@@ -24,6 +25,12 @@ namespace SafetyPortal.Web
         {
             var val = GetGlobalResourceObject("Strings", key) as string;
             return val ?? key;
+        }
+
+        private static string StripHtml(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return input;
+            return Regex.Replace(input, @"<[^>]*>", string.Empty, RegexOptions.Singleline);
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -60,7 +67,7 @@ namespace SafetyPortal.Web
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            var email    = txtEmail.Text.Trim();
+            var email    = StripHtml(txtEmail.Text.Trim());
             var password = txtPassword.Text;
 
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))

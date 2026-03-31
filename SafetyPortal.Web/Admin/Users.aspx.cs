@@ -98,8 +98,8 @@ namespace SafetyPortal.Web.Admin
 
         protected void btnCreate_Click(object sender, EventArgs e)
         {
-            var name  = txtName.Text.Trim();
-            var email = txtEmail.Text.Trim();
+            var name  = StripHtml(txtName.Text.Trim());
+            var email = StripHtml(txtEmail.Text.Trim());
             var pass  = txtPassword.Text;
 
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(pass))
@@ -162,8 +162,8 @@ namespace SafetyPortal.Web.Admin
                 return;
             }
 
-            var subject = txtEmailSubject.Text.Trim();
-            var body    = txtEmailBody.Text.Trim();
+            var subject = StripHtml(txtEmailSubject.Text.Trim());
+            var body    = StripHtml(txtEmailBody.Text.Trim());
 
             if (string.IsNullOrEmpty(subject) || string.IsNullOrEmpty(body))
             {
@@ -200,7 +200,7 @@ namespace SafetyPortal.Web.Admin
                 return;
             }
 
-            var name = txtEditName.Text.Trim();
+            var name = StripHtml(txtEditName.Text.Trim());
             if (string.IsNullOrEmpty(name))
             {
                 Message     = T("fields_required");

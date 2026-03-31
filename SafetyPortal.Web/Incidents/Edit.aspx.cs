@@ -82,12 +82,12 @@ namespace SafetyPortal.Web.Incidents
 
             var req = new UpdateIncidentRequest
             {
-                Title           = txtTitle.Text.Trim(),
-                Description     = txtDescription.Text.Trim(),
+                Title           = StripHtml(txtTitle.Text.Trim()),
+                Description     = StripHtml(txtDescription.Text.Trim()),
                 CategoryId      = int.Parse(ddlCategory.SelectedValue),
                 DepartmentId    = int.Parse(ddlDept.SelectedValue),
                 IncidentDate    = date.ToString(AppConstants.Validation.ISODateFormat),
-                LocationDetails = txtLocation.Text.Trim(),
+                LocationDetails = StripHtml(txtLocation.Text.Trim()),
                 SeverityLevel   = ddlSeverity.SelectedValue,
                 Status          = ddlStatus.SelectedValue,
                 AssignedToUserId = assignedTo

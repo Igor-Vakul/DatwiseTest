@@ -119,7 +119,7 @@ namespace SafetyPortal.Web.Incidents
         {
             Incident = Api.GetIncident(IncidentId);
 
-            var title = txtActionTitle.Text.Trim();
+            var title = StripHtml(txtActionTitle.Text.Trim());
             if (string.IsNullOrEmpty(title))
             {
                 ActionError = "Action title is required.";
@@ -138,7 +138,7 @@ namespace SafetyPortal.Web.Incidents
             {
                 ReportId          = IncidentId,
                 ActionTitle       = title,
-                ActionDescription = txtActionDesc.Text.Trim(),
+                ActionDescription = StripHtml(txtActionDesc.Text.Trim()),
                 AssignedToUserId  = int.Parse(ddlActionUser.SelectedValue),
                 DueDate           = dueDate.ToString("yyyy-MM-dd"),
                 PriorityLevel     = ddlActionPriority.SelectedValue

@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System.Web.UI;
 
 namespace SafetyPortal.Web
@@ -5,6 +6,16 @@ namespace SafetyPortal.Web
     /// <summary>Base page — sets culture, redirects to Login if not authenticated.</summary>
     public class BasePage : Page
     {
+        private static readonly Regex HtmlTagRegex =
+            new Regex(@"<[^>]*>", RegexOptions.Compiled | RegexOptions.Singleline);
+
+        /// <summary>Strips all HTML tags from user input.</summary>
+        protected static string StripHtml(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return input;
+            return HtmlTagRegex.Replace(input, string.Empty);
+        }
+
         protected override void InitializeCulture()
         {
             LanguageHelper.ApplyCulture(Session);

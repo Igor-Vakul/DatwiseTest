@@ -53,8 +53,8 @@ namespace SafetyPortal.Web.Incidents
 
         protected void btnSave_Click(object sender, EventArgs e)
         {
-            var title = txtTitle.Text.Trim();
-            var desc  = txtDescription.Text.Trim();
+            var title = StripHtml(txtTitle.Text.Trim());
+            var desc  = StripHtml(txtDescription.Text.Trim());
 
             if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(desc))
             {
@@ -77,7 +77,7 @@ namespace SafetyPortal.Web.Incidents
                 CategoryId       = int.Parse(ddlCategory.SelectedValue),
                 DepartmentId     = int.Parse(ddlDept.SelectedValue),
                 IncidentDate     = date.ToString(AppConstants.Validation.ISODateFormat),
-                LocationDetails  = txtLocation.Text.Trim(),
+                LocationDetails  = StripHtml(txtLocation.Text.Trim()),
                 SeverityLevel    = ddlSeverity.SelectedValue,
                 AssignedToUserId = assignedTo
             };
