@@ -36,6 +36,16 @@ public static class DashboardEndpoints
                 .Select(g => new { DepartmentName = g.Key, Count = g.Count() })
                 .ToListAsync();
 
+            var bySeverity = await active
+                .GroupBy(x => x.SeverityLevel)
+                .Select(g => new { Label = g.Key, Count = g.Count() })
+                .ToListAsync();
+
+            var byStatus = await active
+                .GroupBy(x => x.Status)
+                .Select(g => new { Label = g.Key, Count = g.Count() })
+                .ToListAsync();
+
             var sixMonthsAgo = DateTime.UtcNow.AddMonths(-(AppConstants.Dashboard.TrendMonthsLookback - 1));
             // Materialize year/month keys first — string interpolation with :D2 cannot be translated to SQL
             var byMonthRaw = await active
@@ -75,6 +85,8 @@ public static class DashboardEndpoints
                 PendingActions    = pendingActions,
                 ByCategory        = byCategory,
                 ByDepartment      = byDepartment,
+                BySeverity        = bySeverity,
+                ByStatus          = byStatus,
                 ByMonth           = byMonth,
                 RecentIncidents   = recentIncidents
             });

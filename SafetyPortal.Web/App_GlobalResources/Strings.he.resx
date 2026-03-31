@@ -121,6 +121,7 @@
   <data name="overdue_actions"        xml:space="preserve"><value>פעולות באיחור</value></data>
   <data name="recent_incidents"       xml:space="preserve"><value>תקריות אחרונות</value></data>
   <data name="by_category"            xml:space="preserve"><value>תקריות לפי קטגוריה</value></data>
+  <data name="incidents_by"           xml:space="preserve"><value>תקריות לפי</value></data>
   <data name="by_department"          xml:space="preserve"><value>תקריות לפי מחלקה</value></data>
   <data name="trend"                  xml:space="preserve"><value>מגמת תקריות (6 חודשים אחרונים)</value></data>
   <data name="date_col"               xml:space="preserve"><value>תאריך</value></data>

@@ -7,8 +7,10 @@ namespace SafetyPortal.Web
 {
     public partial class Dashboard : BasePage
     {
-        protected DashboardStats Stats       { get; private set; } = new DashboardStats();
+        protected DashboardStats Stats        { get; private set; } = new DashboardStats();
         protected string         CategoryJson { get; private set; } = "[]";
+        protected string         SeverityJson { get; private set; } = "[]";
+        protected string         StatusJson   { get; private set; } = "[]";
         protected string         DeptJson     { get; private set; } = "[]";
         protected string         TrendJson    { get; private set; } = "[]";
 
@@ -26,6 +28,10 @@ namespace SafetyPortal.Web
 
                 CategoryJson = SafeJson(JsonConvert.SerializeObject(
                     Stats.ByCategory.ConvertAll(x => new { label = x.Label, count = x.Count })));
+                SeverityJson = SafeJson(JsonConvert.SerializeObject(
+                    Stats.BySeverity.ConvertAll(x => new { label = x.Label, count = x.Count })));
+                StatusJson = SafeJson(JsonConvert.SerializeObject(
+                    Stats.ByStatus.ConvertAll(x => new { label = x.Label, count = x.Count })));
                 DeptJson = SafeJson(JsonConvert.SerializeObject(
                     Stats.ByDepartment.ConvertAll(x => new { label = x.Label, count = x.Count })));
                 TrendJson = SafeJson(JsonConvert.SerializeObject(

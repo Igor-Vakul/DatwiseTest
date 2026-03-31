@@ -142,6 +142,8 @@ namespace SafetyPortal.Web.Models
         public int PendingActions        { get; set; }
         public List<ChartItem>          ByCategory      { get; set; } = new List<ChartItem>();
         public List<ChartItem>          ByDepartment    { get; set; } = new List<ChartItem>();
+        public List<LabelItem>          BySeverity      { get; set; } = new List<LabelItem>();
+        public List<LabelItem>          ByStatus        { get; set; } = new List<LabelItem>();
         public List<MonthItem>          ByMonth         { get; set; } = new List<MonthItem>();
         public List<RecentIncidentItem> RecentIncidents { get; set; } = new List<RecentIncidentItem>();
     }
@@ -152,6 +154,12 @@ namespace SafetyPortal.Web.Models
         public string DepartmentName { get; set; }
         public int    Count          { get; set; }
         public string Label          => CategoryName ?? DepartmentName;
+    }
+
+    public class LabelItem
+    {
+        public string Label { get; set; }
+        public int    Count { get; set; }
     }
 
     public class MonthItem

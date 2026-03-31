@@ -54,7 +54,14 @@
     <div class="row g-3 mb-4">
         <div class="col-lg-5">
             <div class="card sp-card h-100">
-                <div class="card-header"><i class="bi bi-pie-chart text-primary"></i> <%= T("by_category") %></div>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-pie-chart text-primary"></i> <%= T("incidents_by") %></span>
+                    <select id="donutGroupBy" class="form-select form-select-sm w-auto">
+                        <option value="category"><%= T("category") %></option>
+                        <option value="severity"><%= T("severity") %></option>
+                        <option value="status"><%= T("status") %></option>
+                    </select>
+                </div>
                 <div class="card-body d-flex align-items-center justify-content-center" style="height:260px">
                     <canvas id="chartCategory"></canvas>
                 </div>
@@ -131,16 +138,31 @@
 
 <asp:Content ContentPlaceHolderID="ScriptsContent" runat="server">
 <script>
-    const categoryData = <%=CategoryJson%>;
-    const deptData     = <%=DeptJson%>;
-    const trendData    = <%=TrendJson%>;
+    const donutDatasets = {
+        category: <%=CategoryJson%>,
+        severity: <%=SeverityJson%>,
+        status:   <%=StatusJson%>
+    };
+    const deptData  = <%=DeptJson%>;
+    const trendData = <%=TrendJson%>;
     const palette = ['#0d6efd','#6610f2','#fd7e14','#198754','#dc3545','#0dcaf0','#6c757d','#ffc107'];
 
-    new Chart(document.getElementById('chartCategory'), {
+    const donutChart = new Chart(document.getElementById('chartCategory'), {
         type: 'doughnut',
-        data: { labels: categoryData.map(x => x.label), datasets: [{ data: categoryData.map(x => x.count), backgroundColor: palette, borderWidth: 2 }] },
+        data: {
+            labels: donutDatasets.category.map(x => x.label),
+            datasets: [{ data: donutDatasets.category.map(x => x.count), backgroundColor: palette, borderWidth: 2 }]
+        },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12 } } } }
     });
+
+    document.getElementById('donutGroupBy').addEventListener('change', function () {
+        const data = donutDatasets[this.value];
+        donutChart.data.labels   = data.map(x => x.label);
+        donutChart.data.datasets[0].data = data.map(x => x.count);
+        donutChart.update();
+    });
+
     new Chart(document.getElementById('chartDept'), {
         type: 'bar',
         data: { labels: deptData.map(x => x.label), datasets: [{ data: deptData.map(x => x.count), backgroundColor: '#0d6efd99', borderColor: '#0d6efd', borderWidth: 1 }] },
