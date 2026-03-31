@@ -10,8 +10,8 @@ namespace SafetyPortal.Web.Admin
         protected System.Web.UI.WebControls.TextBox  txtName;
         protected System.Web.UI.WebControls.TextBox  txtDescription;
         protected System.Web.UI.WebControls.CheckBox chkActive;
-        protected System.Web.UI.HiddenField          hfEditId;
-        protected System.Web.UI.HiddenField          hfDeleteId;
+        protected System.Web.UI.WebControls.HiddenField hfEditId;
+        protected System.Web.UI.WebControls.HiddenField hfDeleteId;
         protected System.Web.UI.WebControls.Button   btnSave;
         protected System.Web.UI.WebControls.Button   btnDelete;
 
