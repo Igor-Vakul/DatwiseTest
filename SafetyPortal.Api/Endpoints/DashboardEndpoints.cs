@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using SafetyPortal.Api.Data;
 using static SafetyPortal.Api.AppConstants;
@@ -8,11 +9,16 @@ public static class DashboardEndpoints
 {
     public static IEndpointRouteBuilder MapDashboardEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/dashboard/stats", async (SafetyPortalDbContext db) =>
+        app.MapGet("/api/dashboard/stats", async (ClaimsPrincipal user, SafetyPortalDbContext db) =>
         {
             var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
-            var active = db.IncidentReports.Where(x => !x.IsArchived);
+            var isEmployee = user.IsInRole(RoleName.Employee.ToString());
+            int.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out int currentUserId);
+
+            var active = isEmployee
+                ? db.IncidentReports.Where(x => !x.IsArchived && (x.ReportedByUserId == currentUserId || x.AssignedToUserId == currentUserId))
+                : db.IncidentReports.Where(x => !x.IsArchived);
 
             var totalIncidents = await active.CountAsync();
             var openIncidents = await active.CountAsync(x => x.Status == IncidentStatus.Open.ToString() || x.Status == IncidentStatus.InProgress.ToString());

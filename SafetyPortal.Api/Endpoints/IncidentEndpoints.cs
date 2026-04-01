@@ -20,8 +20,12 @@ public static class IncidentEndpoints
         // GET /api/incidents — list with search + filters + pagination
         group.MapGet("/", async (
             [AsParameters] IncidentFilterQuery f,
+            ClaimsPrincipal user,
             SafetyPortalDbContext db) =>
         {
+            var isEmployee = user.IsInRole(RoleName.Employee.ToString());
+            int.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out int currentUserId);
+
             var query = db.IncidentReports
                 .Include(x => x.Category)
                 .Include(x => x.Department)
@@ -30,6 +34,9 @@ public static class IncidentEndpoints
                 .Include(x => x.Attachments)
                 .Where(x => x.IsArchived == f.Archived)
                 .AsQueryable();
+
+            if (isEmployee)
+                query = query.Where(x => x.ReportedByUserId == currentUserId || x.AssignedToUserId == currentUserId);
 
             if (!string.IsNullOrWhiteSpace(f.Search))
                 query = query.Where(x =>
@@ -77,8 +84,12 @@ public static class IncidentEndpoints
         // GET /api/incidents/export — filtered Excel download
         group.MapGet("/export", async (
             [AsParameters] IncidentFilterQuery f,
+            ClaimsPrincipal user,
             SafetyPortalDbContext db) =>
         {
+            var isEmployee = user.IsInRole(RoleName.Employee.ToString());
+            int.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out int currentUserId);
+
             var query = db.IncidentReports
                 .Include(x => x.Category)
                 .Include(x => x.Department)
@@ -87,6 +98,9 @@ public static class IncidentEndpoints
                 .Include(x => x.CorrectiveActions)
                 .Where(x => x.IsArchived == f.Archived)
                 .AsQueryable();
+
+            if (isEmployee)
+                query = query.Where(x => x.ReportedByUserId == currentUserId || x.AssignedToUserId == currentUserId);
 
             if (!string.IsNullOrWhiteSpace(f.Search))
                 query = query.Where(x =>
