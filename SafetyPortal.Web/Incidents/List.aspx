@@ -1,5 +1,6 @@
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="List.aspx.cs"
          Inherits="SafetyPortal.Web.Incidents.IncidentList" MasterPageFile="~/Site.Master" %>
+<%@ Import Namespace="SafetyPortal.Web" %>
 
 <asp:Content ContentPlaceHolderID="TitleContent" runat="server"><%= T("incidents_title") %></asp:Content>
 <asp:Content ContentPlaceHolderID="PageTitle"    runat="server">

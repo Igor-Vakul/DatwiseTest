@@ -1,6 +1,7 @@
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Users.aspx.cs"
          Inherits="SafetyPortal.Web.Admin.UsersAdmin" MasterPageFile="~/Site.Master"
          ValidateRequest="false" %>
+<%@ Import Namespace="SafetyPortal.Web" %>
 
 <asp:Content ContentPlaceHolderID="TitleContent" runat="server"><%= T("users_title") %></asp:Content>
 <asp:Content ContentPlaceHolderID="PageTitle"    runat="server">
