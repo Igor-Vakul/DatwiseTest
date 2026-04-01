@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SafetyPortal.Api;
+using static SafetyPortal.Api.AppConstants;
 using SafetyPortal.Api.Auth;
 using Microsoft.AspNetCore.Http.Features;
 using SafetyPortal.Api.Data;
@@ -120,9 +121,9 @@ builder.Services
 // ── Authorization policies ────────────────────────────────────────────────
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly",            p => p.RequireRole("Admin"));
-    options.AddPolicy("SafetyManagerOrAdmin", p => p.RequireRole("Admin", "SafetyManager"));
-    options.AddPolicy("SupervisorOrAbove",    p => p.RequireRole("Admin", "SafetyManager", "Supervisor"));
+    options.AddPolicy("AdminOnly",            p => p.RequireRole(RoleNames.Admin));
+    options.AddPolicy("SafetyManagerOrAdmin", p => p.RequireRole(RoleNames.Admin, RoleNames.SafetyManager));
+    options.AddPolicy("SupervisorOrAbove",    p => p.RequireRole(RoleNames.Admin, RoleNames.SafetyManager, RoleNames.Supervisor));
     options.AddPolicy("Authenticated",        p => p.RequireAuthenticatedUser());
 });
 

@@ -3,6 +3,7 @@ using SafetyPortal.Api.Data;
 using SafetyPortal.Api.Dtos.CorrectiveActions;
 using SafetyPortal.Api.Entities;
 using SafetyPortal.Api.Services;
+using static SafetyPortal.Api.AppConstants;
 
 namespace SafetyPortal.Api.Endpoints;
 
@@ -62,11 +63,11 @@ public static class CorrectiveActionEndpoints
                 .Select(x => new CorrectiveActionExportRow
                 {
                     ReportNumber = x.Report.ReportNumber,
-                    ActionTitle  = x.ActionTitle,
-                    AssignedTo   = x.AssignedToUser.FullName,
-                    DueDate      = x.DueDate.ToString("dd/MM/yyyy"),
-                    Priority     = x.PriorityLevel,
-                    Status       = x.Status
+                    ActionTitle = x.ActionTitle,
+                    AssignedTo = x.AssignedToUser.FullName,
+                    DueDate = x.DueDate.ToString("dd/MM/yyyy"),
+                    Priority = x.PriorityLevel,
+                    Status = x.Status
                 })
                 .ToListAsync();
 
@@ -90,7 +91,7 @@ public static class CorrectiveActionEndpoints
                 ActionDescription = request.ActionDescription,
                 AssignedToUserId = request.AssignedToUserId,
                 DueDate = request.DueDate,
-                Status = "Pending",
+                Status = ActionStatus.Pending,
                 PriorityLevel = request.PriorityLevel
             };
 
@@ -109,7 +110,7 @@ public static class CorrectiveActionEndpoints
                 return Results.NotFound();
 
             action.Status = request.Status;
-            if (request.Status == "Completed")
+            if (request.Status == ActionStatus.Completed)
                 action.CompletedAt = DateTime.UtcNow;
 
             await db.SaveChangesAsync();

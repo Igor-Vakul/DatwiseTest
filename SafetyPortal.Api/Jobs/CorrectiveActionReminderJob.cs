@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SafetyPortal.Api.Data;
 using SafetyPortal.Api.Services;
+using static SafetyPortal.Api.AppConstants;
 
 namespace SafetyPortal.Api.Jobs;
 
@@ -34,7 +35,7 @@ public class CorrectiveActionReminderJob
         var actions = await _db.CorrectiveActions
             .Include(ca => ca.AssignedToUser)
             .Include(ca => ca.Report)
-            .Where(ca => ca.Status != "Completed"
+            .Where(ca => ca.Status != ActionStatus.Completed
                       && ca.CompletedAt == null
                       && ca.DueDate == targetDate)
             .ToListAsync();

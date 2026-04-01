@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SafetyPortal.Api.Data;
 using SafetyPortal.Api.Services;
+using static SafetyPortal.Api.AppConstants;
 
 namespace SafetyPortal.Api.Jobs;
 
@@ -39,7 +40,7 @@ public class IncidentEscalationJob
         }
 
         // Skip if already resolved — no escalation needed
-        if (incident.Status != "Open")
+        if (incident.Status != IncidentStatus.Open)
         {
             _logger.LogInformation(
                 "IncidentEscalationJob: incident {ReportNumber} is '{Status}', skipping escalation",

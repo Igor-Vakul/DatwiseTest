@@ -3,13 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using SafetyPortal.Api.Data;
 using SafetyPortal.Api.Entities;
 using SafetyPortal.Api.Services;
+using static SafetyPortal.Api.AppConstants;
 
 namespace SafetyPortal.Api.Endpoints;
 
 public static class HangfireLoginEndpoints
 {
     private const string CookieName    = "HangfireAuth";
-    private const string AdminRoleName = "Admin";
+    private const string AdminRoleName = RoleNames.Admin;
 
     public static IEndpointRouteBuilder MapHangfireLoginEndpoints(this IEndpointRouteBuilder app)
     {

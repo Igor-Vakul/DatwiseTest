@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SafetyPortal.Api.Data;
 using SafetyPortal.Api.Dtos.Departments;
 using SafetyPortal.Api.Entities;
+using static SafetyPortal.Api.AppConstants;
 
 namespace SafetyPortal.Api.Endpoints;
 
@@ -29,10 +30,10 @@ public static class AdminDepartmentEndpoints
 
             var dept = new Department
             {
-                Name         = dto.Name,
+                Name = dto.Name,
                 LocationName = dto.LocationName,
-                Color        = dto.Color,
-                IsActive     = true
+                Color = dto.Color,
+                IsActive = true
             };
             db.Departments.Add(dept);
             await db.SaveChangesAsync();
@@ -48,10 +49,10 @@ public static class AdminDepartmentEndpoints
             if (await db.Departments.AnyAsync(x => x.Name == dto.Name && x.Id != id))
                 return Results.BadRequest(new { error = "Department name already exists." });
 
-            dept.Name         = dto.Name;
+            dept.Name = dto.Name;
             dept.LocationName = dto.LocationName;
-            dept.Color        = dto.Color;
-            dept.IsActive     = dto.IsActive;
+            dept.Color = dto.Color;
+            dept.IsActive = dto.IsActive;
             await db.SaveChangesAsync();
             return Results.NoContent();
         });
@@ -73,7 +74,7 @@ public static class AdminDepartmentEndpoints
 
             var hasOpen = await db.IncidentReports.AnyAsync(x =>
                 x.DepartmentId == id &&
-                (x.Status == "Open" || x.Status == "InProgress"));
+                (x.Status == IncidentStatus.Open || x.Status == IncidentStatus.InProgress));
             if (hasOpen)
                 return Results.BadRequest(new { error = "Cannot delete department with open incidents." });
 

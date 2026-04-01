@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SafetyPortal.Api.Data;
 using SafetyPortal.Api.Dtos.Categories;
 using SafetyPortal.Api.Entities;
+using static SafetyPortal.Api.AppConstants;
 
 namespace SafetyPortal.Api.Endpoints;
 
@@ -42,9 +43,9 @@ public static class AdminCategoryEndpoints
             if (await db.IncidentCategories.AnyAsync(x => x.Name == dto.Name && x.Id != id))
                 return Results.BadRequest(new { error = "Category name already exists." });
 
-            cat.Name        = dto.Name;
+            cat.Name = dto.Name;
             cat.Description = dto.Description;
-            cat.IsActive    = dto.IsActive;
+            cat.IsActive = dto.IsActive;
             await db.SaveChangesAsync();
             return Results.NoContent();
         });
@@ -66,7 +67,7 @@ public static class AdminCategoryEndpoints
 
             var hasOpen = await db.IncidentReports.AnyAsync(x =>
                 x.CategoryId == id &&
-                (x.Status == "Open" || x.Status == "InProgress"));
+                (x.Status == IncidentStatus.Open || x.Status == IncidentStatus.InProgress));
             if (hasOpen)
                 return Results.BadRequest(new { error = "Cannot delete category with open incidents." });
 

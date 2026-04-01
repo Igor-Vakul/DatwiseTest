@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SafetyPortal.Api.Entities;
+using static SafetyPortal.Api.AppConstants;
 
 namespace SafetyPortal.Api.Data;
 
@@ -15,9 +16,9 @@ public class SafetyPortalDbContext : DbContext
     public DbSet<Department> Departments => Set<Department>();
     public DbSet<IncidentCategory> IncidentCategories => Set<IncidentCategory>();
     public DbSet<IncidentReport> IncidentReports => Set<IncidentReport>();
-    public DbSet<CorrectiveAction>    CorrectiveActions    => Set<CorrectiveAction>();
+    public DbSet<CorrectiveAction> CorrectiveActions => Set<CorrectiveAction>();
     public DbSet<IncidentAttachment> IncidentAttachments => Set<IncidentAttachment>();
-    public DbSet<AuditLog>           AuditLogs           => Set<AuditLog>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,10 +37,10 @@ public class SafetyPortalDbContext : DbContext
                 .IsUnique();
 
             entity.HasData(
-                new Role { Id = 1, Name = "Admin" },
-                new Role { Id = 2, Name = "SafetyManager" },
-                new Role { Id = 3, Name = "Supervisor" },
-                new Role { Id = 4, Name = "Employee" }
+                new Role { Id = 1, Name = RoleNames.Admin },
+                new Role { Id = 2, Name = RoleNames.SafetyManager },
+                new Role { Id = 3, Name = RoleNames.Supervisor },
+                new Role { Id = 4, Name = RoleNames.Employee }
             );
         });
 

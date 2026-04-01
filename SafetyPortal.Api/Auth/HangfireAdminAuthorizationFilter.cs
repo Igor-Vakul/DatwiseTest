@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Hangfire.Dashboard;
 using Microsoft.IdentityModel.Tokens;
+using static SafetyPortal.Api.AppConstants;
 
 namespace SafetyPortal.Api.Auth;
 
@@ -10,16 +11,11 @@ namespace SafetyPortal.Api.Auth;
 /// Allows access to the Hangfire dashboard only for users with a valid Admin JWT
 /// stored in the HangfireAuth HttpOnly cookie.
 /// </summary>
-public class HangfireAdminAuthorizationFilter : IDashboardAuthorizationFilter
+public class HangfireAdminAuthorizationFilter(JwtOptions jwt) : IDashboardAuthorizationFilter
 {
     private const string CookieName = "HangfireAuth";
 
-    private readonly JwtOptions _jwt;
-
-    public HangfireAdminAuthorizationFilter(JwtOptions jwt)
-    {
-        _jwt = jwt;
-    }
+    private readonly JwtOptions _jwt = jwt;
 
     public bool Authorize(DashboardContext context)
     {
@@ -41,20 +37,20 @@ public class HangfireAdminAuthorizationFilter : IDashboardAuthorizationFilter
                 new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey         = key,
-                    ValidateIssuer           = true,
-                    ValidIssuer              = _jwt.Issuer,
-                    ValidateAudience         = true,
-                    ValidAudience            = _jwt.Audience,
-                    ValidateLifetime         = true,
-                    ClockSkew                = TimeSpan.Zero
+                    IssuerSigningKey = key,
+                    ValidateIssuer = true,
+                    ValidIssuer = _jwt.Issuer,
+                    ValidateAudience = true,
+                    ValidAudience = _jwt.Audience,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
                 },
                 out var validated);
 
-            var jwt  = (JwtSecurityToken)validated;
+            var jwt = (JwtSecurityToken)validated;
             var role = jwt.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
-            if (role == "Admin")
+            if (role == RoleNames.Admin)
                 return true;
 
             // Authenticated but not Admin — show 403
