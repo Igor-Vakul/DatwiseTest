@@ -95,15 +95,17 @@
                     <div class="mb-3">
                         <label class="form-label">Color</label>
                         <div class="d-flex gap-2 align-items-center">
-                            <asp:TextBox ID="txtColor" runat="server" CssClass="form-control form-control-color"
-                                         TextMode="SingleLine" style="width:60px;padding:2px 4px" />
+                            <input type="color" id="colorPickerInput" class="form-control form-control-color"
+                                   style="width:60px;padding:2px 4px" value="#6c757d"
+                                   oninput="document.getElementById('<%= hfColor.ClientID %>').value = this.value" />
+                            <asp:HiddenField ID="hfColor" runat="server" Value="#6c757d" />
                             <small class="text-muted">Pick a color to identify this department in charts</small>
                         </div>
                     </div>
                     <div class="mb-3" id="activeRow" style="display:none">
-                        <div class="form-check">
+                        <div class="form-check form-switch">
                             <asp:CheckBox ID="chkActive" runat="server" CssClass="form-check-input" />
-                            <label class="form-check-label">Active</label>
+                            <label class="form-check-label" for="<%= chkActive.ClientID %>">Active</label>
                         </div>
                     </div>
                 </div>
@@ -147,7 +149,8 @@
         document.getElementById('<%= hfEditId.ClientID %>').value = '0';
         document.getElementById('<%= txtName.ClientID %>').value = '';
         document.getElementById('<%= txtLocation.ClientID %>').value = '';
-        document.getElementById('<%= txtColor.ClientID %>').value = '#6c757d';
+        document.getElementById('colorPickerInput').value = '#6c757d';
+        document.getElementById('<%= hfColor.ClientID %>').value = '#6c757d';
         document.getElementById('<%= chkActive.ClientID %>').checked = true;
         document.getElementById('activeRow').style.display = 'none';
     }
@@ -157,7 +160,8 @@
         document.getElementById('<%= hfEditId.ClientID %>').value = id;
         document.getElementById('<%= txtName.ClientID %>').value = name;
         document.getElementById('<%= txtLocation.ClientID %>').value = location;
-        document.getElementById('<%= txtColor.ClientID %>').value = color;
+        document.getElementById('colorPickerInput').value = color;
+        document.getElementById('<%= hfColor.ClientID %>').value = color;
         document.getElementById('<%= chkActive.ClientID %>').checked = isActive;
         document.getElementById('activeRow').style.display = '';
     }

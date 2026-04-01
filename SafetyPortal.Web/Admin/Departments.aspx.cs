@@ -9,7 +9,7 @@ namespace SafetyPortal.Web.Admin
     {
         protected System.Web.UI.WebControls.TextBox  txtName;
         protected System.Web.UI.WebControls.TextBox  txtLocation;
-        protected System.Web.UI.WebControls.TextBox  txtColor;
+        protected System.Web.UI.WebControls.HiddenField hfColor;
         protected System.Web.UI.WebControls.CheckBox chkActive;
         protected System.Web.UI.WebControls.HiddenField hfEditId;
         protected System.Web.UI.WebControls.HiddenField hfDeleteId;
@@ -43,7 +43,7 @@ namespace SafetyPortal.Web.Admin
         {
             var name     = StripHtml(txtName.Text.Trim());
             var location = StripHtml(txtLocation.Text.Trim());
-            var color    = txtColor.Text.Trim();
+            var color    = hfColor.Value.Trim();
             var editId   = int.Parse(hfEditId.Value);
 
             if (string.IsNullOrEmpty(name)) { Message = "Name is required."; MessageType = "danger"; LoadDepartments(); return; }
