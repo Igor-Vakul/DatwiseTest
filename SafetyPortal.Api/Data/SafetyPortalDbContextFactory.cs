@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 namespace SafetyPortal.Api.Data;
 
@@ -7,10 +8,14 @@ public class SafetyPortalDbContextFactory : IDesignTimeDbContextFactory<SafetyPo
 {
     public SafetyPortalDbContext CreateDbContext(string[] args)
     {
-        var optionsBuilder = new DbContextOptionsBuilder<SafetyPortalDbContext>();
+        var config = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false)
+            .AddJsonFile("appsettings.Development.json", optional: true)
+            .Build();
 
-        optionsBuilder.UseSqlServer(
-            "Server=(localdb)\\MSSQLLocalDB;Database=SafetyPortalDb;Trusted_Connection=True;TrustServerCertificate=True");
+        var optionsBuilder = new DbContextOptionsBuilder<SafetyPortalDbContext>();
+        optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
 
         return new SafetyPortalDbContext(optionsBuilder.Options);
     }
