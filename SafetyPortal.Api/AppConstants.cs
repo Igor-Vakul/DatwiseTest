@@ -14,10 +14,10 @@ public static class AppConstants
         public const int TrendMonthsLookback   = 6;
     }
 
-    public static class Roles
+    public enum Roles
     {
-        public const int AdminId         = 1;
-        public const int SafetyManagerId = 2;
+        Admin         = 1,
+        SafetyManager = 2,
     }
 
     public static class Attachments

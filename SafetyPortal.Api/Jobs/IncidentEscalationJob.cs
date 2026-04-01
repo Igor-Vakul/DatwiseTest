@@ -51,8 +51,8 @@ public class IncidentEscalationJob
 
         var managers = await _db.Users
             .Where(u => u.IsActive &&
-                        (u.RoleId == AppConstants.Roles.AdminId ||
-                         u.RoleId == AppConstants.Roles.SafetyManagerId))
+                        (u.RoleId == (int)AppConstants.Roles.Admin ||
+                         u.RoleId == (int)AppConstants.Roles.SafetyManager))
             .Select(u => new { u.FullName, u.Email })
             .ToListAsync();
 
