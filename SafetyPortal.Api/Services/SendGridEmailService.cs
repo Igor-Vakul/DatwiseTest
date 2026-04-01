@@ -6,15 +6,15 @@ namespace SafetyPortal.Api.Services;
 
 public class SendGridEmailService : IEmailService
 {
-    private readonly SendGridOptions              _options;
+    private readonly SendGridOptions _options;
     private readonly ILogger<SendGridEmailService> _logger;
 
     public SendGridEmailService(
-        IOptions<SendGridOptions>              options,
+        IOptions<SendGridOptions> options,
         ILogger<SendGridEmailService> logger)
     {
         _options = options.Value;
-        _logger  = logger;
+        _logger = logger;
     }
 
     // ── Scenario 1 ─────────────────────────────────────────────────────────
@@ -95,8 +95,8 @@ public class SendGridEmailService : IEmailService
     {
         try
         {
-            var client  = new SendGridClient(_options.ApiKey);
-            var from    = new EmailAddress(_options.FromEmail, _options.FromName);
+            var client = new SendGridClient(_options.ApiKey);
+            var from = new EmailAddress(_options.FromEmail, _options.FromName);
             var message = MailHelper.CreateSingleEmail(
                 from, new EmailAddress(to, toName), subject,
                 plainTextContent: null, htmlContent: html);

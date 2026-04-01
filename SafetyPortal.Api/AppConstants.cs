@@ -4,39 +4,46 @@ public static class AppConstants
 {
     public static class Pagination
     {
-        public const int DefaultPage     = 1;
+        public const int DefaultPage = 1;
         public const int DefaultPageSize = 20;
     }
 
     public static class Dashboard
     {
-        public const int RecentIncidentsCount  = 5;
-        public const int TrendMonthsLookback   = 6;
+        public const int RecentIncidentsCount = 5;
+        public const int TrendMonthsLookback = 6;
     }
 
     public enum Roles
     {
-        Admin         = 1,
+        Admin = 1,
         SafetyManager = 2,
+        Supervisor = 3,
+        Employee = 4,
     }
+
+    public enum RoleName      { Admin, SafetyManager, Supervisor, Employee }
+    public enum IncidentStatus { Open, InProgress, Closed }
+    public enum SeverityLevel  { Low, Medium, High, Critical }
+    public enum ActionStatus   { Pending, InProgress, Completed }
 
     public static class Attachments
     {
-        public const long MaxImageBytes     = 5  * 1024 * 1024;  // 5 MB
-        public const long MaxDocumentBytes  = 20 * 1024 * 1024;  // 20 MB
-        public const int  SignatureBytesLen = 16;
-        public const string StorageFolder   = "attachments";
+        public const long MaxImageBytes = 5 * 1024 * 1024;  // 5 MB
+        public const long MaxDocumentBytes = 20 * 1024 * 1024;  // 20 MB
+        public const int SignatureBytesLen = 16;
+        public const string StorageFolder = "attachments";
     }
 
     public static class Jobs
     {
         /// <summary>Send reminder N days before corrective action due date.</summary>
-        public const int    ReminderDaysBeforeDue = 3;
+        public const int ReminderDaysBeforeDue = 3;
 
         /// <summary>Escalate an incident that stays Open for this many days.</summary>
-        public const int    EscalationAfterDays   = 3;
+        public const int EscalationAfterDays = 3;
 
         /// <summary>Cron: every day at 08:00 server time.</summary>
-        public const string ReminderCron          = "0 8 * * *";
+        public const string ReminderCron = "0 8 * * *";
     }
 }

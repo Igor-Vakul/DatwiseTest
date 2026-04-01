@@ -121,9 +121,9 @@ builder.Services
 // ── Authorization policies ────────────────────────────────────────────────
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly",            p => p.RequireRole(RoleNames.Admin));
-    options.AddPolicy("SafetyManagerOrAdmin", p => p.RequireRole(RoleNames.Admin, RoleNames.SafetyManager));
-    options.AddPolicy("SupervisorOrAbove",    p => p.RequireRole(RoleNames.Admin, RoleNames.SafetyManager, RoleNames.Supervisor));
+    options.AddPolicy("AdminOnly",            p => p.RequireRole(RoleName.Admin.ToString()));
+    options.AddPolicy("SafetyManagerOrAdmin", p => p.RequireRole(RoleName.Admin.ToString(), RoleName.SafetyManager.ToString()));
+    options.AddPolicy("SupervisorOrAbove",    p => p.RequireRole(RoleName.Admin.ToString(), RoleName.SafetyManager.ToString(), RoleName.Supervisor.ToString()));
     options.AddPolicy("Authenticated",        p => p.RequireAuthenticatedUser());
 });
 

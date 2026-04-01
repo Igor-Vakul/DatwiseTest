@@ -8,35 +8,35 @@ namespace SafetyPortal.Web.Admin
     public partial class UsersAdmin : AdminPage
     {
         // Create form
-        protected System.Web.UI.WebControls.TextBox      txtName;
-        protected System.Web.UI.WebControls.TextBox      txtEmail;
-        protected System.Web.UI.WebControls.TextBox      txtPassword;
+        protected System.Web.UI.WebControls.TextBox txtName;
+        protected System.Web.UI.WebControls.TextBox txtEmail;
+        protected System.Web.UI.WebControls.TextBox txtPassword;
         protected System.Web.UI.WebControls.DropDownList ddlRole;
-        protected System.Web.UI.WebControls.Button       btnCreate;
+        protected System.Web.UI.WebControls.Button btnCreate;
 
         // Edit form
-        protected System.Web.UI.WebControls.HiddenField  hdnEditId;
-        protected System.Web.UI.WebControls.TextBox      txtEditName;
-        protected System.Web.UI.WebControls.TextBox      txtEditPassword;
+        protected System.Web.UI.WebControls.HiddenField hdnEditId;
+        protected System.Web.UI.WebControls.TextBox txtEditName;
+        protected System.Web.UI.WebControls.TextBox txtEditPassword;
         protected System.Web.UI.WebControls.DropDownList ddlEditRole;
-        protected System.Web.UI.WebControls.Button       btnSaveEdit;
+        protected System.Web.UI.WebControls.Button btnSaveEdit;
 
         // Send email form
         protected System.Web.UI.WebControls.HiddenField hdnEmailUserId;
         protected System.Web.UI.WebControls.HiddenField hdnEmailAddress;
-        protected System.Web.UI.WebControls.TextBox     txtEmailSubject;
-        protected System.Web.UI.WebControls.TextBox     txtEmailBody;
-        protected System.Web.UI.WebControls.Button      btnSendEmail;
+        protected System.Web.UI.WebControls.TextBox txtEmailSubject;
+        protected System.Web.UI.WebControls.TextBox txtEmailBody;
+        protected System.Web.UI.WebControls.Button btnSendEmail;
 
-        protected List<UserSummary> Users       { get; private set; } = new List<UserSummary>();
-        protected string            Message     { get; private set; } = string.Empty;
-        protected string            MessageType { get; private set; } = "info";
-        protected string            EmailError  { get; private set; } = string.Empty;
-        protected int               EditingId   { get; private set; }
+        protected List<UserSummary> Users { get; private set; } = new List<UserSummary>();
+        protected string Message { get; private set; } = string.Empty;
+        protected string MessageType { get; private set; } = "info";
+        protected string EmailError { get; private set; } = string.Empty;
+        protected int EditingId { get; private set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            btnCreate.Text   = T("create_user");
+            btnCreate.Text = T("create_user");
             btnSaveEdit.Text = T("save_user");
             btnSendEmail.Text = T("send_btn");
 
@@ -98,13 +98,13 @@ namespace SafetyPortal.Web.Admin
 
         protected void btnCreate_Click(object sender, EventArgs e)
         {
-            var name  = StripHtml(txtName.Text.Trim());
+            var name = StripHtml(txtName.Text.Trim());
             var email = StripHtml(txtEmail.Text.Trim());
-            var pass  = txtPassword.Text;
+            var pass = txtPassword.Text;
 
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(pass))
             {
-                Message     = T("fields_required");
+                Message = T("fields_required");
                 MessageType = "danger";
                 LoadUsers();
                 LoadRoles();
@@ -114,7 +114,7 @@ namespace SafetyPortal.Web.Admin
             var passError = ValidatePassword(pass);
             if (passError != null)
             {
-                Message     = T(passError);
+                Message = T(passError);
                 MessageType = "danger";
                 LoadUsers();
                 LoadRoles();
@@ -124,22 +124,22 @@ namespace SafetyPortal.Web.Admin
             var req = new CreateUserRequest
             {
                 FullName = name,
-                Email    = email,
+                Email = email,
                 Password = pass,
-                RoleId   = int.Parse(ddlRole.SelectedValue)
+                RoleId = int.Parse(ddlRole.SelectedValue)
             };
 
             if (Api.CreateUser(req))
             {
-                Message          = T("user_created");
-                MessageType      = "success";
-                txtName.Text     = string.Empty;
-                txtEmail.Text    = string.Empty;
+                Message = T("user_created");
+                MessageType = "success";
+                txtName.Text = string.Empty;
+                txtEmail.Text = string.Empty;
                 txtPassword.Text = string.Empty;
             }
             else
             {
-                Message     = T("user_create_fail");
+                Message = T("user_create_fail");
                 MessageType = "danger";
             }
 
@@ -164,7 +164,7 @@ namespace SafetyPortal.Web.Admin
             }
 
             var subject = StripHtml(txtEmailSubject.Text.Trim());
-            var body    = StripHtml(txtEmailBody.Text.Trim());
+            var body = StripHtml(txtEmailBody.Text.Trim());
 
             if (string.IsNullOrEmpty(subject) || string.IsNullOrEmpty(body))
             {
@@ -175,12 +175,12 @@ namespace SafetyPortal.Web.Admin
 
             if (Api.SendEmailToUser(uid, subject, body))
             {
-                Message          = T("email_sent");
-                MessageType      = "success";
+                Message = T("email_sent");
+                MessageType = "success";
                 hdnEmailUserId.Value = string.Empty;
                 hdnEmailAddress.Value = string.Empty;
                 txtEmailSubject.Text = string.Empty;
-                txtEmailBody.Text    = string.Empty;
+                txtEmailBody.Text = string.Empty;
             }
             else
             {
@@ -194,7 +194,7 @@ namespace SafetyPortal.Web.Admin
         {
             if (!int.TryParse(hdnEditId.Value, out int uid) || uid == 0)
             {
-                Message     = T("user_update_fail");
+                Message = T("user_update_fail");
                 MessageType = "danger";
                 LoadUsers();
                 LoadRoles();
@@ -204,7 +204,7 @@ namespace SafetyPortal.Web.Admin
             var name = StripHtml(txtEditName.Text.Trim());
             if (string.IsNullOrEmpty(name))
             {
-                Message     = T("fields_required");
+                Message = T("fields_required");
                 MessageType = "danger";
                 LoadUsers();
                 LoadRoles();
@@ -217,7 +217,7 @@ namespace SafetyPortal.Web.Admin
                 var passError = ValidatePassword(pass);
                 if (passError != null)
                 {
-                    Message     = T(passError);
+                    Message = T(passError);
                     MessageType = "danger";
                     LoadUsers();
                     LoadRoles();
@@ -228,19 +228,19 @@ namespace SafetyPortal.Web.Admin
             var req = new UpdateUserRequest
             {
                 FullName = name,
-                RoleId   = int.Parse(ddlEditRole.SelectedValue),
+                RoleId = int.Parse(ddlEditRole.SelectedValue),
                 Password = string.IsNullOrEmpty(pass) ? null : pass
             };
 
             if (Api.UpdateUser(uid, req))
             {
-                Message     = T("user_updated");
+                Message = T("user_updated");
                 MessageType = "success";
                 hdnEditId.Value = string.Empty;
             }
             else
             {
-                Message     = T("user_update_fail");
+                Message = T("user_update_fail");
                 MessageType = "danger";
             }
 

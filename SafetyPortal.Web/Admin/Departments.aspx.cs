@@ -1,23 +1,22 @@
+using SafetyPortal.Web.Models;
 using System;
 using System.Collections.Generic;
-using System.Web.UI;
-using SafetyPortal.Web.Models;
 
 namespace SafetyPortal.Web.Admin
 {
     public partial class DepartmentsAdmin : AdminPage
     {
-        protected System.Web.UI.WebControls.TextBox  txtName;
-        protected System.Web.UI.WebControls.TextBox  txtLocation;
+        protected System.Web.UI.WebControls.TextBox txtName;
+        protected System.Web.UI.WebControls.TextBox txtLocation;
         protected System.Web.UI.WebControls.HiddenField hfColor;
         protected System.Web.UI.WebControls.HiddenField hfActive;
         protected System.Web.UI.WebControls.HiddenField hfEditId;
         protected System.Web.UI.WebControls.HiddenField hfDeleteId;
-        protected System.Web.UI.WebControls.Button   btnSave;
-        protected System.Web.UI.WebControls.Button   btnDelete;
+        protected System.Web.UI.WebControls.Button btnSave;
+        protected System.Web.UI.WebControls.Button btnDelete;
 
         protected List<DepartmentAdminItem> Departments { get; private set; } = new List<DepartmentAdminItem>();
-        protected string Message     { get; private set; } = string.Empty;
+        protected string Message { get; private set; } = string.Empty;
         protected string MessageType { get; private set; } = "info";
 
         protected void Page_Load(object sender, EventArgs e)
@@ -42,10 +41,10 @@ namespace SafetyPortal.Web.Admin
 
         protected void btnSave_Click(object sender, EventArgs e)
         {
-            var name     = StripHtml(txtName.Text.Trim());
+            var name = StripHtml(txtName.Text.Trim());
             var location = StripHtml(txtLocation.Text.Trim());
-            var color    = hfColor.Value.Trim();
-            var editId   = int.Parse(hfEditId.Value);
+            var color = hfColor.Value.Trim();
+            var editId = int.Parse(hfEditId.Value);
 
             if (string.IsNullOrEmpty(name)) { Message = "Name is required."; MessageType = "danger"; LoadDepartments(); return; }
             if (!System.Text.RegularExpressions.Regex.IsMatch(color, @"^#[0-9A-Fa-f]{6}$"))
@@ -56,7 +55,7 @@ namespace SafetyPortal.Web.Admin
                 ? Api.CreateDepartment(name, location, color)
                 : Api.UpdateDepartment(editId, name, location, color, isActive);
 
-            Message     = ok ? T("dept_saved") : T("dept_save_fail");
+            Message = ok ? T("dept_saved") : T("dept_save_fail");
             MessageType = ok ? "success" : "danger";
             LoadDepartments();
         }
@@ -64,8 +63,8 @@ namespace SafetyPortal.Web.Admin
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             if (!int.TryParse(hfDeleteId.Value, out int id) || id == 0) return;
-            bool ok     = Api.DeleteDepartment(id);
-            Message     = ok ? T("dept_deleted") : T("dept_delete_fail");
+            bool ok = Api.DeleteDepartment(id);
+            Message = ok ? T("dept_deleted") : T("dept_delete_fail");
             MessageType = ok ? "success" : "danger";
             LoadDepartments();
         }

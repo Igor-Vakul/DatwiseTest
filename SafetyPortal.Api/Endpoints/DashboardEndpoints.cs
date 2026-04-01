@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SafetyPortal.Api.Data;
+using static SafetyPortal.Api.AppConstants;
 
 namespace SafetyPortal.Api.Endpoints;
 
@@ -13,16 +14,16 @@ public static class DashboardEndpoints
 
             var active = db.IncidentReports.Where(x => !x.IsArchived);
 
-            var totalIncidents    = await active.CountAsync();
-            var openIncidents     = await active.CountAsync(x => x.Status == "Open" || x.Status == "InProgress");
-            var closedIncidents   = await active.CountAsync(x => x.Status == "Closed");
-            var highCritical      = await active.CountAsync(x =>
-                                        (x.Status == "Open" || x.Status == "InProgress") &&
-                                        (x.SeverityLevel == "High" || x.SeverityLevel == "Critical"));
+            var totalIncidents = await active.CountAsync();
+            var openIncidents = await active.CountAsync(x => x.Status == IncidentStatus.Open.ToString() || x.Status == IncidentStatus.InProgress.ToString());
+            var closedIncidents = await active.CountAsync(x => x.Status == IncidentStatus.Closed.ToString());
+            var highCritical = await active.CountAsync(x =>
+                                        (x.Status == IncidentStatus.Open.ToString() || x.Status == IncidentStatus.InProgress.ToString()) &&
+                                        (x.SeverityLevel == SeverityLevel.High.ToString() || x.SeverityLevel == SeverityLevel.Critical.ToString()));
 
-            var overdueActions    = await db.CorrectiveActions.CountAsync(x =>
-                                        x.Status != "Completed" && x.DueDate < today);
-            var pendingActions    = await db.CorrectiveActions.CountAsync(x => x.Status == "Pending");
+            var overdueActions = await db.CorrectiveActions.CountAsync(x =>
+                                        x.Status != ActionStatus.Completed.ToString() && x.DueDate < today);
+            var pendingActions = await db.CorrectiveActions.CountAsync(x => x.Status == ActionStatus.Pending.ToString());
 
             var byCategory = await active
                 .Include(x => x.Category)
@@ -77,18 +78,18 @@ public static class DashboardEndpoints
 
             return Results.Ok(new
             {
-                TotalIncidents    = totalIncidents,
-                OpenIncidents     = openIncidents,
-                ClosedIncidents   = closedIncidents,
+                TotalIncidents = totalIncidents,
+                OpenIncidents = openIncidents,
+                ClosedIncidents = closedIncidents,
                 HighCriticalIncidents = highCritical,
-                OverdueActions    = overdueActions,
-                PendingActions    = pendingActions,
-                ByCategory        = byCategory,
-                ByDepartment      = byDepartment,
-                BySeverity        = bySeverity,
-                ByStatus          = byStatus,
-                ByMonth           = byMonth,
-                RecentIncidents   = recentIncidents
+                OverdueActions = overdueActions,
+                PendingActions = pendingActions,
+                ByCategory = byCategory,
+                ByDepartment = byDepartment,
+                BySeverity = bySeverity,
+                ByStatus = byStatus,
+                ByMonth = byMonth,
+                RecentIncidents = recentIncidents
             });
         })
         .WithTags("Dashboard")

@@ -11,7 +11,7 @@ public class CorrectiveAction
     public string? ActionDescription { get; set; }
 
     public int AssignedToUserId { get; set; }
-    public User AssignedToUser { get; set; } = null!;
+    public User? AssignedToUser { get; set; } = null!;
 
     public DateOnly DueDate { get; set; }
     public DateTime? CompletedAt { get; set; }

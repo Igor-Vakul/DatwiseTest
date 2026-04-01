@@ -1,22 +1,21 @@
+using SafetyPortal.Web.Models;
 using System;
 using System.Collections.Generic;
-using System.Web.UI;
-using SafetyPortal.Web.Models;
 
 namespace SafetyPortal.Web.Admin
 {
     public partial class CategoriesAdmin : AdminPage
     {
-        protected System.Web.UI.WebControls.TextBox  txtName;
-        protected System.Web.UI.WebControls.TextBox  txtDescription;
+        protected System.Web.UI.WebControls.TextBox txtName;
+        protected System.Web.UI.WebControls.TextBox txtDescription;
         protected System.Web.UI.WebControls.HiddenField hfActive;
         protected System.Web.UI.WebControls.HiddenField hfEditId;
         protected System.Web.UI.WebControls.HiddenField hfDeleteId;
-        protected System.Web.UI.WebControls.Button   btnSave;
-        protected System.Web.UI.WebControls.Button   btnDelete;
+        protected System.Web.UI.WebControls.Button btnSave;
+        protected System.Web.UI.WebControls.Button btnDelete;
 
         protected List<CategoryAdminItem> Categories { get; private set; } = new List<CategoryAdminItem>();
-        protected string Message     { get; private set; } = string.Empty;
+        protected string Message { get; private set; } = string.Empty;
         protected string MessageType { get; private set; } = "info";
 
         protected void Page_Load(object sender, EventArgs e)
@@ -40,8 +39,8 @@ namespace SafetyPortal.Web.Admin
 
         protected void btnSave_Click(object sender, EventArgs e)
         {
-            var name   = StripHtml(txtName.Text.Trim());
-            var desc   = StripHtml(txtDescription.Text.Trim());
+            var name = StripHtml(txtName.Text.Trim());
+            var desc = StripHtml(txtDescription.Text.Trim());
             var editId = int.Parse(hfEditId.Value);
 
             if (string.IsNullOrEmpty(name)) { Message = T("fields_required"); MessageType = "danger"; LoadCategories(); return; }
@@ -51,7 +50,7 @@ namespace SafetyPortal.Web.Admin
                 ? Api.CreateCategory(name, desc)
                 : Api.UpdateCategory(editId, name, desc, isActive);
 
-            Message     = ok ? T("cat_saved") : T("cat_save_fail");
+            Message = ok ? T("cat_saved") : T("cat_save_fail");
             MessageType = ok ? "success" : "danger";
             LoadCategories();
         }
@@ -59,8 +58,8 @@ namespace SafetyPortal.Web.Admin
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             if (!int.TryParse(hfDeleteId.Value, out int id) || id == 0) return;
-            bool ok     = Api.DeleteCategory(id);
-            Message     = ok ? T("cat_deleted") : T("cat_delete_fail");
+            bool ok = Api.DeleteCategory(id);
+            Message = ok ? T("cat_deleted") : T("cat_delete_fail");
             MessageType = ok ? "success" : "danger";
             LoadCategories();
         }

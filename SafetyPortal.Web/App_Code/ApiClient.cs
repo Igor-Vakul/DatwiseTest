@@ -20,9 +20,9 @@ namespace SafetyPortal.Web
     {
         private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {
-            ContractResolver     = new CamelCasePropertyNamesContractResolver(),
-            DateFormatHandling   = DateFormatHandling.IsoDateFormat,
-            NullValueHandling    = NullValueHandling.Ignore
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            DateFormatHandling = DateFormatHandling.IsoDateFormat,
+            NullValueHandling = NullValueHandling.Ignore
         };
 
         private static readonly JsonSerializerSettings DeserializeSettings = new JsonSerializerSettings
@@ -39,7 +39,7 @@ namespace SafetyPortal.Web
 
         public ApiClient(string jwtToken = null)
         {
-            _base  = (WebConfigurationManager.AppSettings["ApiBaseUrl"] ?? "https://localhost:7182").TrimEnd('/');
+            _base = (WebConfigurationManager.AppSettings["ApiBaseUrl"] ?? "https://localhost:7182").TrimEnd('/');
             _token = jwtToken;
         }
 
@@ -63,14 +63,14 @@ namespace SafetyPortal.Web
             bool archived = false)
         {
             var qs = BuildQuery(
-                ("page",          page.ToString()),
-                ("pageSize",      pageSize.ToString()),
-                ("search",        search),
-                ("status",        status),
+                ("page", page.ToString()),
+                ("pageSize", pageSize.ToString()),
+                ("search", search),
+                ("status", status),
                 ("severityLevel", severityLevel),
-                ("departmentId",  departmentId?.ToString()),
-                ("categoryId",    categoryId?.ToString()),
-                ("archived",      archived.ToString().ToLower())
+                ("departmentId", departmentId?.ToString()),
+                ("categoryId", categoryId?.ToString()),
+                ("archived", archived.ToString().ToLower())
             );
             return Get<PagedResult<IncidentSummary>>($"/api/incidents{qs}");
         }
@@ -99,7 +99,7 @@ namespace SafetyPortal.Web
         {
             try
             {
-                var form        = new MultipartFormDataContent();
+                var form = new MultipartFormDataContent();
                 var fileContent = new ByteArrayContent(content);
                 fileContent.Headers.ContentType =
                     new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
@@ -160,7 +160,7 @@ namespace SafetyPortal.Web
                     if (!apiResponse.IsSuccessStatusCode) return false;
 
                     var disposition = apiResponse.Content.Headers.ContentDisposition;
-                    var fileName    = disposition?.FileNameStar ?? disposition?.FileName
+                    var fileName = disposition?.FileNameStar ?? disposition?.FileName
                                       ?? "export.xlsx";
 
                     response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -202,7 +202,7 @@ namespace SafetyPortal.Web
 
                     var contentType = apiResponse.Content.Headers.ContentType?.ToString() ?? "application/octet-stream";
                     var disposition = apiResponse.Content.Headers.ContentDisposition;
-                    var fileName    = disposition?.FileNameStar ?? disposition?.FileName ?? "download";
+                    var fileName = disposition?.FileNameStar ?? disposition?.FileName ?? "download";
 
                     response.ContentType = contentType;
                     response.AddHeader("Content-Disposition", $"attachment; filename=\"{fileName}\"");
@@ -229,7 +229,7 @@ namespace SafetyPortal.Web
         {
             var qs = BuildQuery(
                 ("reportId", reportId?.ToString()),
-                ("status",   status)
+                ("status", status)
             );
             return Get<System.Collections.Generic.List<CorrectiveActionSummary>>($"/api/corrective-actions{qs}");
         }
@@ -244,10 +244,10 @@ namespace SafetyPortal.Web
             => Delete($"/api/corrective-actions/{id}");
 
         // ── Lookups ───────────────────────────────────────────────────────
-        public List<DepartmentItem>  GetDepartments() => Get<List<DepartmentItem>>("/api/lookup/departments");
-        public List<CategoryItem>    GetCategories()  => Get<List<CategoryItem>>("/api/lookup/categories");
-        public List<UserLookupItem>  GetUsers()       => Get<List<UserLookupItem>>("/api/lookup/users");
-        public List<RoleItem>        GetRoles()       => Get<List<RoleItem>>("/api/lookup/roles");
+        public List<DepartmentItem> GetDepartments() => Get<List<DepartmentItem>>("/api/lookup/departments");
+        public List<CategoryItem> GetCategories() => Get<List<CategoryItem>>("/api/lookup/categories");
+        public List<UserLookupItem> GetUsers() => Get<List<UserLookupItem>>("/api/lookup/users");
+        public List<RoleItem> GetRoles() => Get<List<RoleItem>>("/api/lookup/roles");
 
         // ── Admin: Departments ────────────────────────────────────────────
         public List<DepartmentAdminItem> GetAllDepartments()
@@ -282,11 +282,11 @@ namespace SafetyPortal.Web
             => Delete($"/api/admin/categories/{id}");
 
         // ── User Management ───────────────────────────────────────────────
-        public List<UserSummary>  GetAllUsers()                              => Get<List<UserSummary>>("/api/users");
-        public bool CreateUser(CreateUserRequest req)                         => Post("/api/users", req);
-        public bool UpdateUser(int id, UpdateUserRequest req)                 => Put($"/api/users/{id}", req);
-        public bool ToggleUserActive(int id)                                  => Put($"/api/users/{id}/toggle-active", new { });
-        public bool SendEmailToUser(int id, string subject, string body)      => Post($"/api/users/{id}/send-email", new { Subject = subject, Body = body });
+        public List<UserSummary> GetAllUsers() => Get<List<UserSummary>>("/api/users");
+        public bool CreateUser(CreateUserRequest req) => Post("/api/users", req);
+        public bool UpdateUser(int id, UpdateUserRequest req) => Put($"/api/users/{id}", req);
+        public bool ToggleUserActive(int id) => Put($"/api/users/{id}/toggle-active", new { });
+        public bool SendEmailToUser(int id, string subject, string body) => Post($"/api/users/{id}/send-email", new { Subject = subject, Body = body });
 
         // ── Helpers ───────────────────────────────────────────────────────
         private T Get<T>(string url)

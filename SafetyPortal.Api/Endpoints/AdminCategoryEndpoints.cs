@@ -67,7 +67,7 @@ public static class AdminCategoryEndpoints
 
             var hasOpen = await db.IncidentReports.AnyAsync(x =>
                 x.CategoryId == id &&
-                (x.Status == IncidentStatus.Open || x.Status == IncidentStatus.InProgress));
+                (x.Status == IncidentStatus.Open.ToString() || x.Status == IncidentStatus.InProgress.ToString()));
             if (hasOpen)
                 return Results.BadRequest(new { error = "Cannot delete category with open incidents." });
 

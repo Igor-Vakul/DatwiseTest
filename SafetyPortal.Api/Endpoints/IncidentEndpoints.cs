@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using SafetyPortal.Api.Data;
+using static SafetyPortal.Api.AppConstants;
 using SafetyPortal.Api.Dtos.CorrectiveActions;
 using SafetyPortal.Api.Dtos.Incidents;
 using SafetyPortal.Api.Entities;
@@ -208,7 +209,7 @@ public static class IncidentEndpoints
                 ReportedAt       = DateTime.UtcNow,
                 LocationDetails  = request.LocationDetails,
                 SeverityLevel    = request.SeverityLevel,
-                Status           = "Open"
+                Status           = IncidentStatus.Open.ToString()
             };
 
             db.IncidentReports.Add(incident);
@@ -264,7 +265,7 @@ public static class IncidentEndpoints
             if (incident is null)
                 return Results.NotFound();
 
-            if (!incident.IsArchived && incident.Status != "Closed")
+            if (!incident.IsArchived && incident.Status != IncidentStatus.Closed.ToString())
                 return Results.BadRequest(new { error = "Only closed incidents can be archived." });
 
             incident.IsArchived = !incident.IsArchived;

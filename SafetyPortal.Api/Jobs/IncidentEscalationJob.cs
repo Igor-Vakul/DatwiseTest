@@ -14,16 +14,16 @@ namespace SafetyPortal.Api.Jobs;
 public class IncidentEscalationJob
 {
     private readonly SafetyPortalDbContext _db;
-    private readonly IEmailService         _email;
+    private readonly IEmailService _email;
     private readonly ILogger<IncidentEscalationJob> _logger;
 
     public IncidentEscalationJob(
-        SafetyPortalDbContext               db,
-        IEmailService                       email,
-        ILogger<IncidentEscalationJob>      logger)
+        SafetyPortalDbContext db,
+        IEmailService email,
+        ILogger<IncidentEscalationJob> logger)
     {
-        _db     = db;
-        _email  = email;
+        _db = db;
+        _email = email;
         _logger = logger;
     }
 
@@ -40,7 +40,7 @@ public class IncidentEscalationJob
         }
 
         // Skip if already resolved — no escalation needed
-        if (incident.Status != IncidentStatus.Open)
+        if (incident.Status != IncidentStatus.Open.ToString())
         {
             _logger.LogInformation(
                 "IncidentEscalationJob: incident {ReportNumber} is '{Status}', skipping escalation",
@@ -68,13 +68,13 @@ public class IncidentEscalationJob
             incident.ReportNumber, openDays, managers.Count);
 
         var ctx = new IncidentEscalationContext(
-            ReportNumber:  incident.ReportNumber,
-            Title:         incident.Title,
+            ReportNumber: incident.ReportNumber,
+            Title: incident.Title,
             SeverityLevel: incident.SeverityLevel,
-            OpenDays:      openDays,
-            ReporterName:  incident.ReportedByUser.FullName,
+            OpenDays: openDays,
+            ReporterName: incident.ReportedByUser.FullName,
             ReporterEmail: incident.ReportedByUser.Email,
-            Managers:      managers.Select(m => (m.FullName, m.Email)).ToList()
+            Managers: managers.Select(m => (m.FullName, m.Email)).ToList()
         );
 
         await _email.SendIncidentEscalationAsync(ctx);

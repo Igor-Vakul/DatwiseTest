@@ -56,7 +56,7 @@ public static class UserManagementEndpoints
                 return Results.NotFound();
 
             user.FullName = request.FullName;
-            user.RoleId   = request.RoleId;
+            user.RoleId = request.RoleId;
 
             if (!string.IsNullOrWhiteSpace(request.Password))
             {

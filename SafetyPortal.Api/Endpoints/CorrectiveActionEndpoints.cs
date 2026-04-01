@@ -91,7 +91,7 @@ public static class CorrectiveActionEndpoints
                 ActionDescription = request.ActionDescription,
                 AssignedToUserId = request.AssignedToUserId,
                 DueDate = request.DueDate,
-                Status = ActionStatus.Pending,
+                Status = ActionStatus.Pending.ToString(),
                 PriorityLevel = request.PriorityLevel
             };
 
@@ -110,7 +110,7 @@ public static class CorrectiveActionEndpoints
                 return Results.NotFound();
 
             action.Status = request.Status;
-            if (request.Status == ActionStatus.Completed)
+            if (request.Status == ActionStatus.Completed.ToString())
                 action.CompletedAt = DateTime.UtcNow;
 
             await db.SaveChangesAsync();

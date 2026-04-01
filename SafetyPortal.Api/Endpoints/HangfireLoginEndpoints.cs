@@ -9,8 +9,8 @@ namespace SafetyPortal.Api.Endpoints;
 
 public static class HangfireLoginEndpoints
 {
-    private const string CookieName    = "HangfireAuth";
-    private const string AdminRoleName = RoleNames.Admin;
+    private const string CookieName = "HangfireAuth";
+    private static readonly string AdminRoleName = RoleName.Admin.ToString();
 
     public static IEndpointRouteBuilder MapHangfireLoginEndpoints(this IEndpointRouteBuilder app)
     {
@@ -26,12 +26,12 @@ public static class HangfireLoginEndpoints
 
         // POST /jobs/login — validate credentials, set cookie, redirect
         app.MapPost("/jobs/login", async (
-            HttpContext          http,
+            HttpContext http,
             SafetyPortalDbContext db,
-            JwtTokenService      jwtService) =>
+            JwtTokenService jwtService) =>
         {
-            var form     = await http.Request.ReadFormAsync();
-            var email    = form["email"].ToString().Trim();
+            var form = await http.Request.ReadFormAsync();
+            var email = form["email"].ToString().Trim();
             var password = form["password"].ToString();
 
             var user = await db.Users
@@ -51,9 +51,9 @@ public static class HangfireLoginEndpoints
             http.Response.Cookies.Append(CookieName, token, new CookieOptions
             {
                 HttpOnly = true,
-                Secure   = false,   // set true when behind HTTPS
+                Secure = false,   // set true when behind HTTPS
                 SameSite = SameSiteMode.Strict,
-                Path     = "/hangfire"
+                Path = "/hangfire"
             });
 
             return Results.Redirect("/hangfire");

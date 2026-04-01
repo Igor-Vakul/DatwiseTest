@@ -37,10 +37,10 @@ public class SafetyPortalDbContext : DbContext
                 .IsUnique();
 
             entity.HasData(
-                new Role { Id = 1, Name = RoleNames.Admin },
-                new Role { Id = 2, Name = RoleNames.SafetyManager },
-                new Role { Id = 3, Name = RoleNames.Supervisor },
-                new Role { Id = 4, Name = RoleNames.Employee }
+                new Role { Id = 1, Name = RoleName.Admin.ToString() },
+                new Role { Id = 2, Name = RoleName.SafetyManager.ToString() },
+                new Role { Id = 3, Name = RoleName.Supervisor.ToString() },
+                new Role { Id = 4, Name = RoleName.Employee.ToString() }
             );
         });
 

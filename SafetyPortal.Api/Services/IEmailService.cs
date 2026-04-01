@@ -19,33 +19,33 @@ public interface IEmailService
 // ── Context records ────────────────────────────────────────────────────────
 
 public record IncidentEmailContext(
-    string  ReportNumber,
-    string  Title,
-    string  SeverityLevel,
-    string  Status,
-    string  ReporterName,
-    string  ReporterEmail,
+    string ReportNumber,
+    string Title,
+    string SeverityLevel,
+    string Status,
+    string ReporterName,
+    string ReporterEmail,
     string? AssigneeName,
     string? AssigneeEmail
 );
 
 public record CorrectiveActionReminderContext(
-    int     ActionId,
-    string  ActionTitle,
-    string  ReportNumber,
+    int ActionId,
+    string ActionTitle,
+    string ReportNumber,
     DateOnly DueDate,
-    int     DaysLeft,
-    string  AssigneeName,
-    string  AssigneeEmail
+    int DaysLeft,
+    string AssigneeName,
+    string AssigneeEmail
 );
 
 public record IncidentEscalationContext(
-    string        ReportNumber,
-    string        Title,
-    string        SeverityLevel,
-    int           OpenDays,
-    string        ReporterName,
-    string        ReporterEmail,
+    string ReportNumber,
+    string Title,
+    string SeverityLevel,
+    int OpenDays,
+    string ReporterName,
+    string ReporterEmail,
     // All admins/safety managers to notify
     IReadOnlyList<(string Name, string Email)> Managers
 );

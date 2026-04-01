@@ -27,6 +27,6 @@ public class IncidentReport
     public string Status { get; set; } = string.Empty;
     public bool IsArchived { get; set; } = false;
 
-    public ICollection<CorrectiveAction>    CorrectiveActions { get; set; } = new List<CorrectiveAction>();
-    public ICollection<IncidentAttachment> Attachments       { get; set; } = new List<IncidentAttachment>();
+    public ICollection<CorrectiveAction> CorrectiveActions { get; set; } = new List<CorrectiveAction>();
+    public ICollection<IncidentAttachment> Attachments { get; set; } = new List<IncidentAttachment>();
 }

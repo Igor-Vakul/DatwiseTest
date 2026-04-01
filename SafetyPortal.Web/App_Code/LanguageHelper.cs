@@ -23,7 +23,7 @@ namespace SafetyPortal.Web
             var culture = lang == "he"
                 ? new CultureInfo("he-IL")
                 : new CultureInfo("en-US");
-            Thread.CurrentThread.CurrentCulture   = culture;
+            Thread.CurrentThread.CurrentCulture = culture;
             Thread.CurrentThread.CurrentUICulture = culture;
         }
     }

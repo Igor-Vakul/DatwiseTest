@@ -71,8 +71,8 @@ public static class FileSignatureValidator
             if (contentType == "image/webp")
             {
                 return header.Length >= 12
-                    && header[8]  == 0x57   // W
-                    && header[9]  == 0x45   // E
+                    && header[8] == 0x57   // W
+                    && header[9] == 0x45   // E
                     && header[10] == 0x42   // B
                     && header[11] == 0x50;  // P
             }

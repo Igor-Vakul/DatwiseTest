@@ -70,14 +70,14 @@ namespace SafetyPortal.Web
             }
         }
 
-        protected string CurrentRole      => SessionHelper.GetRole(Session);
-        protected string CurrentUser      => SessionHelper.GetFullName(Session);
-        protected int    CurrentUserId    => SessionHelper.GetUserId(Session);
-        protected bool   IsAdmin          => SessionHelper.IsAdmin(Session);
-        protected bool   IsManagerOrAdmin    => SessionHelper.IsManagerOrAdmin(Session);
-        protected bool   IsSupervisorOrAbove => SessionHelper.IsSupervisorOrAbove(Session);
-        protected bool   IsHebrew         => LanguageHelper.IsHebrew(Session);
-        protected string Dir              => IsHebrew ? "rtl" : "ltr";
+        protected string CurrentRole => SessionHelper.GetRole(Session);
+        protected string CurrentUser => SessionHelper.GetFullName(Session);
+        protected int CurrentUserId => SessionHelper.GetUserId(Session);
+        protected bool IsAdmin => SessionHelper.IsAdmin(Session);
+        protected bool IsManagerOrAdmin => SessionHelper.IsManagerOrAdmin(Session);
+        protected bool IsSupervisorOrAbove => SessionHelper.IsSupervisorOrAbove(Session);
+        protected bool IsHebrew => LanguageHelper.IsHebrew(Session);
+        protected string Dir => IsHebrew ? "rtl" : "ltr";
 
         /// <summary>Looks up a string from App_GlobalResources/Strings.resx (culture-aware).</summary>
         protected string T(string key)

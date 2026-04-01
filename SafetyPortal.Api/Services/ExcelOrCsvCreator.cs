@@ -377,7 +377,7 @@ namespace SafetyPortal.Api.Services
                     if (!applyIncludeInDocumentFilter) return true;
                     var attr = p.GetCustomAttribute<IncludeInDocumentAttribute>();
                     return attr == null || attr.Include;
-                })];           
+                })];
 
             string[] headers = new string[props.Length];
             DataColumn[] columns = new DataColumn[props.Length];

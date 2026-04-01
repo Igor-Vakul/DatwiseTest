@@ -1,11 +1,10 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using SafetyPortal.Api.Data;
 using SafetyPortal.Api.Dtos.Auth;
 using SafetyPortal.Api.Entities;
 using SafetyPortal.Api.Services;
+using System.Security.Claims;
 
 namespace SafetyPortal.Api.Endpoints;
 
@@ -36,10 +35,10 @@ public static class AuthEndpoints
                 logger.LogWarning("Failed login: unknown email {Email} from {IP}", request.Email, ip);
                 db.AuditLogs.Add(new AuditLog
                 {
-                    EventType  = "LoginFailed",
-                    UserEmail  = request.Email,
-                    IpAddress  = ip,
-                    Details    = "Unknown email or inactive account"
+                    EventType = "LoginFailed",
+                    UserEmail = request.Email,
+                    IpAddress = ip,
+                    Details = "Unknown email or inactive account"
                 });
                 await db.SaveChangesAsync();
                 return Results.Unauthorized();
@@ -52,11 +51,11 @@ public static class AuthEndpoints
                 logger.LogWarning("Blocked login for locked account {Email} from {IP}", user.Email, ip);
                 db.AuditLogs.Add(new AuditLog
                 {
-                    EventType  = "LoginBlocked",
-                    UserEmail  = user.Email,
-                    UserId     = user.Id,
-                    IpAddress  = ip,
-                    Details    = $"Account locked for {remaining} more minute(s)"
+                    EventType = "LoginBlocked",
+                    UserEmail = user.Email,
+                    UserId = user.Id,
+                    IpAddress = ip,
+                    Details = $"Account locked for {remaining} more minute(s)"
                 });
                 await db.SaveChangesAsync();
                 return Results.Json(
@@ -79,11 +78,11 @@ public static class AuthEndpoints
                         user.FailedLoginAttempts, user.Email, ip);
                     db.AuditLogs.Add(new AuditLog
                     {
-                        EventType  = "AccountLocked",
-                        UserEmail  = user.Email,
-                        UserId     = user.Id,
-                        IpAddress  = ip,
-                        Details    = $"Locked after {user.FailedLoginAttempts} failed attempts. Locked until {user.LockedUntil:u}"
+                        EventType = "AccountLocked",
+                        UserEmail = user.Email,
+                        UserId = user.Id,
+                        IpAddress = ip,
+                        Details = $"Locked after {user.FailedLoginAttempts} failed attempts. Locked until {user.LockedUntil:u}"
                     });
                 }
                 else
@@ -93,11 +92,11 @@ public static class AuthEndpoints
                         user.FailedLoginAttempts, MaxFailedAttempts, user.Email, ip);
                     db.AuditLogs.Add(new AuditLog
                     {
-                        EventType  = "LoginFailed",
-                        UserEmail  = user.Email,
-                        UserId     = user.Id,
-                        IpAddress  = ip,
-                        Details    = $"Wrong password, attempt {user.FailedLoginAttempts}/{MaxFailedAttempts}"
+                        EventType = "LoginFailed",
+                        UserEmail = user.Email,
+                        UserId = user.Id,
+                        IpAddress = ip,
+                        Details = $"Wrong password, attempt {user.FailedLoginAttempts}/{MaxFailedAttempts}"
                     });
                 }
 
@@ -107,14 +106,14 @@ public static class AuthEndpoints
 
             // Successful login — reset counter
             user.FailedLoginAttempts = 0;
-            user.LockedUntil         = null;
+            user.LockedUntil = null;
             db.AuditLogs.Add(new AuditLog
             {
-                EventType  = "LoginSuccess",
-                UserEmail  = user.Email,
-                UserId     = user.Id,
-                IpAddress  = ip,
-                Details    = $"Role: {user.Role.Name}"
+                EventType = "LoginSuccess",
+                UserEmail = user.Email,
+                UserId = user.Id,
+                IpAddress = ip,
+                Details = $"Role: {user.Role.Name}"
             });
             await db.SaveChangesAsync();
 
@@ -125,10 +124,10 @@ public static class AuthEndpoints
             return Results.Ok(new LoginResponseDto
             {
                 AccessToken = token,
-                UserId      = user.Id,
-                FullName    = user.FullName,
-                Email       = user.Email,
-                Role        = user.Role.Name
+                UserId = user.Id,
+                FullName = user.FullName,
+                Email = user.Email,
+                Role = user.Role.Name
             });
         })
         .RequireRateLimiting("login");
@@ -137,10 +136,10 @@ public static class AuthEndpoints
         {
             return Results.Ok(new
             {
-                UserId   = user.FindFirstValue(ClaimTypes.NameIdentifier),
+                UserId = user.FindFirstValue(ClaimTypes.NameIdentifier),
                 FullName = user.FindFirstValue(ClaimTypes.Name),
-                Email    = user.FindFirstValue(ClaimTypes.Email),
-                Role     = user.FindFirstValue(ClaimTypes.Role)
+                Email = user.FindFirstValue(ClaimTypes.Email),
+                Role = user.FindFirstValue(ClaimTypes.Role)
             });
         })
         .RequireAuthorization();

@@ -16,11 +16,11 @@ public static class AttachmentEndpoints
 
         // POST /api/incidents/{incidentId}/attachments — upload a single file
         group.MapPost("/", async (
-            int                  incidentId,
-            IFormFile            file,
-            ClaimsPrincipal      principal,
+            int incidentId,
+            IFormFile file,
+            ClaimsPrincipal principal,
             SafetyPortalDbContext db,
-            IWebHostEnvironment  env) =>
+            IWebHostEnvironment env) =>
         {
             if (!int.TryParse(principal.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
                 return Results.Unauthorized();
@@ -39,8 +39,8 @@ public static class AttachmentEndpoints
                 });
 
             // Validate size
-            var category   = FileSignatureValidator.GetFileCategory(contentType);
-            var maxBytes   = category == "image"
+            var category = FileSignatureValidator.GetFileCategory(contentType);
+            var maxBytes = category == "image"
                              ? AppConstants.Attachments.MaxImageBytes
                              : AppConstants.Attachments.MaxDocumentBytes;
 
@@ -70,12 +70,12 @@ public static class AttachmentEndpoints
 
             Directory.CreateDirectory(storageDir);
 
-            var ext         = Path.GetExtension(file.FileName);
-            var storedName  = $"{Guid.NewGuid()}{ext}";
-            var storedPath  = Path.Combine(storageDir, storedName);
+            var ext = Path.GetExtension(file.FileName);
+            var storedName = $"{Guid.NewGuid()}{ext}";
+            var storedPath = Path.Combine(storageDir, storedName);
 
             await using (var dest = File.Create(storedPath))
-            await using (var src  = file.OpenReadStream())
+            await using (var src = file.OpenReadStream())
                 await src.CopyToAsync(dest);
 
             // Save record
@@ -83,11 +83,11 @@ public static class AttachmentEndpoints
             {
                 IncidentReportId = incidentId,
                 OriginalFileName = Path.GetFileName(file.FileName),
-                StoredFileName   = storedName,
-                ContentType      = contentType,
-                FileSizeBytes    = file.Length,
-                FileCategory     = category,
-                UploadedAt       = DateTime.UtcNow,
+                StoredFileName = storedName,
+                ContentType = contentType,
+                FileSizeBytes = file.Length,
+                FileCategory = category,
+                UploadedAt = DateTime.UtcNow,
                 UploadedByUserId = userId
             };
 
@@ -116,10 +116,10 @@ public static class AttachmentEndpoints
 
         // GET /api/incidents/{incidentId}/attachments/{id}/download
         group.MapGet("/{id:int}/download", async (
-            int                  incidentId,
-            int                  id,
+            int incidentId,
+            int id,
             SafetyPortalDbContext db,
-            IWebHostEnvironment  env) =>
+            IWebHostEnvironment env) =>
         {
             var attachment = await db.IncidentAttachments
                 .FirstOrDefaultAsync(a => a.Id == id && a.IncidentReportId == incidentId);
@@ -140,10 +140,10 @@ public static class AttachmentEndpoints
 
         // DELETE /api/incidents/{incidentId}/attachments/{id}
         group.MapDelete("/{id:int}", async (
-            int                  incidentId,
-            int                  id,
+            int incidentId,
+            int id,
             SafetyPortalDbContext db,
-            IWebHostEnvironment  env) =>
+            IWebHostEnvironment env) =>
         {
             var attachment = await db.IncidentAttachments
                 .FirstOrDefaultAsync(a => a.Id == id && a.IncidentReportId == incidentId);

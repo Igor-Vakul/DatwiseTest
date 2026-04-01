@@ -12,15 +12,15 @@ namespace SafetyPortal.Api.Jobs;
 public class IncidentNotificationJob
 {
     private readonly SafetyPortalDbContext _db;
-    private readonly IEmailService         _email;
+    private readonly IEmailService _email;
     private readonly ILogger<IncidentNotificationJob> _logger;
 
     public IncidentNotificationJob(
-        SafetyPortalDbContext             db,
-        IEmailService                     email,
-        ILogger<IncidentNotificationJob>  logger)
+        SafetyPortalDbContext db,
+        IEmailService email,
+        ILogger<IncidentNotificationJob> logger)
     {
-        _db    = db;
+        _db = db;
         _email = email;
         _logger = logger;
     }
@@ -39,13 +39,13 @@ public class IncidentNotificationJob
         }
 
         var ctx = new IncidentEmailContext(
-            ReportNumber:  incident.ReportNumber,
-            Title:         incident.Title,
+            ReportNumber: incident.ReportNumber,
+            Title: incident.Title,
             SeverityLevel: incident.SeverityLevel,
-            Status:        incident.Status,
-            ReporterName:  incident.ReportedByUser.FullName,
+            Status: incident.Status,
+            ReporterName: incident.ReportedByUser.FullName,
             ReporterEmail: incident.ReportedByUser.Email,
-            AssigneeName:  incident.AssignedToUser?.FullName,
+            AssigneeName: incident.AssignedToUser?.FullName,
             AssigneeEmail: incident.AssignedToUser?.Email
         );
 
@@ -66,13 +66,13 @@ public class IncidentNotificationJob
         }
 
         var ctx = new IncidentEmailContext(
-            ReportNumber:  incident.ReportNumber,
-            Title:         incident.Title,
+            ReportNumber: incident.ReportNumber,
+            Title: incident.Title,
             SeverityLevel: incident.SeverityLevel,
-            Status:        incident.Status,
-            ReporterName:  incident.ReportedByUser.FullName,
+            Status: incident.Status,
+            ReporterName: incident.ReportedByUser.FullName,
             ReporterEmail: incident.ReportedByUser.Email,
-            AssigneeName:  incident.AssignedToUser?.FullName,
+            AssigneeName: incident.AssignedToUser?.FullName,
             AssigneeEmail: incident.AssignedToUser?.Email
         );
 

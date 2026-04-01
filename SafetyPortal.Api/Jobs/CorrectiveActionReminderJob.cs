@@ -14,16 +14,16 @@ namespace SafetyPortal.Api.Jobs;
 public class CorrectiveActionReminderJob
 {
     private readonly SafetyPortalDbContext _db;
-    private readonly IEmailService         _email;
+    private readonly IEmailService _email;
     private readonly ILogger<CorrectiveActionReminderJob> _logger;
 
     public CorrectiveActionReminderJob(
-        SafetyPortalDbContext                    db,
-        IEmailService                            email,
-        ILogger<CorrectiveActionReminderJob>     logger)
+        SafetyPortalDbContext db,
+        IEmailService email,
+        ILogger<CorrectiveActionReminderJob> logger)
     {
-        _db     = db;
-        _email  = email;
+        _db = db;
+        _email = email;
         _logger = logger;
     }
 
@@ -35,7 +35,7 @@ public class CorrectiveActionReminderJob
         var actions = await _db.CorrectiveActions
             .Include(ca => ca.AssignedToUser)
             .Include(ca => ca.Report)
-            .Where(ca => ca.Status != ActionStatus.Completed
+            .Where(ca => ca.Status != ActionStatus.Completed.ToString()
                       && ca.CompletedAt == null
                       && ca.DueDate == targetDate)
             .ToListAsync();
@@ -52,12 +52,12 @@ public class CorrectiveActionReminderJob
         var tasks = actions.Select(ca =>
         {
             var ctx = new CorrectiveActionReminderContext(
-                ActionId:      ca.Id,
-                ActionTitle:   ca.ActionTitle,
-                ReportNumber:  ca.Report.ReportNumber,
-                DueDate:       ca.DueDate,
-                DaysLeft:      AppConstants.Jobs.ReminderDaysBeforeDue,
-                AssigneeName:  ca.AssignedToUser.FullName,
+                ActionId: ca.Id,
+                ActionTitle: ca.ActionTitle,
+                ReportNumber: ca.Report.ReportNumber,
+                DueDate: ca.DueDate,
+                DaysLeft: AppConstants.Jobs.ReminderDaysBeforeDue,
+                AssigneeName: ca.AssignedToUser.FullName,
                 AssigneeEmail: ca.AssignedToUser.Email
             );
             return _email.SendCorrectiveActionReminderAsync(ctx);

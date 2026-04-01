@@ -23,7 +23,7 @@ namespace SafetyPortal.Web.CorrectiveActions
                 var completeId = Request.QueryString["complete"];
                 if (!string.IsNullOrEmpty(completeId) && int.TryParse(completeId, out int caId))
                 {
-                    Api.UpdateActionStatus(caId, "Completed");
+                    Api.UpdateActionStatus(caId, ActionStatus.Completed.ToString());
                     Response.Redirect($"List.aspx", true);
                     return;
                 }
@@ -51,7 +51,7 @@ namespace SafetyPortal.Web.CorrectiveActions
 
         protected bool IsOverdue(CorrectiveActionSummary a)
         {
-            if (a.Status == "Completed") return false;
+            if (a.Status == ActionStatus.Completed.ToString()) return false;
             return DateTime.TryParse(a.DueDate, out var d) && d < DateTime.Today;
         }
     }

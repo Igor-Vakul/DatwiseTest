@@ -74,7 +74,7 @@ public static class AdminDepartmentEndpoints
 
             var hasOpen = await db.IncidentReports.AnyAsync(x =>
                 x.DepartmentId == id &&
-                (x.Status == IncidentStatus.Open || x.Status == IncidentStatus.InProgress));
+                (x.Status == IncidentStatus.Open.ToString() || x.Status == IncidentStatus.InProgress.ToString()));
             if (hasOpen)
                 return Results.BadRequest(new { error = "Cannot delete department with open incidents." });
 

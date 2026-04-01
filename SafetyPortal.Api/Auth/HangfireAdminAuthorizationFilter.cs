@@ -50,7 +50,7 @@ public class HangfireAdminAuthorizationFilter(JwtOptions jwt) : IDashboardAuthor
             var jwt = (JwtSecurityToken)validated;
             var role = jwt.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
-            if (role == RoleNames.Admin)
+            if (role == RoleName.Admin.ToString())
                 return true;
 
             // Authenticated but not Admin — show 403
