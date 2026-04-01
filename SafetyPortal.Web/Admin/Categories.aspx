@@ -84,12 +84,14 @@
                     <div class="mb-3">
                         <label class="form-label">Description</label>
                         <asp:TextBox ID="txtDescription" runat="server" CssClass="form-control"
-                                     TextMode="MultiLine" Rows="3" MaxLength="255" />
+                                     TextMode="MultiLine" Rows="3" MaxLength="255"
+                                     style="resize:none" />
                     </div>
                     <div class="mb-3" id="activeRow" style="display:none">
-                        <div class="form-check">
-                            <asp:CheckBox ID="chkActive" runat="server" CssClass="form-check-input" />
-                            <label class="form-check-label">Active</label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" id="chkActiveUI" class="form-check-input" role="switch" />
+                            <asp:HiddenField ID="hfActive" runat="server" Value="true" />
+                            <label class="form-check-label" for="chkActiveUI">Active</label>
                         </div>
                     </div>
                 </div>
@@ -128,12 +130,17 @@
 
 <asp:Content ContentPlaceHolderID="ScriptsContent" runat="server">
 <script>
+    document.getElementById('chkActiveUI').addEventListener('change', function () {
+        document.getElementById('<%= hfActive.ClientID %>').value = this.checked;
+    });
+
     function openCreate() {
         document.getElementById('catModalTitle').textContent = 'New Category';
         document.getElementById('<%= hfEditId.ClientID %>').value = '0';
         document.getElementById('<%= txtName.ClientID %>').value = '';
         document.getElementById('<%= txtDescription.ClientID %>').value = '';
-        document.getElementById('<%= chkActive.ClientID %>').checked = true;
+        document.getElementById('chkActiveUI').checked = true;
+        document.getElementById('<%= hfActive.ClientID %>').value = 'true';
         document.getElementById('activeRow').style.display = 'none';
     }
 
@@ -142,7 +149,8 @@
         document.getElementById('<%= hfEditId.ClientID %>').value = id;
         document.getElementById('<%= txtName.ClientID %>').value = name;
         document.getElementById('<%= txtDescription.ClientID %>').value = description;
-        document.getElementById('<%= chkActive.ClientID %>').checked = isActive;
+        document.getElementById('chkActiveUI').checked = isActive;
+        document.getElementById('<%= hfActive.ClientID %>').value = isActive;
         document.getElementById('activeRow').style.display = '';
     }
 

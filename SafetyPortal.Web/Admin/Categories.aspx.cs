@@ -9,7 +9,7 @@ namespace SafetyPortal.Web.Admin
     {
         protected System.Web.UI.WebControls.TextBox  txtName;
         protected System.Web.UI.WebControls.TextBox  txtDescription;
-        protected System.Web.UI.WebControls.CheckBox chkActive;
+        protected System.Web.UI.WebControls.HiddenField hfActive;
         protected System.Web.UI.WebControls.HiddenField hfEditId;
         protected System.Web.UI.WebControls.HiddenField hfDeleteId;
         protected System.Web.UI.WebControls.Button   btnSave;
@@ -46,9 +46,10 @@ namespace SafetyPortal.Web.Admin
 
             if (string.IsNullOrEmpty(name)) { Message = "Name is required."; MessageType = "danger"; LoadCategories(); return; }
 
+            bool isActive = string.Equals(hfActive.Value, "true", StringComparison.OrdinalIgnoreCase);
             bool ok = editId == 0
                 ? Api.CreateCategory(name, desc)
-                : Api.UpdateCategory(editId, name, desc, chkActive.Checked);
+                : Api.UpdateCategory(editId, name, desc, isActive);
 
             Message     = ok ? "Saved successfully." : "Save failed.";
             MessageType = ok ? "success" : "danger";
