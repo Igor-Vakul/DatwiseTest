@@ -130,7 +130,7 @@
   <!-- Admin / Departments -->
   <data name="nav_departments"         xml:space="preserve"><value>מחלקות</value></data>
   <data name="departments_title"       xml:space="preserve"><value>מחלקות</value></data>
-  <data name="new_department"          xml:space="preserve"><value>מחלקה חדשה +</value></data>
+  <data name="new_department"          xml:space="preserve"><value>מחלקה חדשה</value></data>
   <data name="dept_name_col"           xml:space="preserve"><value>שם</value></data>
   <data name="dept_location_col"       xml:space="preserve"><value>מיקום</value></data>
   <data name="dept_color_col"          xml:space="preserve"><value>צבע</value></data>
@@ -148,7 +148,7 @@
   <!-- Admin / Categories -->
   <data name="nav_categories"          xml:space="preserve"><value>קטגוריות</value></data>
   <data name="categories_title"        xml:space="preserve"><value>קטגוריות תקריות</value></data>
-  <data name="new_category"            xml:space="preserve"><value>קטגוריה חדשה +</value></data>
+  <data name="new_category"            xml:space="preserve"><value>קטגוריה חדשה</value></data>
   <data name="cat_name_col"            xml:space="preserve"><value>שם</value></data>
   <data name="cat_desc_col"            xml:space="preserve"><value>תיאור</value></data>
   <data name="cat_name_label"          xml:space="preserve"><value>שם</value></data>

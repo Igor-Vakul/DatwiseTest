@@ -130,7 +130,7 @@
   <!-- Admin / Departments -->
   <data name="nav_departments"         xml:space="preserve"><value>Departments</value></data>
   <data name="departments_title"       xml:space="preserve"><value>Departments</value></data>
-  <data name="new_department"          xml:space="preserve"><value>New Department +</value></data>
+  <data name="new_department"          xml:space="preserve"><value>New Department</value></data>
   <data name="dept_name_col"           xml:space="preserve"><value>Name</value></data>
   <data name="dept_location_col"       xml:space="preserve"><value>Location</value></data>
   <data name="dept_color_col"          xml:space="preserve"><value>Color</value></data>
@@ -148,7 +148,7 @@
   <!-- Admin / Categories -->
   <data name="nav_categories"          xml:space="preserve"><value>Categories</value></data>
   <data name="categories_title"        xml:space="preserve"><value>Incident Categories</value></data>
-  <data name="new_category"            xml:space="preserve"><value>New Category +</value></data>
+  <data name="new_category"            xml:space="preserve"><value>New Category</value></data>
   <data name="cat_name_col"            xml:space="preserve"><value>Name</value></data>
   <data name="cat_desc_col"            xml:space="preserve"><value>Description</value></data>
   <data name="cat_name_label"          xml:space="preserve"><value>Name</value></data>

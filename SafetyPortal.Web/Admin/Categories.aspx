@@ -130,7 +130,7 @@
 
 <asp:Content ContentPlaceHolderID="ScriptsContent" runat="server">
 <script>
-    var _newCat  = '<%= T("new_category").Replace("+","").Trim() %>';
+    var _newCat  = '<%= T("new_category") %>';
     var _editCat = '<%= T("categories_title") %>';
 
     document.getElementById('chkActiveUI').addEventListener('change', function () {

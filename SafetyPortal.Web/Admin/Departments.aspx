@@ -152,7 +152,7 @@
 
 <asp:Content ContentPlaceHolderID="ScriptsContent" runat="server">
 <script>
-    var _newDept  = '<%= T("new_department").Replace("+","").Trim() %>';
+    var _newDept  = '<%= T("new_department") %>';
     var _editDept = '<%= T("departments_title") %>';
 
     document.getElementById('chkActiveUI').addEventListener('change', function () {
