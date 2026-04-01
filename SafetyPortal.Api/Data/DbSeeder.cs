@@ -17,7 +17,7 @@ public static class DbSeeder
         {
             FullName = "System Admin",
             Email = "admin@datwise.local",
-            RoleId = AppConstants.Roles.AdminId,
+            RoleId = (int)AppConstants.Roles.Admin,
             IsActive = true
         };
         admin.PasswordHash = hasher.HashPassword(admin, "Admin123!");
@@ -26,7 +26,7 @@ public static class DbSeeder
         {
             FullName = "Igor Vakul",
             Email = "safety.manager@datwise.local",
-            RoleId = AppConstants.Roles.SafetyManagerId,
+            RoleId = (int)AppConstants.Roles.SafetyManager,
             IsActive = true
         };
         safetyManager.PasswordHash = hasher.HashPassword(safetyManager, "Safety123!");

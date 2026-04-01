@@ -33,7 +33,7 @@ namespace SafetyPortal.Web
                 StatusJson = SafeJson(JsonConvert.SerializeObject(
                     Stats.ByStatus.ConvertAll(x => new { label = x.Label, count = x.Count })));
                 DeptJson = SafeJson(JsonConvert.SerializeObject(
-                    Stats.ByDepartment.ConvertAll(x => new { label = x.Label, count = x.Count })));
+                    Stats.ByDepartment.ConvertAll(x => new { label = x.Label, count = x.Count, color = x.Color ?? "#6c757d" })));
                 TrendJson = SafeJson(JsonConvert.SerializeObject(
                     Stats.ByMonth.ConvertAll(x => new { month = x.Month, count = x.Count })));
             }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SafetyPortal.Api.Data;
 
@@ -11,9 +12,11 @@ using SafetyPortal.Api.Data;
 namespace SafetyPortal.Api.Migrations
 {
     [DbContext(typeof(SafetyPortalDbContext))]
-    partial class SafetyPortalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260331183835_AddDepartmentColor")]
+    partial class AddDepartmentColor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,11 +251,6 @@ namespace SafetyPortal.Api.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -270,28 +268,24 @@ namespace SafetyPortal.Api.Migrations
                         {
                             Id = 1,
                             Description = "Event that could have caused injury or damage but did not",
-                            IsActive = true,
                             Name = "Near Miss"
                         },
                         new
                         {
                             Id = 2,
                             Description = "Identified workplace hazard",
-                            IsActive = true,
                             Name = "Hazard"
                         },
                         new
                         {
                             Id = 3,
                             Description = "Unsafe physical condition in workplace",
-                            IsActive = true,
                             Name = "Unsafe Condition"
                         },
                         new
                         {
                             Id = 4,
                             Description = "Unsafe employee action or behavior",
-                            IsActive = true,
                             Name = "Unsafe Act"
                         });
                 });

@@ -101,6 +101,12 @@
     <Content Include="Admin\Users.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
+    <Content Include="Admin\Departments.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Admin\Categories.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="Content\Site.css" />
     <Content Include="Content\lib\bootstrap\css\bootstrap.min.css" />
     <Content Include="Content\lib\bootstrap\css\bootstrap.rtl.min.css" />
@@ -149,6 +155,14 @@
     </Compile>
     <Compile Include="Admin\Users.aspx.cs">
       <DependentUpon>Users.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\Departments.aspx.cs">
+      <DependentUpon>Departments.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\Categories.aspx.cs">
+      <DependentUpon>Categories.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="App_Code\ApiClient.cs" />

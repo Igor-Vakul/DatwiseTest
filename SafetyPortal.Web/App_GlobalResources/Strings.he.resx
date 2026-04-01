@@ -45,6 +45,8 @@
   <data name="reset"                  xml:space="preserve"><value>איפוס</value></data>
   <data name="save"                   xml:space="preserve"><value>שמור</value></data>
   <data name="cancel"                 xml:space="preserve"><value>ביטול</value></data>
+  <data name="delete"                 xml:space="preserve"><value>מחק</value></data>
+  <data name="click_to_toggle"        xml:space="preserve"><value>לחץ לשינוי</value></data>
   <data name="edit"                   xml:space="preserve"><value>ערוך</value></data>
   <data name="back"                   xml:space="preserve"><value>חזרה</value></data>
   <data name="active"                 xml:space="preserve"><value>פעיל</value></data>
@@ -125,6 +127,39 @@
   <data name="by_department"          xml:space="preserve"><value>תקריות לפי מחלקה</value></data>
   <data name="trend"                  xml:space="preserve"><value>מגמת תקריות (6 חודשים אחרונים)</value></data>
   <data name="date_col"               xml:space="preserve"><value>תאריך</value></data>
+  <!-- Admin / Departments -->
+  <data name="nav_departments"         xml:space="preserve"><value>מחלקות</value></data>
+  <data name="departments_title"       xml:space="preserve"><value>מחלקות</value></data>
+  <data name="new_department"          xml:space="preserve"><value>מחלקה חדשה</value></data>
+  <data name="dept_name_col"           xml:space="preserve"><value>שם</value></data>
+  <data name="dept_location_col"       xml:space="preserve"><value>מיקום</value></data>
+  <data name="dept_color_col"          xml:space="preserve"><value>צבע</value></data>
+  <data name="dept_name_label"         xml:space="preserve"><value>שם</value></data>
+  <data name="dept_location_label"     xml:space="preserve"><value>מיקום</value></data>
+  <data name="dept_color_label"        xml:space="preserve"><value>צבע</value></data>
+  <data name="dept_color_hint"         xml:space="preserve"><value>בחר צבע לזיהוי המחלקה בגרפים</value></data>
+  <data name="dept_saved"              xml:space="preserve"><value>נשמר בהצלחה.</value></data>
+  <data name="dept_save_fail"          xml:space="preserve"><value>השמירה נכשלה.</value></data>
+  <data name="dept_deleted"            xml:space="preserve"><value>המחלקה נמחקה.</value></data>
+  <data name="dept_delete_fail"        xml:space="preserve"><value>לא ניתן למחוק — למחלקה יש תקריות פתוחות.</value></data>
+  <data name="dept_delete_confirm"     xml:space="preserve"><value>מחיקת מחלקה</value></data>
+  <data name="dept_delete_hint"        xml:space="preserve"><value>מחלקות עם תקריות פתוחות לא ניתן למחוק.</value></data>
+  <data name="no_departments"          xml:space="preserve"><value>לא נמצאו מחלקות.</value></data>
+  <!-- Admin / Categories -->
+  <data name="nav_categories"          xml:space="preserve"><value>קטגוריות</value></data>
+  <data name="categories_title"        xml:space="preserve"><value>קטגוריות תקריות</value></data>
+  <data name="new_category"            xml:space="preserve"><value>קטגוריה חדשה</value></data>
+  <data name="cat_name_col"            xml:space="preserve"><value>שם</value></data>
+  <data name="cat_desc_col"            xml:space="preserve"><value>תיאור</value></data>
+  <data name="cat_name_label"          xml:space="preserve"><value>שם</value></data>
+  <data name="cat_desc_label"          xml:space="preserve"><value>תיאור</value></data>
+  <data name="cat_saved"               xml:space="preserve"><value>נשמר בהצלחה.</value></data>
+  <data name="cat_save_fail"           xml:space="preserve"><value>השמירה נכשלה.</value></data>
+  <data name="cat_deleted"             xml:space="preserve"><value>הקטגוריה נמחקה.</value></data>
+  <data name="cat_delete_fail"         xml:space="preserve"><value>לא ניתן למחוק — לקטגוריה יש תקריות פתוחות.</value></data>
+  <data name="cat_delete_confirm"      xml:space="preserve"><value>מחיקת קטגוריה</value></data>
+  <data name="cat_delete_hint"         xml:space="preserve"><value>קטגוריות עם תקריות פתוחות לא ניתן למחוק.</value></data>
+  <data name="no_categories"           xml:space="preserve"><value>לא נמצאו קטגוריות.</value></data>
   <!-- Admin / Users -->
   <data name="users_title"            xml:space="preserve"><value>ניהול משתמשים</value></data>
   <data name="all_users"              xml:space="preserve"><value>כל המשתמשים</value></data>
