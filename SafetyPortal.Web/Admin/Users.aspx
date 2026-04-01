@@ -41,9 +41,9 @@
                                 <td><%= System.Web.HttpUtility.HtmlEncode(u.FullName) %></td>
                                 <td><small><%= System.Web.HttpUtility.HtmlEncode(u.Email) %></small></td>
                                 <td>
-                                    <% string roleColor = u.RoleName == "Admin" ? "danger" :
-                                           u.RoleName == "SafetyManager" ? "primary" :
-                                           u.RoleName == "Supervisor" ? "info" : "secondary"; %>
+                                    <% string roleColor = u.RoleName == RoleName.Admin.ToString() ? "danger" :
+                                           u.RoleName == RoleName.SafetyManager.ToString() ? "primary" :
+                                           u.RoleName == RoleName.Supervisor.ToString() ? "info" : "secondary"; %>
                                     <span class="badge bg-<%= roleColor %>"><%= u.RoleName %></span>
                                 </td>
                                 <td>

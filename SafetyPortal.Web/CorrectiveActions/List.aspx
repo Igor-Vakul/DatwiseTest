@@ -79,7 +79,7 @@
                             <td><span class="badge badge-status-<%= a.Status.ToLower() %>"><%= a.Status %></span></td>
                             <% if (IsSupervisorOrAbove) { %>
                             <td>
-                                <% if (a.Status != "Completed") { %>
+                                <% if (a.Status != ActionStatus.Completed.ToString()) { %>
                                 <a href="List.aspx?complete=<%= a.Id %>&status=<%= ddlStatus.SelectedValue %>"
                                    class="btn btn-outline-success btn-sm py-0 px-2"
                                    onclick="return confirm('<%= T("confirm_complete") %>')" title="<%= T("mark_complete") %>">

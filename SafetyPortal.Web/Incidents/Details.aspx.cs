@@ -37,7 +37,7 @@ namespace SafetyPortal.Web.Incidents
                 var completeActionId = Request.QueryString["completeAction"];
                 if (!string.IsNullOrEmpty(completeActionId) && int.TryParse(completeActionId, out int caId))
                 {
-                    Api.UpdateActionStatus(caId, "Completed");
+                    Api.UpdateActionStatus(caId, ActionStatus.Completed.ToString());
                     Response.Redirect($"Details.aspx?id={IncidentId}", true);
                     return;
                 }

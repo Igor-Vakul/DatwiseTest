@@ -225,7 +225,7 @@
                         <td><span class="badge badge-status-<%= ca.Status.ToLower() %>"><%= ca.Status %></span></td>
                         <% if (IsSupervisorOrAbove) { %>
                         <td>
-                            <% if (ca.Status != "Completed") { %>
+                            <% if (ca.Status != ActionStatus.Completed.ToString()) { %>
                             <a href="Details.aspx?id=<%= Incident.Id %>&completeAction=<%= ca.Id %>"
                                class="btn btn-outline-success btn-sm py-0 px-2" title="<%= T("mark_complete") %>"
                                onclick="return confirm('<%= T("confirm_complete") %>')">
