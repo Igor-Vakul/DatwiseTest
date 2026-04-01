@@ -13,7 +13,7 @@ namespace SafetyPortal.Web
 
         protected string ErrorMessage { get; private set; } = string.Empty;
         protected bool IsHebrew => LanguageHelper.IsHebrew(Session);
-        protected string Dir => IsHebrew ? AppConstants.Layout.DirRtl : AppConstants.Layout.DirLtr;
+        protected string Dir => IsHebrew ? TextDirection.Rtl.ToString().ToLower() : TextDirection.Ltr.ToString().ToLower();
 
         protected override void InitializeCulture()
         {

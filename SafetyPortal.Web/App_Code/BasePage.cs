@@ -77,7 +77,7 @@ namespace SafetyPortal.Web
         protected bool IsManagerOrAdmin => SessionHelper.IsManagerOrAdmin(Session);
         protected bool IsSupervisorOrAbove => SessionHelper.IsSupervisorOrAbove(Session);
         protected bool IsHebrew => LanguageHelper.IsHebrew(Session);
-        protected string Dir => IsHebrew ? AppConstants.Layout.DirRtl : AppConstants.Layout.DirLtr;
+        protected string Dir => IsHebrew ? TextDirection.Rtl.ToString().ToLower() : TextDirection.Ltr.ToString().ToLower();
 
         /// <summary>Looks up a string from App_GlobalResources/Strings.resx (culture-aware).</summary>
         protected string T(string key)
