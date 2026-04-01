@@ -17,7 +17,10 @@ public static class DashboardEndpoints
             int.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out int currentUserId);
 
             var active = isEmployee
-                ? db.IncidentReports.Where(x => !x.IsArchived && (x.ReportedByUserId == currentUserId || x.AssignedToUserId == currentUserId))
+                ? db.IncidentReports.Where(x => !x.IsArchived && (
+                    x.ReportedByUserId == currentUserId ||
+                    x.AssignedToUserId == currentUserId ||
+                    x.CorrectiveActions.Any(ca => ca.AssignedToUserId == currentUserId)))
                 : db.IncidentReports.Where(x => !x.IsArchived);
 
             var totalIncidents = await active.CountAsync();

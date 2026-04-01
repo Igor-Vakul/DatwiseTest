@@ -36,7 +36,10 @@ public static class IncidentEndpoints
                 .AsQueryable();
 
             if (isEmployee)
-                query = query.Where(x => x.ReportedByUserId == currentUserId || x.AssignedToUserId == currentUserId);
+                query = query.Where(x =>
+                    x.ReportedByUserId == currentUserId ||
+                    x.AssignedToUserId == currentUserId ||
+                    x.CorrectiveActions.Any(ca => ca.AssignedToUserId == currentUserId));
 
             if (!string.IsNullOrWhiteSpace(f.Search))
                 query = query.Where(x =>
@@ -100,7 +103,10 @@ public static class IncidentEndpoints
                 .AsQueryable();
 
             if (isEmployee)
-                query = query.Where(x => x.ReportedByUserId == currentUserId || x.AssignedToUserId == currentUserId);
+                query = query.Where(x =>
+                    x.ReportedByUserId == currentUserId ||
+                    x.AssignedToUserId == currentUserId ||
+                    x.CorrectiveActions.Any(ca => ca.AssignedToUserId == currentUserId));
 
             if (!string.IsNullOrWhiteSpace(f.Search))
                 query = query.Where(x =>
