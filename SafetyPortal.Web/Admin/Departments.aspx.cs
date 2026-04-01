@@ -10,7 +10,7 @@ namespace SafetyPortal.Web.Admin
         protected System.Web.UI.WebControls.TextBox  txtName;
         protected System.Web.UI.WebControls.TextBox  txtLocation;
         protected System.Web.UI.WebControls.HiddenField hfColor;
-        protected System.Web.UI.WebControls.CheckBox chkActive;
+        protected System.Web.UI.WebControls.HiddenField hfActive;
         protected System.Web.UI.WebControls.HiddenField hfEditId;
         protected System.Web.UI.WebControls.HiddenField hfDeleteId;
         protected System.Web.UI.WebControls.Button   btnSave;
@@ -30,6 +30,7 @@ namespace SafetyPortal.Web.Admin
                 return;
             }
 
+            txtLocation.Attributes["list"] = "locationsList";
             if (!IsPostBack)
                 LoadDepartments();
         }
@@ -50,9 +51,10 @@ namespace SafetyPortal.Web.Admin
             if (!System.Text.RegularExpressions.Regex.IsMatch(color, @"^#[0-9A-Fa-f]{6}$"))
                 color = "#6c757d";
 
+            bool isActive = string.Equals(hfActive.Value, "true", StringComparison.OrdinalIgnoreCase);
             bool ok = editId == 0
                 ? Api.CreateDepartment(name, location, color)
-                : Api.UpdateDepartment(editId, name, location, color, chkActive.Checked);
+                : Api.UpdateDepartment(editId, name, location, color, isActive);
 
             Message     = ok ? "Saved successfully." : "Save failed.";
             MessageType = ok ? "success" : "danger";

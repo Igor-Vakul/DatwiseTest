@@ -91,6 +91,13 @@
                     <div class="mb-3">
                         <label class="form-label">Location</label>
                         <asp:TextBox ID="txtLocation" runat="server" CssClass="form-control" MaxLength="100" />
+                        <datalist id="locationsList">
+                            <% foreach (var loc in new System.Collections.Generic.HashSet<string>(
+                                   Departments.Where(d => !string.IsNullOrEmpty(d.LocationName))
+                                              .Select(d => d.LocationName)).OrderBy(l => l)) { %>
+                            <option value="<%= System.Web.HttpUtility.HtmlEncode(loc) %>"></option>
+                            <% } %>
+                        </datalist>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Color</label>
@@ -104,8 +111,9 @@
                     </div>
                     <div class="mb-3" id="activeRow" style="display:none">
                         <div class="form-check form-switch">
-                            <asp:CheckBox ID="chkActive" runat="server" CssClass="form-check-input" />
-                            <label class="form-check-label" for="<%= chkActive.ClientID %>">Active</label>
+                            <input type="checkbox" id="chkActiveUI" class="form-check-input" role="switch" />
+                            <asp:HiddenField ID="hfActive" runat="server" Value="true" />
+                            <label class="form-check-label" for="chkActiveUI">Active</label>
                         </div>
                     </div>
                 </div>
@@ -144,6 +152,10 @@
 
 <asp:Content ContentPlaceHolderID="ScriptsContent" runat="server">
 <script>
+    document.getElementById('chkActiveUI').addEventListener('change', function () {
+        document.getElementById('<%= hfActive.ClientID %>').value = this.checked;
+    });
+
     function openCreate() {
         document.getElementById('deptModalTitle').textContent = 'New Department';
         document.getElementById('<%= hfEditId.ClientID %>').value = '0';
@@ -151,7 +163,8 @@
         document.getElementById('<%= txtLocation.ClientID %>').value = '';
         document.getElementById('colorPickerInput').value = '#6c757d';
         document.getElementById('<%= hfColor.ClientID %>').value = '#6c757d';
-        document.getElementById('<%= chkActive.ClientID %>').checked = true;
+        document.getElementById('chkActiveUI').checked = true;
+        document.getElementById('<%= hfActive.ClientID %>').value = 'true';
         document.getElementById('activeRow').style.display = 'none';
     }
 
@@ -162,7 +175,8 @@
         document.getElementById('<%= txtLocation.ClientID %>').value = location;
         document.getElementById('colorPickerInput').value = color;
         document.getElementById('<%= hfColor.ClientID %>').value = color;
-        document.getElementById('<%= chkActive.ClientID %>').checked = isActive;
+        document.getElementById('chkActiveUI').checked = isActive;
+        document.getElementById('<%= hfActive.ClientID %>').value = isActive;
         document.getElementById('activeRow').style.display = '';
     }
 
