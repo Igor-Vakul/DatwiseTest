@@ -6,14 +6,14 @@ namespace SafetyPortal.Web
 {
     public partial class Login : Page
     {
-        protected System.Web.UI.WebControls.TextBox       txtEmail;
-        protected System.Web.UI.WebControls.TextBox       txtPassword;
-        protected System.Web.UI.WebControls.HiddenField   hdnReturnUrl;
-        protected System.Web.UI.WebControls.Button        btnLogin;
+        protected System.Web.UI.WebControls.TextBox txtEmail;
+        protected System.Web.UI.WebControls.TextBox txtPassword;
+        protected System.Web.UI.WebControls.HiddenField hdnReturnUrl;
+        protected System.Web.UI.WebControls.Button btnLogin;
 
         protected string ErrorMessage { get; private set; } = string.Empty;
-        protected bool   IsHebrew     => LanguageHelper.IsHebrew(Session);
-        protected string Dir          => IsHebrew ? "rtl" : "ltr";
+        protected bool IsHebrew => LanguageHelper.IsHebrew(Session);
+        protected string Dir => IsHebrew ? "rtl" : "ltr";
 
         protected override void InitializeCulture()
         {
@@ -67,7 +67,7 @@ namespace SafetyPortal.Web
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            var email    = StripHtml(txtEmail.Text.Trim());
+            var email = StripHtml(txtEmail.Text.Trim());
             var password = txtPassword.Text;
 
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
@@ -76,7 +76,7 @@ namespace SafetyPortal.Web
                 return;
             }
 
-            var api  = new ApiClient();
+            var api = new ApiClient();
             var resp = api.Login(email, password);
 
             if (resp == null)

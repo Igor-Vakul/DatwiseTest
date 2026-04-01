@@ -10,19 +10,19 @@ namespace SafetyPortal.Web.Incidents
 {
     public partial class IncidentCreate : BasePage
     {
-        protected System.Web.UI.WebControls.TextBox       txtTitle;
-        protected System.Web.UI.WebControls.TextBox       txtDescription;
-        protected System.Web.UI.WebControls.DropDownList  ddlCategory;
-        protected System.Web.UI.WebControls.DropDownList  ddlDept;
-        protected System.Web.UI.WebControls.TextBox       txtDate;
-        protected System.Web.UI.WebControls.DropDownList  ddlSeverity;
-        protected System.Web.UI.WebControls.TextBox       txtLocation;
-        protected System.Web.UI.WebControls.DropDownList  ddlAssign;
-        protected System.Web.UI.WebControls.Button        btnSave;
-        protected System.Web.UI.WebControls.FileUpload    fuAttachments;
+        protected System.Web.UI.WebControls.TextBox txtTitle;
+        protected System.Web.UI.WebControls.TextBox txtDescription;
+        protected System.Web.UI.WebControls.DropDownList ddlCategory;
+        protected System.Web.UI.WebControls.DropDownList ddlDept;
+        protected System.Web.UI.WebControls.TextBox txtDate;
+        protected System.Web.UI.WebControls.DropDownList ddlSeverity;
+        protected System.Web.UI.WebControls.TextBox txtLocation;
+        protected System.Web.UI.WebControls.DropDownList ddlAssign;
+        protected System.Web.UI.WebControls.Button btnSave;
+        protected System.Web.UI.WebControls.FileUpload fuAttachments;
 
-        protected string ErrorMessage  { get; private set; } = string.Empty;
-        protected string UploadErrors  { get; private set; } = string.Empty;
+        protected string ErrorMessage { get; private set; } = string.Empty;
+        protected string UploadErrors { get; private set; } = string.Empty;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -36,9 +36,9 @@ namespace SafetyPortal.Web.Incidents
 
         private void LoadLookups()
         {
-            var cats  = Api.GetCategories()  ?? new List<CategoryItem>();
+            var cats = Api.GetCategories() ?? new List<CategoryItem>();
             var depts = Api.GetDepartments() ?? new List<DepartmentItem>();
-            var users = Api.GetUsers()       ?? new List<UserLookupItem>();
+            var users = Api.GetUsers() ?? new List<UserLookupItem>();
 
             foreach (var c in cats)
                 ddlCategory.Items.Add(new ListItem(c.Name, c.Id.ToString()));
@@ -54,7 +54,7 @@ namespace SafetyPortal.Web.Incidents
         protected void btnSave_Click(object sender, EventArgs e)
         {
             var title = StripHtml(txtTitle.Text.Trim());
-            var desc  = StripHtml(txtDescription.Text.Trim());
+            var desc = StripHtml(txtDescription.Text.Trim());
 
             if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(desc))
             {
@@ -72,13 +72,13 @@ namespace SafetyPortal.Web.Incidents
 
             var req = new CreateIncidentRequest
             {
-                Title            = title,
-                Description      = desc,
-                CategoryId       = int.Parse(ddlCategory.SelectedValue),
-                DepartmentId     = int.Parse(ddlDept.SelectedValue),
-                IncidentDate     = date.ToString(AppConstants.Validation.ISODateFormat),
-                LocationDetails  = StripHtml(txtLocation.Text.Trim()),
-                SeverityLevel    = ddlSeverity.SelectedValue,
+                Title = title,
+                Description = desc,
+                CategoryId = int.Parse(ddlCategory.SelectedValue),
+                DepartmentId = int.Parse(ddlDept.SelectedValue),
+                IncidentDate = date.ToString(AppConstants.Validation.ISODateFormat),
+                LocationDetails = StripHtml(txtLocation.Text.Trim()),
+                SeverityLevel = ddlSeverity.SelectedValue,
                 AssignedToUserId = assignedTo
             };
 

@@ -10,26 +10,26 @@ namespace SafetyPortal.Web.Incidents
 {
     public partial class IncidentDetails : BasePage
     {
-        protected System.Web.UI.WebControls.TextBox       txtActionTitle;
-        protected System.Web.UI.WebControls.TextBox       txtActionDesc;
-        protected System.Web.UI.WebControls.DropDownList  ddlActionUser;
-        protected System.Web.UI.WebControls.TextBox       txtActionDue;
-        protected System.Web.UI.WebControls.DropDownList  ddlActionPriority;
-        protected System.Web.UI.WebControls.Button        btnAddAction;
-        protected System.Web.UI.WebControls.FileUpload    fuDetailsAttachments;
-        protected System.Web.UI.WebControls.Button        btnUpload;
+        protected System.Web.UI.WebControls.TextBox txtActionTitle;
+        protected System.Web.UI.WebControls.TextBox txtActionDesc;
+        protected System.Web.UI.WebControls.DropDownList ddlActionUser;
+        protected System.Web.UI.WebControls.TextBox txtActionDue;
+        protected System.Web.UI.WebControls.DropDownList ddlActionPriority;
+        protected System.Web.UI.WebControls.Button btnAddAction;
+        protected System.Web.UI.WebControls.FileUpload fuDetailsAttachments;
+        protected System.Web.UI.WebControls.Button btnUpload;
 
-        protected IncidentDetail       Incident    { get; private set; }
+        protected IncidentDetail Incident { get; private set; }
         protected List<AttachmentInfo> Attachments { get; private set; } = new List<AttachmentInfo>();
-        protected string               ActionError { get; private set; } = string.Empty;
-        protected string               UploadError { get; private set; } = string.Empty;
+        protected string ActionError { get; private set; } = string.Empty;
+        protected string UploadError { get; private set; } = string.Empty;
 
         private int IncidentId => int.TryParse(Request.QueryString["id"], out int id) ? id : 0;
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (btnAddAction != null) btnAddAction.Text = T("save_action");
-            if (btnUpload   != null) btnUpload.Text    = T("upload_btn");
+            if (btnUpload != null) btnUpload.Text = T("upload_btn");
 
             // Handle "complete action" GET action
             if (!IsPostBack)
@@ -136,12 +136,12 @@ namespace SafetyPortal.Web.Incidents
 
             var req = new CreateCorrectiveActionRequest
             {
-                ReportId          = IncidentId,
-                ActionTitle       = title,
+                ReportId = IncidentId,
+                ActionTitle = title,
                 ActionDescription = StripHtml(txtActionDesc.Text.Trim()),
-                AssignedToUserId  = int.Parse(ddlActionUser.SelectedValue),
-                DueDate           = dueDate.ToString("yyyy-MM-dd"),
-                PriorityLevel     = ddlActionPriority.SelectedValue
+                AssignedToUserId = int.Parse(ddlActionUser.SelectedValue),
+                DueDate = dueDate.ToString("yyyy-MM-dd"),
+                PriorityLevel = ddlActionPriority.SelectedValue
             };
 
             if (Api.CreateCorrectiveAction(req))

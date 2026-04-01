@@ -7,12 +7,12 @@ namespace SafetyPortal.Web
 {
     public partial class Dashboard : BasePage
     {
-        protected DashboardStats Stats        { get; private set; } = new DashboardStats();
-        protected string         CategoryJson { get; private set; } = "[]";
-        protected string         SeverityJson { get; private set; } = "[]";
-        protected string         StatusJson   { get; private set; } = "[]";
-        protected string         DeptJson     { get; private set; } = "[]";
-        protected string         TrendJson    { get; private set; } = "[]";
+        protected DashboardStats Stats { get; private set; } = new DashboardStats();
+        protected string CategoryJson { get; private set; } = "[]";
+        protected string SeverityJson { get; private set; } = "[]";
+        protected string StatusJson { get; private set; } = "[]";
+        protected string DeptJson { get; private set; } = "[]";
+        protected string TrendJson { get; private set; } = "[]";
 
         // Prevents </script> from breaking out of a <script> block when JSON is inlined
         private static string SafeJson(string json)

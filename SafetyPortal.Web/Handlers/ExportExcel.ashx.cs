@@ -21,7 +21,7 @@ namespace SafetyPortal.Web.Handlers
                 return;
             }
 
-            var qs   = context.Request.QueryString;
+            var qs = context.Request.QueryString;
             var type = qs["type"] ?? string.Empty;
 
             string apiPath;
@@ -40,9 +40,9 @@ namespace SafetyPortal.Web.Handlers
                 return;
             }
 
-            var token  = SessionHelper.GetToken(context.Session);
+            var token = SessionHelper.GetToken(context.Session);
             var client = new ApiClient(token);
-            bool ok    = client.ProxyExport(apiPath, context.Response);
+            bool ok = client.ProxyExport(apiPath, context.Response);
 
             if (!ok)
                 context.Response.StatusCode = 500;
@@ -53,11 +53,11 @@ namespace SafetyPortal.Web.Handlers
         private static string BuildIncidentsExportPath(System.Collections.Specialized.NameValueCollection qs)
         {
             var parts = new System.Collections.Generic.List<string>();
-            if (!string.IsNullOrEmpty(qs["search"]))   parts.Add("search="        + HttpUtility.UrlEncode(qs["search"]));
-            if (!string.IsNullOrEmpty(qs["status"]))   parts.Add("status="        + HttpUtility.UrlEncode(qs["status"]));
+            if (!string.IsNullOrEmpty(qs["search"])) parts.Add("search=" + HttpUtility.UrlEncode(qs["search"]));
+            if (!string.IsNullOrEmpty(qs["status"])) parts.Add("status=" + HttpUtility.UrlEncode(qs["status"]));
             if (!string.IsNullOrEmpty(qs["severity"])) parts.Add("severityLevel=" + HttpUtility.UrlEncode(qs["severity"]));
-            if (!string.IsNullOrEmpty(qs["dept"]))     parts.Add("departmentId="  + HttpUtility.UrlEncode(qs["dept"]));
-            if (!string.IsNullOrEmpty(qs["cat"]))      parts.Add("categoryId="    + HttpUtility.UrlEncode(qs["cat"]));
+            if (!string.IsNullOrEmpty(qs["dept"])) parts.Add("departmentId=" + HttpUtility.UrlEncode(qs["dept"]));
+            if (!string.IsNullOrEmpty(qs["cat"])) parts.Add("categoryId=" + HttpUtility.UrlEncode(qs["cat"]));
             var query = parts.Count > 0 ? "?" + string.Join("&", parts) : string.Empty;
             return "/api/incidents/export" + query;
         }

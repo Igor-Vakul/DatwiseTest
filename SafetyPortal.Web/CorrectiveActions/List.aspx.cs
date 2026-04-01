@@ -7,10 +7,10 @@ namespace SafetyPortal.Web.CorrectiveActions
     public partial class CorrectiveActionList : BasePage
     {
         protected System.Web.UI.WebControls.DropDownList ddlStatus;
-        protected System.Web.UI.WebControls.Button       btnFilter;
+        protected System.Web.UI.WebControls.Button btnFilter;
 
-        protected List<CorrectiveActionSummary> Actions   { get; private set; } = new List<CorrectiveActionSummary>();
-        protected string                         ExportQs  { get; private set; } = string.Empty;
+        protected List<CorrectiveActionSummary> Actions { get; private set; } = new List<CorrectiveActionSummary>();
+        protected string ExportQs { get; private set; } = string.Empty;
 
         protected void Page_Load(object sender, EventArgs e)
         {

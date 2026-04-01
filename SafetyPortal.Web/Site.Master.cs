@@ -6,13 +6,13 @@ namespace SafetyPortal.Web
     public partial class SiteMaster : MasterPage
     {
         protected string UserFullName { get; private set; }
-        protected string UserRole     { get; private set; }
-        protected bool   IsAdmin      { get; private set; }
-        protected bool   IsHebrew     { get; private set; }
-        protected string Dir          { get; private set; }
+        protected string UserRole { get; private set; }
+        protected bool IsAdmin { get; private set; }
+        protected bool IsHebrew { get; private set; }
+        protected string Dir { get; private set; }
 
-        protected string LangUrlEn  { get; private set; }
-        protected string LangUrlHe  { get; private set; }
+        protected string LangUrlEn { get; private set; }
+        protected string LangUrlHe { get; private set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -23,10 +23,10 @@ namespace SafetyPortal.Web
             }
 
             UserFullName = SessionHelper.GetFullName(Session);
-            UserRole     = SessionHelper.GetRole(Session);
-            IsAdmin      = SessionHelper.IsAdmin(Session);
-            IsHebrew     = LanguageHelper.IsHebrew(Session);
-            Dir          = IsHebrew ? "rtl" : "ltr";
+            UserRole = SessionHelper.GetRole(Session);
+            IsAdmin = SessionHelper.IsAdmin(Session);
+            IsHebrew = LanguageHelper.IsHebrew(Session);
+            Dir = IsHebrew ? "rtl" : "ltr";
 
             // Build language switch URLs preserving existing query string params
             var qs = System.Web.HttpUtility.ParseQueryString(Request.QueryString.ToString());

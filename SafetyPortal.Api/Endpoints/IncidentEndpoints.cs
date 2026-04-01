@@ -110,16 +110,16 @@ public static class IncidentEndpoints
                 .OrderByDescending(x => x.ReportedAt)
                 .Select(x => new IncidentExportRow
                 {
-                    ReportNumber           = x.ReportNumber,
-                    Title                  = x.Title,
-                    CategoryName           = x.Category.Name,
-                    DepartmentName         = x.Department.Name,
-                    ReportedBy             = x.ReportedByUser.FullName,
-                    AssignedTo             = x.AssignedToUser != null ? x.AssignedToUser.FullName : "",
-                    IncidentDate           = x.IncidentDate,
-                    SeverityLevel          = x.SeverityLevel,
-                    Status                 = x.Status,
-                    Location               = x.LocationDetails ?? "",
+                    ReportNumber = x.ReportNumber,
+                    Title = x.Title,
+                    CategoryName = x.Category.Name,
+                    DepartmentName = x.Department.Name,
+                    ReportedBy = x.ReportedByUser.FullName,
+                    AssignedTo = x.AssignedToUser != null ? x.AssignedToUser.FullName : "",
+                    IncidentDate = x.IncidentDate,
+                    SeverityLevel = x.SeverityLevel,
+                    Status = x.Status,
+                    Location = x.LocationDetails ?? "",
                     CorrectiveActionsCount = x.CorrectiveActions.Count
                 })
                 .ToListAsync();
@@ -185,31 +185,31 @@ public static class IncidentEndpoints
 
         // POST /api/incidents
         group.MapPost("/", async (
-            CreateIncidentDto    request,
-            ClaimsPrincipal      user,
+            CreateIncidentDto request,
+            ClaimsPrincipal user,
             SafetyPortalDbContext db,
             IBackgroundJobClient jobs) =>
         {
             if (!int.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
                 return Results.Unauthorized();
 
-            var count        = await db.IncidentReports.CountAsync();
+            var count = await db.IncidentReports.CountAsync();
             var reportNumber = $"INC-{DateTime.UtcNow:yyyy}-{(count + 1):D4}";
 
             var incident = new IncidentReport
             {
-                ReportNumber     = reportNumber,
-                Title            = request.Title,
-                Description      = request.Description,
-                CategoryId       = request.CategoryId,
-                DepartmentId     = request.DepartmentId,
+                ReportNumber = reportNumber,
+                Title = request.Title,
+                Description = request.Description,
+                CategoryId = request.CategoryId,
+                DepartmentId = request.DepartmentId,
                 ReportedByUserId = userId,
                 AssignedToUserId = request.AssignedToUserId,
-                IncidentDate     = DateTime.Parse(request.IncidentDate),
-                ReportedAt       = DateTime.UtcNow,
-                LocationDetails  = request.LocationDetails,
-                SeverityLevel    = request.SeverityLevel,
-                Status           = IncidentStatus.Open.ToString()
+                IncidentDate = DateTime.Parse(request.IncidentDate),
+                ReportedAt = DateTime.UtcNow,
+                LocationDetails = request.LocationDetails,
+                SeverityLevel = request.SeverityLevel,
+                Status = IncidentStatus.Open.ToString()
             };
 
             db.IncidentReports.Add(incident);
@@ -228,8 +228,8 @@ public static class IncidentEndpoints
 
         // PUT /api/incidents/{id}
         group.MapPut("/{id:int}", async (
-            int                  id,
-            UpdateIncidentDto    request,
+            int id,
+            UpdateIncidentDto request,
             SafetyPortalDbContext db,
             IBackgroundJobClient jobs) =>
         {
@@ -240,14 +240,14 @@ public static class IncidentEndpoints
             if (incident is null)
                 return Results.NotFound();
 
-            incident.Title            = request.Title;
-            incident.Description      = request.Description;
-            incident.CategoryId       = request.CategoryId;
-            incident.DepartmentId     = request.DepartmentId;
-            incident.IncidentDate     = DateTime.Parse(request.IncidentDate);
-            incident.LocationDetails  = request.LocationDetails;
-            incident.SeverityLevel    = request.SeverityLevel;
-            incident.Status           = request.Status;
+            incident.Title = request.Title;
+            incident.Description = request.Description;
+            incident.CategoryId = request.CategoryId;
+            incident.DepartmentId = request.DepartmentId;
+            incident.IncidentDate = DateTime.Parse(request.IncidentDate);
+            incident.LocationDetails = request.LocationDetails;
+            incident.SeverityLevel = request.SeverityLevel;
+            incident.Status = request.Status;
             incident.AssignedToUserId = request.AssignedToUserId;
 
             await db.SaveChangesAsync();

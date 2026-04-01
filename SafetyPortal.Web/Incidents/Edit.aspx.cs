@@ -7,19 +7,19 @@ namespace SafetyPortal.Web.Incidents
 {
     public partial class IncidentEdit : BasePage
     {
-        protected System.Web.UI.WebControls.TextBox       txtTitle;
-        protected System.Web.UI.WebControls.TextBox       txtDescription;
-        protected System.Web.UI.WebControls.DropDownList  ddlCategory;
-        protected System.Web.UI.WebControls.DropDownList  ddlDept;
-        protected System.Web.UI.WebControls.TextBox       txtDate;
-        protected System.Web.UI.WebControls.DropDownList  ddlSeverity;
-        protected System.Web.UI.WebControls.DropDownList  ddlStatus;
-        protected System.Web.UI.WebControls.TextBox       txtLocation;
-        protected System.Web.UI.WebControls.DropDownList  ddlAssign;
-        protected System.Web.UI.WebControls.Button        btnSave;
+        protected System.Web.UI.WebControls.TextBox txtTitle;
+        protected System.Web.UI.WebControls.TextBox txtDescription;
+        protected System.Web.UI.WebControls.DropDownList ddlCategory;
+        protected System.Web.UI.WebControls.DropDownList ddlDept;
+        protected System.Web.UI.WebControls.TextBox txtDate;
+        protected System.Web.UI.WebControls.DropDownList ddlSeverity;
+        protected System.Web.UI.WebControls.DropDownList ddlStatus;
+        protected System.Web.UI.WebControls.TextBox txtLocation;
+        protected System.Web.UI.WebControls.DropDownList ddlAssign;
+        protected System.Web.UI.WebControls.Button btnSave;
 
         protected string ErrorMessage { get; private set; } = string.Empty;
-        protected int    IncidentId   => int.TryParse(Request.QueryString["id"], out int id) ? id : 0;
+        protected int IncidentId => int.TryParse(Request.QueryString["id"], out int id) ? id : 0;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -52,16 +52,16 @@ namespace SafetyPortal.Web.Incidents
 
         private void PopulateForm(IncidentDetail inc)
         {
-            txtTitle.Text       = inc.Title;
+            txtTitle.Text = inc.Title;
             txtDescription.Text = inc.Description;
-            txtDate.Text        = inc.IncidentDate.ToString(AppConstants.Validation.ISODateFormat);
-            txtLocation.Text    = inc.LocationDetails ?? string.Empty;
+            txtDate.Text = inc.IncidentDate.ToString(AppConstants.Validation.ISODateFormat);
+            txtLocation.Text = inc.LocationDetails ?? string.Empty;
 
             SetSelected(ddlCategory, inc.CategoryId.ToString());
-            SetSelected(ddlDept,     inc.DepartmentId.ToString());
+            SetSelected(ddlDept, inc.DepartmentId.ToString());
             SetSelected(ddlSeverity, inc.SeverityLevel);
-            SetSelected(ddlStatus,   inc.Status);
-            SetSelected(ddlAssign,   inc.AssignedToUserId?.ToString() ?? "");
+            SetSelected(ddlStatus, inc.Status);
+            SetSelected(ddlAssign, inc.AssignedToUserId?.ToString() ?? "");
         }
 
         private static void SetSelected(DropDownList ddl, string val)
@@ -82,14 +82,14 @@ namespace SafetyPortal.Web.Incidents
 
             var req = new UpdateIncidentRequest
             {
-                Title           = StripHtml(txtTitle.Text.Trim()),
-                Description     = StripHtml(txtDescription.Text.Trim()),
-                CategoryId      = int.Parse(ddlCategory.SelectedValue),
-                DepartmentId    = int.Parse(ddlDept.SelectedValue),
-                IncidentDate    = date.ToString(AppConstants.Validation.ISODateFormat),
+                Title = StripHtml(txtTitle.Text.Trim()),
+                Description = StripHtml(txtDescription.Text.Trim()),
+                CategoryId = int.Parse(ddlCategory.SelectedValue),
+                DepartmentId = int.Parse(ddlDept.SelectedValue),
+                IncidentDate = date.ToString(AppConstants.Validation.ISODateFormat),
                 LocationDetails = StripHtml(txtLocation.Text.Trim()),
-                SeverityLevel   = ddlSeverity.SelectedValue,
-                Status          = ddlStatus.SelectedValue,
+                SeverityLevel = ddlSeverity.SelectedValue,
+                Status = ddlStatus.SelectedValue,
                 AssignedToUserId = assignedTo
             };
 

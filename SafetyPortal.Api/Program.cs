@@ -27,18 +27,18 @@ builder.Services.AddRateLimiter(options =>
     // Login: max 10 attempts per IP per minute, then 429
     options.AddFixedWindowLimiter("login", o =>
     {
-        o.Window            = TimeSpan.FromMinutes(1);
-        o.PermitLimit       = 10;
-        o.QueueLimit        = 0;
+        o.Window = TimeSpan.FromMinutes(1);
+        o.PermitLimit = 10;
+        o.QueueLimit = 0;
         o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     });
 
     // General API: 300 req/min per IP (DoS guard)
     options.AddFixedWindowLimiter("api", o =>
     {
-        o.Window            = TimeSpan.FromMinutes(1);
-        o.PermitLimit       = 300;
-        o.QueueLimit        = 0;
+        o.Window = TimeSpan.FromMinutes(1);
+        o.PermitLimit = 300;
+        o.QueueLimit = 0;
         o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     });
 
@@ -92,11 +92,11 @@ builder.Services.AddHangfire(cfg => cfg
         builder.Configuration.GetConnectionString("DefaultConnection"),
         new SqlServerStorageOptions
         {
-            CommandBatchMaxTimeout       = TimeSpan.FromMinutes(5),
-            SlidingInvisibilityTimeout   = TimeSpan.FromMinutes(5),
-            QueuePollInterval            = TimeSpan.Zero,
+            CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+            SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+            QueuePollInterval = TimeSpan.Zero,
             UseRecommendedIsolationLevel = true,
-            DisableGlobalLocks           = true
+            DisableGlobalLocks = true
         }));
 
 builder.Services.AddHangfireServer();
@@ -107,24 +107,24 @@ builder.Services
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer           = true,
-            ValidateAudience         = true,
+            ValidateIssuer = true,
+            ValidateAudience = true,
             ValidateIssuerSigningKey = true,
-            ValidateLifetime         = true,
-            ClockSkew                = TimeSpan.Zero,
-            ValidIssuer              = jwtOptions.Issuer,
-            ValidAudience            = jwtOptions.Audience,
-            IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key))
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
+            ValidIssuer = jwtOptions.Issuer,
+            ValidAudience = jwtOptions.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key))
         };
     });
 
 // ── Authorization policies ────────────────────────────────────────────────
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly",            p => p.RequireRole(RoleName.Admin.ToString()));
+    options.AddPolicy("AdminOnly", p => p.RequireRole(RoleName.Admin.ToString()));
     options.AddPolicy("SafetyManagerOrAdmin", p => p.RequireRole(RoleName.Admin.ToString(), RoleName.SafetyManager.ToString()));
-    options.AddPolicy("SupervisorOrAbove",    p => p.RequireRole(RoleName.Admin.ToString(), RoleName.SafetyManager.ToString(), RoleName.Supervisor.ToString()));
-    options.AddPolicy("Authenticated",        p => p.RequireAuthenticatedUser());
+    options.AddPolicy("SupervisorOrAbove", p => p.RequireRole(RoleName.Admin.ToString(), RoleName.SafetyManager.ToString(), RoleName.Supervisor.ToString()));
+    options.AddPolicy("Authenticated", p => p.RequireAuthenticatedUser());
 });
 
 // ── CORS ───────────────────────────────────────────────────────────────────
@@ -132,8 +132,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("WebApp", policy =>
         policy.WithOrigins("https://localhost:44300", "http://localhost:56789")
-              .AllowAnyHeader()
-              .AllowAnyMethod());
+            .AllowAnyHeader()
+            .AllowAnyMethod());
 });
 
 var app = builder.Build();
@@ -160,10 +160,10 @@ app.UseRateLimiter();
 // ── Security headers ───────────────────────────────────────────────────────
 app.Use(async (ctx, next) =>
 {
-    ctx.Response.Headers["X-Content-Type-Options"]  = "nosniff";
-    ctx.Response.Headers["X-Frame-Options"]         = "DENY";
-    ctx.Response.Headers["Referrer-Policy"]         = "strict-origin-when-cross-origin";
-    ctx.Response.Headers["Permissions-Policy"]      = "camera=(), microphone=(), geolocation=()";
+    ctx.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    ctx.Response.Headers["X-Frame-Options"] = "DENY";
+    ctx.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+    ctx.Response.Headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
     ctx.Response.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
     // CSP: API serves JSON only — block everything except same-origin
     ctx.Response.Headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'";
@@ -175,20 +175,20 @@ app.UseAuthorization();
 // ── Hangfire dashboard (Admin only, cookie-based auth) ─────────────────────
 app.UseHangfireDashboard("/hangfire", new DashboardOptions
 {
-    Authorization  = [new HangfireAdminAuthorizationFilter(jwtOptions)],
-    AppPath        = null,
+    Authorization = [new HangfireAdminAuthorizationFilter(jwtOptions)],
+    AppPath = null,
     DashboardTitle = "SafetyPortal — Jobs"
 });
 
 // ── Scenario 2: recurring daily reminder for due corrective actions ────────
 RecurringJob.AddOrUpdate<CorrectiveActionReminderJob>(
     recurringJobId: "corrective-action-reminders",
-    methodCall:     job => job.SendRemindersAsync(),
+    methodCall: job => job.SendRemindersAsync(),
     cronExpression: AppConstants.Jobs.ReminderCron);
 
 // ── Endpoints ──────────────────────────────────────────────────────────────
 app.MapGet("/", () => Results.Ok(new { message = "SafetyPortal API is running" }))
-   .WithTags("System");
+    .WithTags("System");
 
 app.MapAuthEndpoints();
 app.MapHangfireLoginEndpoints();

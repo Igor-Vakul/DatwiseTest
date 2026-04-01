@@ -11,8 +11,8 @@ public static class AttachmentEndpoints
     public static IEndpointRouteBuilder MapAttachmentEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/api/incidents/{incidentId:int}/attachments")
-                       .WithTags("Attachments")
-                       .RequireAuthorization();
+            .WithTags("Attachments")
+            .RequireAuthorization();
 
         // POST /api/incidents/{incidentId}/attachments — upload a single file
         group.MapPost("/", async (
@@ -41,8 +41,8 @@ public static class AttachmentEndpoints
             // Validate size
             var category = FileSignatureValidator.GetFileCategory(contentType);
             var maxBytes = category == "image"
-                             ? AppConstants.Attachments.MaxImageBytes
-                             : AppConstants.Attachments.MaxDocumentBytes;
+                ? AppConstants.Attachments.MaxImageBytes
+                : AppConstants.Attachments.MaxDocumentBytes;
 
             if (file.Length > maxBytes)
                 return Results.BadRequest(new

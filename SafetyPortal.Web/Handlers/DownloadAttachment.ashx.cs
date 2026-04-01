@@ -20,7 +20,7 @@ namespace SafetyPortal.Web.Handlers
                 return;
             }
 
-            if (!int.TryParse(context.Request.QueryString["incidentId"],   out int incidentId) ||
+            if (!int.TryParse(context.Request.QueryString["incidentId"], out int incidentId) ||
                 !int.TryParse(context.Request.QueryString["attachmentId"], out int attachmentId))
             {
                 context.Response.StatusCode = 400;
@@ -28,7 +28,7 @@ namespace SafetyPortal.Web.Handlers
                 return;
             }
 
-            var token  = SessionHelper.GetToken(context.Session);
+            var token = SessionHelper.GetToken(context.Session);
             var client = new ApiClient(token);
 
             bool ok = client.ProxyDownload(incidentId, attachmentId, context.Response);
