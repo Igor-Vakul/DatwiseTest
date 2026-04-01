@@ -26,7 +26,7 @@ namespace SafetyPortal.Web
             UserRole = SessionHelper.GetRole(Session);
             IsAdmin = SessionHelper.IsAdmin(Session);
             IsHebrew = LanguageHelper.IsHebrew(Session);
-            Dir = IsHebrew ? "rtl" : "ltr";
+            Dir = IsHebrew ? AppConstants.Layout.DirRtl : AppConstants.Layout.DirLtr;
 
             // Build language switch URLs preserving existing query string params
             var qs = System.Web.HttpUtility.ParseQueryString(Request.QueryString.ToString());

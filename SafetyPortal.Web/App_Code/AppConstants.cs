@@ -32,6 +32,12 @@ namespace SafetyPortal.Web
 
     public static class AppConstants
     {
+        public static class Layout
+        {
+            public const string DirRtl = "rtl";
+            public const string DirLtr = "ltr";
+        }
+
         public static class Pagination
         {
             public const int DefaultPageSize = 20;
