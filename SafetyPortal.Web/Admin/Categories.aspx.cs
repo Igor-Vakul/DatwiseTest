@@ -44,14 +44,14 @@ namespace SafetyPortal.Web.Admin
             var desc   = StripHtml(txtDescription.Text.Trim());
             var editId = int.Parse(hfEditId.Value);
 
-            if (string.IsNullOrEmpty(name)) { Message = "Name is required."; MessageType = "danger"; LoadCategories(); return; }
+            if (string.IsNullOrEmpty(name)) { Message = T("fields_required"); MessageType = "danger"; LoadCategories(); return; }
 
             bool isActive = string.Equals(hfActive.Value, "true", StringComparison.OrdinalIgnoreCase);
             bool ok = editId == 0
                 ? Api.CreateCategory(name, desc)
                 : Api.UpdateCategory(editId, name, desc, isActive);
 
-            Message     = ok ? "Saved successfully." : "Save failed.";
+            Message     = ok ? T("cat_saved") : T("cat_save_fail");
             MessageType = ok ? "success" : "danger";
             LoadCategories();
         }
@@ -60,7 +60,7 @@ namespace SafetyPortal.Web.Admin
         {
             if (!int.TryParse(hfDeleteId.Value, out int id) || id == 0) return;
             bool ok     = Api.DeleteCategory(id);
-            Message     = ok ? "Category deleted." : "Cannot delete — category has open incidents.";
+            Message     = ok ? T("cat_deleted") : T("cat_delete_fail");
             MessageType = ok ? "success" : "danger";
             LoadCategories();
         }

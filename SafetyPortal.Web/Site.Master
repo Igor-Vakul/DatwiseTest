@@ -64,12 +64,12 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link <%= IsActive("Admin/Departments.aspx") %>" href="<%= ResolveUrl("~/Admin/Departments.aspx") %>">
-                    <i class="bi bi-building"></i><span>Departments</span>
+                    <i class="bi bi-building"></i><span><%= T("nav_departments") %></span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <%= IsActive("Admin/Categories.aspx") %>" href="<%= ResolveUrl("~/Admin/Categories.aspx") %>">
-                    <i class="bi bi-tags"></i><span>Categories</span>
+                    <i class="bi bi-tags"></i><span><%= T("nav_categories") %></span>
                 </a>
             </li>
             <% } %>

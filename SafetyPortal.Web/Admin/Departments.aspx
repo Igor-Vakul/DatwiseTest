@@ -2,9 +2,9 @@
          Inherits="SafetyPortal.Web.Admin.DepartmentsAdmin" MasterPageFile="~/Site.Master"
          ValidateRequest="false" %>
 
-<asp:Content ContentPlaceHolderID="TitleContent" runat="server">Departments</asp:Content>
+<asp:Content ContentPlaceHolderID="TitleContent" runat="server"><%= T("departments_title") %></asp:Content>
 <asp:Content ContentPlaceHolderID="PageTitle" runat="server">
-    <i class="bi bi-building me-2 text-primary"></i>Departments
+    <i class="bi bi-building me-2 text-primary"></i><%= T("departments_title") %>
 </asp:Content>
 
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
@@ -18,21 +18,21 @@
 
     <div class="card sp-card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-building text-primary"></i> All Departments</span>
+            <span><i class="bi bi-building text-primary"></i> <%= T("all_departments") %></span>
             <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#deptModal"
                     onclick="openCreate()">
-                <i class="bi bi-plus-lg me-1"></i>New Department
+                <i class="bi bi-plus-lg me-1"></i><%= T("new_department") %>
             </button>
         </div>
         <div class="card-body p-0">
             <table class="table table-hover sp-table mb-0">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Location</th>
-                        <th>Color</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th><%= T("dept_name_col") %></th>
+                        <th><%= T("dept_location_col") %></th>
+                        <th><%= T("dept_color_col") %></th>
+                        <th><%= T("status") %></th>
+                        <th><%= T("actions") %></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,8 +49,8 @@
                         <td>
                             <a href="?toggle=<%= d.Id %>"
                                class="badge <%= d.IsActive ? "bg-success-subtle text-success" : "bg-secondary-subtle text-secondary" %> text-decoration-none"
-                               title="Click to toggle">
-                                <%= d.IsActive ? "Active" : "Inactive" %>
+                               title="<%= T("click_to_toggle") %>">
+                                <%= d.IsActive ? T("active") : T("inactive") %>
                             </a>
                         </td>
                         <td>
@@ -67,7 +67,7 @@
                     </tr>
                     <% } %>
                     <% if (Departments.Count == 0) { %>
-                    <tr><td colspan="5" class="text-center text-muted py-4">No departments found.</td></tr>
+                    <tr><td colspan="5" class="text-center text-muted py-4"><%= T("no_departments") %></td></tr>
                     <% } %>
                 </tbody>
             </table>
@@ -79,17 +79,17 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deptModalTitle">Department</h5>
+                    <h5 class="modal-title" id="deptModalTitle"><%= T("departments_title") %></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <asp:HiddenField ID="hfEditId" runat="server" Value="0" />
                     <div class="mb-3">
-                        <label class="form-label">Name <span class="text-danger">*</span></label>
+                        <label class="form-label"><%= T("dept_name_label") %> <span class="text-danger">*</span></label>
                         <asp:TextBox ID="txtName" runat="server" CssClass="form-control" MaxLength="100" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Location</label>
+                        <label class="form-label"><%= T("dept_location_label") %></label>
                         <asp:TextBox ID="txtLocation" runat="server" CssClass="form-control" MaxLength="100" />
                         <datalist id="locationsList">
                             <% foreach (var loc in new System.Collections.Generic.HashSet<string>(
@@ -100,25 +100,25 @@
                         </datalist>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Color</label>
+                        <label class="form-label"><%= T("dept_color_label") %></label>
                         <div class="d-flex gap-2 align-items-center">
                             <input type="color" id="colorPickerInput" class="form-control form-control-color"
                                    style="width:60px;padding:2px 4px" value="#6c757d"
                                    oninput="document.getElementById('<%= hfColor.ClientID %>').value = this.value" />
                             <asp:HiddenField ID="hfColor" runat="server" Value="#6c757d" />
-                            <small class="text-muted">Pick a color to identify this department in charts</small>
+                            <small class="text-muted"><%= T("dept_color_hint") %></small>
                         </div>
                     </div>
                     <div class="mb-3" id="activeRow" style="display:none">
                         <div class="form-check form-switch">
                             <input type="checkbox" id="chkActiveUI" class="form-check-input" role="switch" />
                             <asp:HiddenField ID="hfActive" runat="server" Value="true" />
-                            <label class="form-check-label" for="chkActiveUI">Active</label>
+                            <label class="form-check-label" for="chkActiveUI"><%= T("active") %></label>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= T("cancel") %></button>
                     <asp:Button ID="btnSave" runat="server" CssClass="btn btn-primary btn-sm"
                                 Text="Save" OnClick="btnSave_Click" />
                 </div>
@@ -131,15 +131,15 @@
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Delete Department</h5>
+                    <h5 class="modal-title"><%= T("dept_delete_confirm") %></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Delete <strong id="deleteName"></strong>?</p>
-                    <p class="text-muted small">Departments with existing incidents cannot be deleted.</p>
+                    <p><%= T("delete") %> <strong id="deleteName"></strong>?</p>
+                    <p class="text-muted small"><%= T("dept_delete_hint") %></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= T("cancel") %></button>
                     <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-danger btn-sm"
                                 Text="Delete" OnClick="btnDelete_Click" />
                     <asp:HiddenField ID="hfDeleteId" runat="server" Value="0" />
@@ -152,12 +152,15 @@
 
 <asp:Content ContentPlaceHolderID="ScriptsContent" runat="server">
 <script>
+    var _newDept  = '<%= T("new_department").Replace("+","").Trim() %>';
+    var _editDept = '<%= T("departments_title") %>';
+
     document.getElementById('chkActiveUI').addEventListener('change', function () {
         document.getElementById('<%= hfActive.ClientID %>').value = this.checked;
     });
 
     function openCreate() {
-        document.getElementById('deptModalTitle').textContent = 'New Department';
+        document.getElementById('deptModalTitle').textContent = _newDept;
         document.getElementById('<%= hfEditId.ClientID %>').value = '0';
         document.getElementById('<%= txtName.ClientID %>').value = '';
         document.getElementById('<%= txtLocation.ClientID %>').value = '';
@@ -169,7 +172,7 @@
     }
 
     function openEdit(id, name, location, color, isActive) {
-        document.getElementById('deptModalTitle').textContent = 'Edit Department';
+        document.getElementById('deptModalTitle').textContent = _editDept;
         document.getElementById('<%= hfEditId.ClientID %>').value = id;
         document.getElementById('<%= txtName.ClientID %>').value = name;
         document.getElementById('<%= txtLocation.ClientID %>').value = location;

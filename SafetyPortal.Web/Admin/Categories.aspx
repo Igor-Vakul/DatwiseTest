@@ -2,9 +2,9 @@
          Inherits="SafetyPortal.Web.Admin.CategoriesAdmin" MasterPageFile="~/Site.Master"
          ValidateRequest="false" %>
 
-<asp:Content ContentPlaceHolderID="TitleContent" runat="server">Categories</asp:Content>
+<asp:Content ContentPlaceHolderID="TitleContent" runat="server"><%= T("categories_title") %></asp:Content>
 <asp:Content ContentPlaceHolderID="PageTitle" runat="server">
-    <i class="bi bi-tags me-2 text-primary"></i>Incident Categories
+    <i class="bi bi-tags me-2 text-primary"></i><%= T("categories_title") %>
 </asp:Content>
 
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
@@ -18,20 +18,20 @@
 
     <div class="card sp-card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-tags text-primary"></i> All Categories</span>
+            <span><i class="bi bi-tags text-primary"></i> <%= T("all_categories") %></span>
             <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#catModal"
                     onclick="openCreate()">
-                <i class="bi bi-plus-lg me-1"></i>New Category
+                <i class="bi bi-plus-lg me-1"></i><%= T("new_category") %>
             </button>
         </div>
         <div class="card-body p-0">
             <table class="table table-hover sp-table mb-0">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th><%= T("cat_name_col") %></th>
+                        <th><%= T("cat_desc_col") %></th>
+                        <th><%= T("status") %></th>
+                        <th><%= T("actions") %></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,8 +42,8 @@
                         <td>
                             <a href="?toggle=<%= c.Id %>"
                                class="badge <%= c.IsActive ? "bg-success-subtle text-success" : "bg-secondary-subtle text-secondary" %> text-decoration-none"
-                               title="Click to toggle">
-                                <%= c.IsActive ? "Active" : "Inactive" %>
+                               title="<%= T("click_to_toggle") %>">
+                                <%= c.IsActive ? T("active") : T("inactive") %>
                             </a>
                         </td>
                         <td>
@@ -60,7 +60,7 @@
                     </tr>
                     <% } %>
                     <% if (Categories.Count == 0) { %>
-                    <tr><td colspan="4" class="text-center text-muted py-4">No categories found.</td></tr>
+                    <tr><td colspan="4" class="text-center text-muted py-4"><%= T("no_categories") %></td></tr>
                     <% } %>
                 </tbody>
             </table>
@@ -72,17 +72,17 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="catModalTitle">Category</h5>
+                    <h5 class="modal-title" id="catModalTitle"><%= T("categories_title") %></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <asp:HiddenField ID="hfEditId" runat="server" Value="0" />
                     <div class="mb-3">
-                        <label class="form-label">Name <span class="text-danger">*</span></label>
+                        <label class="form-label"><%= T("cat_name_label") %> <span class="text-danger">*</span></label>
                         <asp:TextBox ID="txtName" runat="server" CssClass="form-control" MaxLength="100" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Description</label>
+                        <label class="form-label"><%= T("cat_desc_label") %></label>
                         <asp:TextBox ID="txtDescription" runat="server" CssClass="form-control"
                                      TextMode="MultiLine" Rows="3" MaxLength="255"
                                      style="resize:none" />
@@ -91,12 +91,12 @@
                         <div class="form-check form-switch">
                             <input type="checkbox" id="chkActiveUI" class="form-check-input" role="switch" />
                             <asp:HiddenField ID="hfActive" runat="server" Value="true" />
-                            <label class="form-check-label" for="chkActiveUI">Active</label>
+                            <label class="form-check-label" for="chkActiveUI"><%= T("active") %></label>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= T("cancel") %></button>
                     <asp:Button ID="btnSave" runat="server" CssClass="btn btn-primary btn-sm"
                                 Text="Save" OnClick="btnSave_Click" />
                 </div>
@@ -109,15 +109,15 @@
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Delete Category</h5>
+                    <h5 class="modal-title"><%= T("cat_delete_confirm") %></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Delete <strong id="deleteName"></strong>?</p>
-                    <p class="text-muted small">Categories with existing incidents cannot be deleted.</p>
+                    <p><%= T("delete") %> <strong id="deleteName"></strong>?</p>
+                    <p class="text-muted small"><%= T("cat_delete_hint") %></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= T("cancel") %></button>
                     <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-danger btn-sm"
                                 Text="Delete" OnClick="btnDelete_Click" />
                     <asp:HiddenField ID="hfDeleteId" runat="server" Value="0" />
@@ -130,12 +130,15 @@
 
 <asp:Content ContentPlaceHolderID="ScriptsContent" runat="server">
 <script>
+    var _newCat  = '<%= T("new_category").Replace("+","").Trim() %>';
+    var _editCat = '<%= T("categories_title") %>';
+
     document.getElementById('chkActiveUI').addEventListener('change', function () {
         document.getElementById('<%= hfActive.ClientID %>').value = this.checked;
     });
 
     function openCreate() {
-        document.getElementById('catModalTitle').textContent = 'New Category';
+        document.getElementById('catModalTitle').textContent = _newCat;
         document.getElementById('<%= hfEditId.ClientID %>').value = '0';
         document.getElementById('<%= txtName.ClientID %>').value = '';
         document.getElementById('<%= txtDescription.ClientID %>').value = '';
@@ -145,7 +148,7 @@
     }
 
     function openEdit(id, name, description, isActive) {
-        document.getElementById('catModalTitle').textContent = 'Edit Category';
+        document.getElementById('catModalTitle').textContent = _editCat;
         document.getElementById('<%= hfEditId.ClientID %>').value = id;
         document.getElementById('<%= txtName.ClientID %>').value = name;
         document.getElementById('<%= txtDescription.ClientID %>').value = description;

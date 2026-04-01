@@ -56,7 +56,7 @@ namespace SafetyPortal.Web.Admin
                 ? Api.CreateDepartment(name, location, color)
                 : Api.UpdateDepartment(editId, name, location, color, isActive);
 
-            Message     = ok ? "Saved successfully." : "Save failed.";
+            Message     = ok ? T("dept_saved") : T("dept_save_fail");
             MessageType = ok ? "success" : "danger";
             LoadDepartments();
         }
@@ -65,7 +65,7 @@ namespace SafetyPortal.Web.Admin
         {
             if (!int.TryParse(hfDeleteId.Value, out int id) || id == 0) return;
             bool ok     = Api.DeleteDepartment(id);
-            Message     = ok ? "Department deleted." : "Cannot delete — department has open incidents.";
+            Message     = ok ? T("dept_deleted") : T("dept_delete_fail");
             MessageType = ok ? "success" : "danger";
             LoadDepartments();
         }
