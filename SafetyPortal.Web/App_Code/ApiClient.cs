@@ -63,14 +63,14 @@ namespace SafetyPortal.Web
             bool archived = false)
         {
             var qs = BuildQuery(
-                ("page", page.ToString()),
-                ("pageSize", pageSize.ToString()),
-                ("search", search),
-                ("status", status),
-                ("severityLevel", severityLevel),
-                ("departmentId", departmentId?.ToString()),
-                ("categoryId", categoryId?.ToString()),
-                ("archived", archived.ToString().ToLower())
+                Kv("page", page.ToString()),
+                Kv("pageSize", pageSize.ToString()),
+                Kv("search", search),
+                Kv("status", status),
+                Kv("severityLevel", severityLevel),
+                Kv("departmentId", departmentId?.ToString()),
+                Kv("categoryId", categoryId?.ToString()),
+                Kv("archived", archived.ToString().ToLower())
             );
             return Get<PagedResult<IncidentSummary>>($"/api/incidents{qs}");
         }
@@ -228,8 +228,8 @@ namespace SafetyPortal.Web
         public System.Collections.Generic.List<CorrectiveActionSummary> GetCorrectiveActions(int? reportId = null, string status = null)
         {
             var qs = BuildQuery(
-                ("reportId", reportId?.ToString()),
-                ("status", status)
+                Kv("reportId", reportId?.ToString()),
+                Kv("status", status)
             );
             return Get<System.Collections.Generic.List<CorrectiveActionSummary>>($"/api/corrective-actions{qs}");
         }
@@ -339,12 +339,15 @@ namespace SafetyPortal.Web
             }
         }
 
-        private static string BuildQuery(params (string key, string value)[] pairs)
+        private static KeyValuePair<string, string> Kv(string key, string value)
+            => new KeyValuePair<string, string>(key, value);
+
+        private static string BuildQuery(params KeyValuePair<string, string>[] pairs)
         {
             var parts = new List<string>();
-            foreach (var (k, v) in pairs)
-                if (!string.IsNullOrEmpty(v))
-                    parts.Add($"{HttpUtility.UrlEncode(k)}={HttpUtility.UrlEncode(v)}");
+            foreach (var pair in pairs)
+                if (!string.IsNullOrEmpty(pair.Value))
+                    parts.Add($"{HttpUtility.UrlEncode(pair.Key)}={HttpUtility.UrlEncode(pair.Value)}");
             return parts.Count > 0 ? "?" + string.Join("&", parts) : string.Empty;
         }
     }

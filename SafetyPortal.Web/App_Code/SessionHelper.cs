@@ -37,7 +37,10 @@ namespace SafetyPortal.Web
             => session[KeyToken] as string;
 
         public static int GetUserId(HttpSessionState session)
-            => session[KeyUserId] is int id ? id : 0;
+        {
+            var val = session[KeyUserId];
+            return val is int ? (int)val : 0;
+        }
 
         public static string GetFullName(HttpSessionState session)
             => session[KeyFullName] as string ?? string.Empty;
