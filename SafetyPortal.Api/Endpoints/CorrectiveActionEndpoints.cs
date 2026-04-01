@@ -34,7 +34,7 @@ public static class CorrectiveActionEndpoints
                     x.ReportId,
                     x.Report.ReportNumber,
                     x.ActionTitle,
-                    x.AssignedToUser.FullName,
+                    x.AssignedToUser!.FullName,
                     x.DueDate,
                     x.Status,
                     x.PriorityLevel
@@ -64,7 +64,7 @@ public static class CorrectiveActionEndpoints
                 {
                     ReportNumber = x.Report.ReportNumber,
                     ActionTitle = x.ActionTitle,
-                    AssignedTo = x.AssignedToUser.FullName,
+                    AssignedTo = x.AssignedToUser!.FullName,
                     DueDate = x.DueDate.ToString("dd/MM/yyyy"),
                     Priority = x.PriorityLevel,
                     Status = x.Status

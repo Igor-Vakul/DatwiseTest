@@ -57,8 +57,8 @@ public class CorrectiveActionReminderJob
                 ReportNumber: ca.Report.ReportNumber,
                 DueDate: ca.DueDate,
                 DaysLeft: AppConstants.Jobs.ReminderDaysBeforeDue,
-                AssigneeName: ca.AssignedToUser.FullName,
-                AssigneeEmail: ca.AssignedToUser.Email
+                AssigneeName: ca.AssignedToUser!.FullName,
+                AssigneeEmail: ca.AssignedToUser!.Email
             );
             return _email.SendCorrectiveActionReminderAsync(ctx);
         });

@@ -173,7 +173,7 @@ public static class IncidentEndpoints
                     ca.ReportId,
                     incident.ReportNumber,
                     ca.ActionTitle,
-                    ca.AssignedToUser.FullName,
+                    ca.AssignedToUser!.FullName,
                     ca.DueDate,
                     ca.Status,
                     ca.PriorityLevel
