@@ -10,9 +10,9 @@
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
 
     <% if (!string.IsNullOrEmpty(Message)) { %>
-    <div class="alert alert-<%= MessageType %> alert-dismissible fade show py-2 d-flex align-items-center">
-        <%= System.Web.HttpUtility.HtmlEncode(Message) %>
-        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
+    <div class="alert alert-<%= MessageType %> fade show py-2 d-flex align-items-center">
+        <span class="me-auto"><%= System.Web.HttpUtility.HtmlEncode(Message) %></span>
+        <button type="button" class="btn-close btn-sm ms-3" data-bs-dismiss="alert"></button>
     </div>
     <% } %>
 
