@@ -24,10 +24,12 @@ A **Safety Officer (מנהל בטיחות)** at an industrial facility faces sev
 
 **Advanced extensions implemented:**
 1. 🔐 **Information Security** — JWT-based authentication, role-based authorization (Admin / SafetyManager / Supervisor / Employee), API endpoints protected by policy
-2. 📊 **Report Visualization & Dashboard** — KPI cards, doughnut/bar/line charts (Chart.js), recent incidents table
+2. 📊 **Report Visualization & Dashboard** — KPI cards, doughnut/bar/line charts (Chart.js), recent incidents table; donut chart supports Category / Severity / Status grouping with count + percentage in legend
 3. ⏱️ **Background Jobs (Hangfire)** — Fire-and-forget email notifications, daily recurring reminders, delayed escalation scheduling
 4. 📎 **File Attachments** — Upload/download/delete incident attachments with magic-byte validation and size limits
 5. 📥 **Excel Export** — Filtered export of incidents and corrective actions using EPPlus
+6. 🏢 **Admin: Departments & Categories** — Full CRUD with Bootstrap modals, department color picker (colors reflected in dashboard bar chart), IsActive toggle, delete restriction on open incidents
+7. 📦 **Incident Archive** — Soft-delete via `IsArchived` flag; only Closed incidents can be archived; archived incidents excluded from dashboard stats; Active/Archived tabs on list page
 
 ---
 
@@ -62,8 +64,10 @@ A **Safety Officer (מנהל בטיחות)** at an industrial facility faces sev
 Roles ◄──── Users ─────┐
                         │
 Departments ────────────┤──── IncidentReports ──── CorrectiveActions
-                        │         │
-IncidentCategories ─────┘         └──── IncidentAttachments
+(Color, IsActive)       │    (IsArchived)    │
+                        │                   └──── IncidentAttachments
+IncidentCategories ─────┘
+(IsActive)
 
 AuditLogs  (standalone — login events, failed attempts, lockouts)
 ```
@@ -73,11 +77,13 @@ AuditLogs  (standalone — login events, failed attempts, lockouts)
 | Group | Endpoints |
 |-------|-----------|
 | Auth | `POST /api/auth/login`, `GET /api/auth/me` |
-| Incidents | `GET/POST /api/incidents`, `GET/PUT/DELETE /api/incidents/{id}` |
+| Incidents | `GET/POST /api/incidents`, `GET/PUT/DELETE /api/incidents/{id}`, `PUT /{id}/archive` |
 | Corrective Actions | `GET/POST /api/corrective-actions`, `PUT /{id}/status`, `DELETE /{id}` |
 | Dashboard | `GET /api/dashboard/stats` |
-| Lookup | `GET /api/lookup/departments`, `/categories`, `/users`, `/roles` |
+| Lookup | `GET /api/lookup/departments`, `/categories` (active only), `/users`, `/roles` |
 | Users (Admin) | `GET/POST /api/users`, `PUT /api/users/{id}/toggle-active` |
+| Admin Departments | `GET/POST /api/admin/departments`, `PUT /{id}`, `PUT /{id}/toggle-active`, `DELETE /{id}` |
+| Admin Categories | `GET/POST /api/admin/categories`, `PUT /{id}`, `PUT /{id}/toggle-active`, `DELETE /{id}` |
 | Attachments | `POST/GET /api/incidents/{id}/attachments`, `GET /{attId}/download`, `DELETE /{attId}` |
 | Export | `GET /api/incidents/export`, `GET /api/corrective-actions/export` |
 | Hangfire | `GET /hangfire` (Admin dashboard), `GET/POST /jobs/login`, `GET /jobs/logout` |
@@ -170,14 +176,15 @@ Protection is applied at two independent layers so that neither layer alone is a
 | Page | Access | Description |
 |------|--------|-------------|
 | `Login.aspx` | Public | Login with email/password |
-| `Dashboard.aspx` | All roles | KPI cards + 3 charts + recent incidents |
-| `Incidents/List.aspx` | All roles | Paginated list with search/filter |
+| `Dashboard.aspx` | All roles | KPI cards + 3 charts (donut by Category/Severity/Status, bar by department with colors, trend line) + recent incidents |
+| `Incidents/List.aspx` | All roles | Paginated list with search/filter, Active/Archived tabs |
 | `Incidents/Create.aspx` | All roles | Submit new incident report |
-| `Incidents/Details.aspx` | All roles | View details + add corrective actions |
+| `Incidents/Details.aspx` | All roles | View details, corrective actions, upload/download/delete attachments |
 | `Incidents/Edit.aspx` | All roles | Edit existing incident |
 | `CorrectiveActions/List.aspx` | All roles | All actions with overdue highlight |
-| `Admin/Users.aspx` | Admin only | Create/toggle users |
-| `Incidents/Details.aspx` | All roles | View details, corrective actions, upload/download/delete attachments |
+| `Admin/Users.aspx` | Admin only | Create/toggle-active users |
+| `Admin/Departments.aspx` | Admin only | CRUD departments with color picker and IsActive toggle |
+| `Admin/Categories.aspx` | Admin only | CRUD incident categories with IsActive toggle |
 
 ---
 
@@ -281,6 +288,34 @@ The app will open at `https://localhost:44300`.
 
 ---
 
+## Changelog
+
+### v1.3.0
+- Admin CRUD pages for Departments and Categories (Bootstrap modals, IsActive toggle, delete restricted to open-incident-free records)
+- Department color picker — colors reflected in dashboard "Incidents by Department" bar chart (per-bar colors)
+- Inactive categories hidden from incident creation/edit dropdowns
+- `Roles` static class replaced with `enum` in `AppConstants`
+- Hebrew/English localization for all new admin pages
+
+### v1.2.0
+- Incident archive feature — `IsArchived` flag, Active/Archived tabs on list page, archive endpoint restricted to Closed status, archived incidents excluded from dashboard stats
+- Dashboard donut chart: dropdown to switch grouping between Category / Severity / Status client-side; legend shows count + percentage
+- `[AsParameters]` record (`IncidentFilterQuery`) replaces 8 individual query params on incident GET endpoints
+
+### v1.1.0
+- Password policy enforcement (min 8 chars, upper, lower, digit, special)
+- Account lockout after 5 failed login attempts (15 min, stored in DB)
+- Audit log for all auth events (`AuditLogs` table)
+- Security HTTP headers on all responses
+- Open redirect prevention on `Login.aspx`
+- File attachment support (upload / download / delete, magic-byte validation)
+- Excel export for incidents and corrective actions
+
+### v1.0.0
+- Initial release: incident reporting, corrective actions, dashboard, role-based access, JWT auth, Hangfire background jobs
+
+---
+
 ## Project Structure
 
 ```
@@ -295,8 +330,10 @@ c:\DatWiseTest\
 │   ├── Data/DbSeeder.cs
 │   ├── Dtos/
 │   │   ├── Auth/
-│   │   ├── Incidents/
+│   │   ├── Incidents/          ← includes IncidentFilterQuery ([AsParameters])
 │   │   ├── CorrectiveActions/
+│   │   ├── Departments/
+│   │   ├── Categories/
 │   │   └── Users/
 │   ├── Endpoints/
 │   │   ├── AuthEndpoints.cs
@@ -304,6 +341,8 @@ c:\DatWiseTest\
 │   │   ├── CorrectiveActionEndpoints.cs
 │   │   ├── DashboardEndpoints.cs
 │   │   ├── LookupEndpoints.cs
+│   │   ├── AdminDepartmentEndpoints.cs
+│   │   ├── AdminCategoryEndpoints.cs
 │   │   └── UserManagementEndpoints.cs
 │   ├── Entities/
 │   ├── Services/JwtTokenService.cs
@@ -318,6 +357,9 @@ c:\DatWiseTest\
     ├── Incidents/
     ├── CorrectiveActions/
     ├── Admin/
+    │   ├── Users.aspx
+    │   ├── Departments.aspx    ← CRUD + color picker + IsActive toggle
+    │   └── Categories.aspx     ← CRUD + IsActive toggle
     ├── Site.Master
     ├── Login.aspx
     ├── Dashboard.aspx
@@ -377,5 +419,8 @@ Admin
 | Delete incidents | ❌ | ❌ | ✅ | ✅ |
 | Delete attachments | ❌ | ❌ | ✅ | ✅ |
 | Delete corrective actions | ❌ | ❌ | ✅ | ✅ |
+| Archive/unarchive incidents | ❌ | ❌ | ✅ | ✅ |
 | User management | ❌ | ❌ | ❌ | ✅ |
+| Manage departments | ❌ | ❌ | ❌ | ✅ |
+| Manage categories | ❌ | ❌ | ❌ | ✅ |
 | Hangfire dashboard | ❌ | ❌ | ❌ | ✅ |
