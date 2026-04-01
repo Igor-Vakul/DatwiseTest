@@ -33,7 +33,19 @@ A **Safety Officer (מנהל בטיחות)** at an industrial facility faces sev
 
 ---
 
-## 3.3 Architectural Explanation
+## 3.3 Technology Choices
+
+### Why .NET 10?
+
+.NET 10 was chosen as the most recent and optimized version of the Microsoft runtime available at the time of development. It delivers peak runtime performance, improved memory management, and faster startup times compared to previous releases. Building on .NET 10 ensures the system runs on a modern, actively maintained, and secure foundation with long-term support.
+
+### Why Minimal API?
+
+Minimal API was deliberately chosen over classic MVC/Web API as a forward-looking architectural decision. Its lightweight, function-oriented structure makes it straightforward to extract individual endpoint groups into independent microservices in the future — each `Map*Endpoints` class can become its own deployable service with minimal structural change. In addition, Minimal API has lower overhead, faster cold-start times, and reduced memory footprint compared to the full MVC pipeline — key advantages in a microservices environment.
+
+---
+
+## 3.4 Architectural Explanation
 
 ```
 ┌──────────────────────────────────┐      HTTPS / REST+JWT     ┌────────────────────────────────┐
@@ -290,6 +302,15 @@ The app will open at `https://localhost:44300`.
 
 ## Changelog
 
+### v1.4.0
+- Employee role: dashboard and incident list filtered server-side to own records only (reported by, assigned to, or has corrective action assigned)
+- All hardcoded status/severity/role string literals replaced with typed enums (`IncidentStatus`, `SeverityLevel`, `ActionStatus`, `RoleName`, `TextDirection`) in both API and Web projects
+- `IDesignTimeDbContextFactory` reads connection string from `appsettings.json` instead of hardcoding
+- Multi-file upload support: increased `maxRequestLength` and IIS `maxAllowedContentLength` to 50 MB
+- Fixed CS8602 nullable dereference warnings
+- Fixed `UnobtrusiveValidationMode` jQuery dependency error in Web Forms validators
+- Fixed duplicate type conflict (`App_Code` dynamic assembly vs compiled assembly) by moving enums to `Constants/WebEnums.cs`
+
 ### v1.3.0
 - Admin CRUD pages for Departments and Categories (Bootstrap modals, IsActive toggle, delete restricted to open-incident-free records)
 - Department color picker — colors reflected in dashboard "Incidents by Department" bar chart (per-bar colors)
@@ -360,6 +381,8 @@ c:\DatWiseTest\
     │   ├── Users.aspx
     │   ├── Departments.aspx    ← CRUD + color picker + IsActive toggle
     │   └── Categories.aspx     ← CRUD + IsActive toggle
+    ├── Constants/
+    │   └── WebEnums.cs           ← RoleName, IncidentStatus, SeverityLevel, ActionStatus, TextDirection
     ├── Site.Master
     ├── Login.aspx
     ├── Dashboard.aspx
@@ -394,7 +417,7 @@ Admin
 | **Admin** | Full access: user management, delete incidents/attachments/actions, Hangfire dashboard |
 | **SafetyManager** | All except user management: create/edit/delete incidents, manage corrective actions, delete attachments |
 | **Supervisor** | Create/edit incidents, add corrective actions, mark actions complete, upload attachments |
-| **Employee** | View and create incidents only — read-only access to corrective actions |
+| **Employee** | View and create incidents — **filtered to own records only**: incidents they reported, are assigned to, or have a corrective action assigned to them; read-only access to corrective actions |
 
 ### Authorization Policies
 
@@ -404,6 +427,8 @@ Admin
 | `SafetyManagerOrAdmin` | Admin, SafetyManager |
 | `SupervisorOrAbove` | Admin, SafetyManager, Supervisor |
 | `Authenticated` | All logged-in users |
+
+> **Employee data scope:** Dashboard stats and incident list are automatically filtered server-side to show only records where the Employee is the reporter, the assignee, or has a corrective action assigned to them.
 
 ### Permissions Matrix
 
