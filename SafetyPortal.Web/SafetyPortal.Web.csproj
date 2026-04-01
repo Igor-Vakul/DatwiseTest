@@ -191,6 +191,7 @@
     <Content Include="App_GlobalResources\Strings.he.resx" />
     <Compile Include="App_Code\LanguageHelper.cs" />
     <Compile Include="App_Code\AppConstants.cs" />
+    <Compile Include="Constants\WebEnums.cs" />
     <Content Include="Handlers\DownloadAttachment.ashx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
