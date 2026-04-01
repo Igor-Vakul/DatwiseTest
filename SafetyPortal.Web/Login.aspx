@@ -50,6 +50,11 @@
                         <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control"
                             placeholder="you@datwise.local" TextMode="Email" />
                     </div>
+                    <asp:RegularExpressionValidator ID="valEmail" runat="server"
+                        ControlToValidate="txtEmail"
+                        ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$"
+                        Display="Dynamic" CssClass="text-danger small"
+                        ErrorMessage="Invalid email address" />
                 </div>
 
                 <div class="mb-4">

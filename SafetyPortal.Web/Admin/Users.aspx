@@ -94,6 +94,11 @@
                         <label class="form-label"><%= T("email_label") %></label>
                         <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control form-control-sm"
                             placeholder="user@datwise.local" TextMode="Email" MaxLength="150" />
+                        <asp:RegularExpressionValidator ID="valEmail" runat="server"
+                            ControlToValidate="txtEmail"
+                            ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$"
+                            Display="Dynamic" CssClass="text-danger small"
+                            ErrorMessage="Invalid email address" />
                     </div>
                     <div class="mb-2">
                         <label class="form-label"><%= T("password_label") %></label>
