@@ -22,10 +22,10 @@ public static class AppConstants
         Employee = 4,
     }
 
-    public enum RoleName      { Admin, SafetyManager, Supervisor, Employee }
-    public enum IncidentStatus { Open, InProgress, Closed }
-    public enum SeverityLevel  { Low, Medium, High, Critical }
-    public enum ActionStatus   { Pending, InProgress, Completed }
+    public enum RoleName       { Admin = 1, SafetyManager = 2, Supervisor = 3, Employee = 4 }
+    public enum IncidentStatus { Open = 1, InProgress = 2, Closed = 3 }
+    public enum SeverityLevel  { Low = 1, Medium = 2, High = 3, Critical = 4 }
+    public enum ActionStatus   { Pending = 1, InProgress = 2, Completed = 3 }
 
     public static class Attachments
     {
