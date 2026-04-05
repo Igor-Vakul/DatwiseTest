@@ -64,6 +64,12 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SafetyPortal.Shared\SafetyPortal.Shared.csproj">
+      <Project>{00000000-0000-0000-0000-000000000001}</Project>
+      <Name>SafetyPortal.Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
@@ -165,12 +171,20 @@
       <DependentUpon>Categories.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="App_Code\ApiClient.cs" />
-    <Compile Include="App_Code\SessionHelper.cs" />
-    <Compile Include="App_Code\BasePage.cs">
+    <Compile Include="Infrastructure\SessionHelper.cs" />
+    <Compile Include="Infrastructure\BasePage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="App_Code\Models.cs" />
+    <Compile Include="Infrastructure\LanguageHelper.cs" />
+    <Compile Include="Services\ApiBase.cs" />
+    <Compile Include="Services\AuthService.cs" />
+    <Compile Include="Services\IncidentService.cs" />
+    <Compile Include="Services\AttachmentService.cs" />
+    <Compile Include="Services\CorrectiveActionService.cs" />
+    <Compile Include="Services\DashboardService.cs" />
+    <Compile Include="Services\LookupService.cs" />
+    <Compile Include="Services\UserService.cs" />
+    <Compile Include="Services\AdminService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -182,16 +196,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="App_GlobalResources\" />
-    <Folder Include="Models\" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="App_GlobalResources\Strings.resx" />
     <Content Include="App_GlobalResources\Strings.he.resx" />
-    <Compile Include="App_Code\LanguageHelper.cs" />
-    <Compile Include="App_Code\AppConstants.cs" />
-    <Compile Include="Constants\WebEnums.cs" />
     <Content Include="Handlers\DownloadAttachment.ashx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>

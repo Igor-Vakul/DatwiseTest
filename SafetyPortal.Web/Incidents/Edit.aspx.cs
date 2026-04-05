@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
-using SafetyPortal.Web.Models;
+using SafetyPortal.Shared;
+using SafetyPortal.Shared.Models;
+using SafetyPortal.Web.Services;
 
 namespace SafetyPortal.Web.Incidents
 {
@@ -23,10 +25,10 @@ namespace SafetyPortal.Web.Incidents
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            btnSave.Text = T("save_changes");
+            btnSave.Text = Translate("save_changes");
             if (!IsPostBack)
             {
-                var incident = Api.GetIncident(IncidentId);
+                var incident = new IncidentService(Token).GetIncident(IncidentId);
                 if (incident == null)
                 {
                     Response.Redirect("~/Incidents/List.aspx", true);
@@ -39,14 +41,15 @@ namespace SafetyPortal.Web.Incidents
 
         private void LoadLookups(IncidentDetail incident)
         {
-            foreach (var c in Api.GetCategories() ?? new List<CategoryItem>())
+            var lookup = new LookupService(Token);
+            foreach (var c in lookup.GetCategories() ?? new List<CategoryItem>())
                 ddlCategory.Items.Add(new ListItem(c.Name, c.Id.ToString()));
 
-            foreach (var d in Api.GetDepartments() ?? new List<DepartmentItem>())
+            foreach (var d in lookup.GetDepartments() ?? new List<DepartmentItem>())
                 ddlDept.Items.Add(new ListItem($"{d.Name} ({d.LocationName})", d.Id.ToString()));
 
             ddlAssign.Items.Add(new ListItem("— Unassigned —", ""));
-            foreach (var u in Api.GetUsers() ?? new List<UserLookupItem>())
+            foreach (var u in lookup.GetUsers() ?? new List<UserLookupItem>())
                 ddlAssign.Items.Add(new ListItem($"{u.FullName} [{u.RoleName}]", u.Id.ToString()));
         }
 
@@ -93,7 +96,7 @@ namespace SafetyPortal.Web.Incidents
                 AssignedToUserId = assignedTo
             };
 
-            if (Api.UpdateIncident(IncidentId, req))
+            if (new IncidentService(Token).UpdateIncident(IncidentId, req))
                 Response.Redirect($"~/Incidents/Details.aspx?id={IncidentId}", true);
             else
                 ErrorMessage = "Failed to update incident.";

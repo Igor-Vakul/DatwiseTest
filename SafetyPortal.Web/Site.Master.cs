@@ -1,5 +1,6 @@
 using System;
 using System.Web.UI;
+using SafetyPortal.Shared;
 
 namespace SafetyPortal.Web
 {
@@ -37,7 +38,7 @@ namespace SafetyPortal.Web
         }
 
         /// <summary>Culture is already set by BasePage.InitializeCulture() on the same thread.</summary>
-        protected string T(string key)
+        protected string Translate(string key)
         {
             var val = System.Web.HttpContext.GetGlobalResourceObject("Strings", key) as string;
             return val ?? key;

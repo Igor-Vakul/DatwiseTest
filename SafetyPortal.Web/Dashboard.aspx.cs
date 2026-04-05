@@ -1,7 +1,8 @@
 using System;
 using System.Web.UI;
 using Newtonsoft.Json;
-using SafetyPortal.Web.Models;
+using SafetyPortal.Shared.Models;
+using SafetyPortal.Web.Services;
 
 namespace SafetyPortal.Web
 {
@@ -24,7 +25,7 @@ namespace SafetyPortal.Web
 
             try
             {
-                Stats = Api.GetDashboardStats() ?? new DashboardStats();
+                Stats = new DashboardService(Token).GetDashboardStats() ?? new DashboardStats();
 
                 CategoryJson = SafeJson(JsonConvert.SerializeObject(
                     Stats.ByCategory.ConvertAll(x => new { label = x.Label, count = x.Count })));

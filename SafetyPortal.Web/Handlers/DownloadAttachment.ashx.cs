@@ -1,5 +1,6 @@
 using System.Web;
 using System.Web.SessionState;
+using SafetyPortal.Web.Services;
 
 namespace SafetyPortal.Web.Handlers
 {
@@ -29,9 +30,7 @@ namespace SafetyPortal.Web.Handlers
             }
 
             var token = SessionHelper.GetToken(context.Session);
-            var client = new ApiClient(token);
-
-            bool ok = client.ProxyDownload(incidentId, attachmentId, context.Response);
+            bool ok = new AttachmentService(token).ProxyDownload(incidentId, attachmentId, context.Response);
             if (!ok)
             {
                 context.Response.StatusCode = 404;

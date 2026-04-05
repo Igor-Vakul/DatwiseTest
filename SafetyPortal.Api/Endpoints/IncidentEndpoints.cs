@@ -255,6 +255,7 @@ public static class IncidentEndpoints
         {
             var incident = await db.IncidentReports
                 .Include(x => x.ReportedByUser)
+                .Include(x => x.CorrectiveActions)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (incident is null)
@@ -267,8 +268,16 @@ public static class IncidentEndpoints
             incident.IncidentDate = DateTime.Parse(request.IncidentDate);
             incident.LocationDetails = request.LocationDetails;
             incident.SeverityLevel = request.SeverityLevel;
-            incident.Status = request.Status;
             incident.AssignedToUserId = request.AssignedToUserId;
+
+            if (request.Status == IncidentStatus.Closed.ToString() &&
+                incident.Status != IncidentStatus.Closed.ToString())
+            {
+                foreach (var ca in incident.CorrectiveActions)
+                    ca.Status = ActionStatus.Completed.ToString();
+            }
+
+            incident.Status = request.Status;
 
             await db.SaveChangesAsync();
 
