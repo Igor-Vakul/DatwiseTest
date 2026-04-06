@@ -18,6 +18,7 @@ namespace SafetyPortal.Web.Admin
         // Edit form
         protected System.Web.UI.WebControls.HiddenField hdnEditId;
         protected System.Web.UI.WebControls.TextBox txtEditName;
+        protected System.Web.UI.WebControls.TextBox txtEditEmail;
         protected System.Web.UI.WebControls.TextBox txtEditPassword;
         protected System.Web.UI.WebControls.DropDownList ddlEditRole;
         protected System.Web.UI.WebControls.Button btnSaveEdit;
@@ -91,6 +92,7 @@ namespace SafetyPortal.Web.Admin
                 if (target != null)
                 {
                     txtEditName.Text = target.FullName;
+                    txtEditEmail.Text = target.Email;
                     var item = ddlEditRole.Items.FindByText(target.RoleName);
                     if (item != null) item.Selected = true;
                 }
@@ -203,7 +205,8 @@ namespace SafetyPortal.Web.Admin
             }
 
             var name = StripHtml(txtEditName.Text.Trim());
-            if (string.IsNullOrEmpty(name))
+            var email = StripHtml(txtEditEmail.Text.Trim());
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email))
             {
                 Message = Translate("fields_required");
                 MessageType = "danger";
@@ -229,6 +232,7 @@ namespace SafetyPortal.Web.Admin
             var req = new UpdateUserRequest
             {
                 FullName = name,
+                Email = email,
                 RoleId = int.Parse(ddlEditRole.SelectedValue),
                 Password = string.IsNullOrEmpty(pass) ? null : pass
             };

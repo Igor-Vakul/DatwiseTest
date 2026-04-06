@@ -55,7 +55,12 @@ public static class UserManagementEndpoints
             if (user is null)
                 return Results.NotFound();
 
+            if (request.Email != user.Email &&
+                await db.Users.AnyAsync(x => x.Email == request.Email && x.Id != id))
+                return Results.Conflict(new { message = "Email already exists." });
+
             user.FullName = request.FullName;
+            user.Email = request.Email;
             user.RoleId = request.RoleId;
 
             if (!string.IsNullOrWhiteSpace(request.Password))

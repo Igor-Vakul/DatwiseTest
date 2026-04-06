@@ -58,7 +58,7 @@
                                     <button type="button"
                                         class="btn btn-outline-primary btn-sm py-0 px-2"
                                         title="<%= Translate("edit_user") %>"
-                                        onclick="openEdit(<%= u.Id %>, '<%= System.Web.HttpUtility.JavaScriptStringEncode(u.FullName) %>', '<%= u.RoleName %>')">
+                                        onclick="openEdit(<%= u.Id %>, '<%= System.Web.HttpUtility.JavaScriptStringEncode(u.FullName) %>', '<%= System.Web.HttpUtility.JavaScriptStringEncode(u.Email) %>', '<%= u.RoleName %>')">
                                         <i class="bi bi-pencil"></i>
                                     </button>
                                     <button type="button"
@@ -99,7 +99,8 @@
                             ControlToValidate="txtEmail"
                             ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$"
                             Display="Dynamic" CssClass="text-danger small"
-                            ErrorMessage="Invalid email address" />
+                            ErrorMessage="Invalid email address"
+                            ValidationGroup="CreateUser" />
                     </div>
                     <div class="mb-2">
                         <label class="form-label"><%= Translate("password_label") %></label>
@@ -111,7 +112,8 @@
                         <asp:DropDownList ID="ddlRole" runat="server" CssClass="form-select form-select-sm" />
                     </div>
                     <asp:Button ID="btnCreate" runat="server"
-                        CssClass="btn btn-success btn-sm w-100" OnClick="btnCreate_Click" />
+                        CssClass="btn btn-success btn-sm w-100" OnClick="btnCreate_Click"
+                        ValidationGroup="CreateUser" />
                 </div>
             </div>
         </div>
@@ -172,6 +174,17 @@
                         <asp:TextBox ID="txtEditName" runat="server" CssClass="form-control" MaxLength="100" />
                     </div>
                     <div class="mb-3">
+                        <label class="form-label"><%= Translate("email_label") %> <span class="text-danger">*</span></label>
+                        <asp:TextBox ID="txtEditEmail" runat="server" CssClass="form-control"
+                            TextMode="Email" MaxLength="150" />
+                        <asp:RegularExpressionValidator ID="valEditEmail" runat="server"
+                            ControlToValidate="txtEditEmail"
+                            ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$"
+                            Display="Dynamic" CssClass="text-danger small"
+                            ErrorMessage="Invalid email address"
+                            ValidationGroup="EditUser" />
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label"><%= Translate("role") %></label>
                         <asp:DropDownList ID="ddlEditRole" runat="server" CssClass="form-select" />
                     </div>
@@ -185,7 +198,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal"><%= Translate("cancel") %></button>
                     <asp:Button ID="btnSaveEdit" runat="server"
-                        CssClass="btn btn-primary btn-sm" OnClick="btnSaveEdit_Click" />
+                        CssClass="btn btn-primary btn-sm" OnClick="btnSaveEdit_Click"
+                        ValidationGroup="EditUser" />
                 </div>
             </div>
         </div>
@@ -196,9 +210,10 @@
 
 <asp:Content ContentPlaceHolderID="ScriptsContent" runat="server">
 <script>
-    function openEdit(id, name, roleName) {
+    function openEdit(id, name, email, roleName) {
         document.getElementById('<%= hdnEditId.ClientID %>').value = id;
         document.getElementById('<%= txtEditName.ClientID %>').value = name;
+        document.getElementById('<%= txtEditEmail.ClientID %>').value = email;
 
         var ddl = document.getElementById('<%= ddlEditRole.ClientID %>');
         for (var i = 0; i < ddl.options.length; i++) {
