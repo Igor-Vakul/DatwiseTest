@@ -2,9 +2,9 @@
          Inherits="SafetyPortal.Web.Admin.DepartmentsAdmin" MasterPageFile="~/Site.Master"
          ValidateRequest="false" %>
 
-<asp:Content ContentPlaceHolderID="TitleContent" runat="server"><%= T("departments_title") %></asp:Content>
+<asp:Content ContentPlaceHolderID="TitleContent" runat="server"><%= Translate("departments_title") %></asp:Content>
 <asp:Content ContentPlaceHolderID="PageTitle" runat="server">
-    <i class="bi bi-building me-2 text-primary"></i><%= T("departments_title") %>
+    <i class="bi bi-building me-2 text-primary"></i><%= Translate("departments_title") %>
 </asp:Content>
 
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
@@ -18,21 +18,21 @@
 
     <div class="card sp-card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-building text-primary"></i> <%= T("all_departments") %></span>
+            <span><i class="bi bi-building text-primary"></i> <%= Translate("all_departments") %></span>
             <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#deptModal"
                     onclick="openCreate()">
-                <i class="bi bi-plus-lg me-1"></i><%= T("new_department") %>
+                <i class="bi bi-plus-lg me-1"></i><%= Translate("new_department") %>
             </button>
         </div>
         <div class="card-body p-0">
             <table class="table table-hover sp-table mb-0">
                 <thead>
                     <tr>
-                        <th><%= T("dept_name_col") %></th>
-                        <th><%= T("dept_location_col") %></th>
-                        <th><%= T("dept_color_col") %></th>
-                        <th><%= T("status") %></th>
-                        <th><%= T("actions") %></th>
+                        <th><%= Translate("dept_name_col") %></th>
+                        <th><%= Translate("dept_location_col") %></th>
+                        <th><%= Translate("dept_color_col") %></th>
+                        <th><%= Translate("status") %></th>
+                        <th><%= Translate("actions") %></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,8 +49,8 @@
                         <td>
                             <a href="?toggle=<%= d.Id %>"
                                class="badge <%= d.IsActive ? "bg-success-subtle text-success" : "bg-secondary-subtle text-secondary" %> text-decoration-none"
-                               title="<%= T("click_to_toggle") %>">
-                                <%= d.IsActive ? T("active") : T("inactive") %>
+                               title="<%= Translate("click_to_toggle") %>">
+                                <%= d.IsActive ? Translate("active") : Translate("inactive") %>
                             </a>
                         </td>
                         <td>
@@ -67,7 +67,7 @@
                     </tr>
                     <% } %>
                     <% if (Departments.Count == 0) { %>
-                    <tr><td colspan="5" class="text-center text-muted py-4"><%= T("no_departments") %></td></tr>
+                    <tr><td colspan="5" class="text-center text-muted py-4"><%= Translate("no_departments") %></td></tr>
                     <% } %>
                 </tbody>
             </table>
@@ -79,17 +79,17 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deptModalTitle"><%= T("departments_title") %></h5>
+                    <h5 class="modal-title" id="deptModalTitle"><%= Translate("departments_title") %></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <asp:HiddenField ID="hfEditId" runat="server" Value="0" />
                     <div class="mb-3">
-                        <label class="form-label"><%= T("dept_name_label") %> <span class="text-danger">*</span></label>
+                        <label class="form-label"><%= Translate("dept_name_label") %> <span class="text-danger">*</span></label>
                         <asp:TextBox ID="txtName" runat="server" CssClass="form-control" MaxLength="100" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label"><%= T("dept_location_label") %></label>
+                        <label class="form-label"><%= Translate("dept_location_label") %></label>
                         <asp:TextBox ID="txtLocation" runat="server" CssClass="form-control" MaxLength="100" />
                         <datalist id="locationsList">
                             <% foreach (var loc in new System.Collections.Generic.HashSet<string>(
@@ -100,25 +100,25 @@
                         </datalist>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label"><%= T("dept_color_label") %></label>
+                        <label class="form-label"><%= Translate("dept_color_label") %></label>
                         <div class="d-flex gap-2 align-items-center">
                             <input type="color" id="colorPickerInput" class="form-control form-control-color"
                                    style="width:60px;padding:2px 4px" value="#6c757d"
                                    oninput="document.getElementById('<%= hfColor.ClientID %>').value = this.value" />
                             <asp:HiddenField ID="hfColor" runat="server" Value="#6c757d" />
-                            <small class="text-muted"><%= T("dept_color_hint") %></small>
+                            <small class="text-muted"><%= Translate("dept_color_hint") %></small>
                         </div>
                     </div>
                     <div class="mb-3" id="activeRow" style="display:none">
                         <div class="form-check form-switch">
                             <input type="checkbox" id="chkActiveUI" class="form-check-input" role="switch" />
                             <asp:HiddenField ID="hfActive" runat="server" Value="true" />
-                            <label class="form-check-label" for="chkActiveUI"><%= T("active") %></label>
+                            <label class="form-check-label" for="chkActiveUI"><%= Translate("active") %></label>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= T("cancel") %></button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= Translate("cancel") %></button>
                     <asp:Button ID="btnSave" runat="server" CssClass="btn btn-primary btn-sm"
                                 Text="Save" OnClick="btnSave_Click" />
                 </div>
@@ -131,15 +131,15 @@
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><%= T("dept_delete_confirm") %></h5>
+                    <h5 class="modal-title"><%= Translate("dept_delete_confirm") %></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p><%= T("delete") %> <strong id="deleteName"></strong>?</p>
-                    <p class="text-muted small"><%= T("dept_delete_hint") %></p>
+                    <p><%= Translate("delete") %> <strong id="deleteName"></strong>?</p>
+                    <p class="text-muted small"><%= Translate("dept_delete_hint") %></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= T("cancel") %></button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= Translate("cancel") %></button>
                     <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-danger btn-sm"
                                 Text="Delete" OnClick="btnDelete_Click" />
                     <asp:HiddenField ID="hfDeleteId" runat="server" Value="0" />
@@ -152,8 +152,8 @@
 
 <asp:Content ContentPlaceHolderID="ScriptsContent" runat="server">
 <script>
-    var _newDept  = '<%= T("new_department") %>';
-    var _editDept = '<%= T("departments_title") %>';
+    var _newDept  = '<%= Translate("new_department") %>';
+    var _editDept = '<%= Translate("departments_title") %>';
 
     document.getElementById('chkActiveUI').addEventListener('change', function () {
         document.getElementById('<%= hfActive.ClientID %>').value = this.checked;

@@ -1,10 +1,10 @@
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="List.aspx.cs"
          Inherits="SafetyPortal.Web.Incidents.IncidentList" MasterPageFile="~/Site.Master" %>
-<%@ Import Namespace="SafetyPortal.Web" %>
+<%@ Import Namespace="SafetyPortal.Shared" %>
 
-<asp:Content ContentPlaceHolderID="TitleContent" runat="server"><%= T("incidents_title") %></asp:Content>
+<asp:Content ContentPlaceHolderID="TitleContent" runat="server"><%= Translate("incidents_title") %></asp:Content>
 <asp:Content ContentPlaceHolderID="PageTitle"    runat="server">
-    <i class="bi bi-exclamation-triangle me-2 text-warning"></i><%= T("incidents_title") %>
+    <i class="bi bi-exclamation-triangle me-2 text-warning"></i><%= Translate("incidents_title") %>
 </asp:Content>
 
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
@@ -14,14 +14,14 @@
         <li class="nav-item">
             <a class="nav-link <%= !ShowArchived ? "active" : "" %>"
                href="<%= ResolveUrl("~/Incidents/List.aspx") %>">
-                <i class="bi bi-list-ul me-1"></i><%= T("active_incidents") %>
+                <i class="bi bi-list-ul me-1"></i><%= Translate("active_incidents") %>
             </a>
         </li>
         <% if (IsManagerOrAdmin) { %>
         <li class="nav-item">
             <a class="nav-link <%= ShowArchived ? "active" : "" %>"
                href="<%= ResolveUrl("~/Incidents/List.aspx?archived=true") %>">
-                <i class="bi bi-archive me-1"></i><%= T("archived_incidents") %>
+                <i class="bi bi-archive me-1"></i><%= Translate("archived_incidents") %>
             </a>
         </li>
         <% } %>
@@ -31,11 +31,11 @@
         <div class="card-body py-3">
             <div class="row g-2 align-items-end">
                 <div class="col-md-3">
-                    <label class="form-label"><%= T("search") %></label>
+                    <label class="form-label"><%= Translate("search") %></label>
                     <asp:TextBox ID="txtSearch" runat="server" CssClass="form-control form-control-sm" />
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label"><%= T("status") %></label>
+                    <label class="form-label"><%= Translate("status") %></label>
                     <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-select form-select-sm">
                         <asp:ListItem Value=""></asp:ListItem>
                         <asp:ListItem Value="Open">Open</asp:ListItem>
@@ -44,7 +44,7 @@
                     </asp:DropDownList>
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label"><%= T("severity") %></label>
+                    <label class="form-label"><%= Translate("severity") %></label>
                     <asp:DropDownList ID="ddlSeverity" runat="server" CssClass="form-select form-select-sm">
                         <asp:ListItem Value=""></asp:ListItem>
                         <asp:ListItem Value="Low">Low</asp:ListItem>
@@ -54,18 +54,18 @@
                     </asp:DropDownList>
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label"><%= T("department") %></label>
+                    <label class="form-label"><%= Translate("department") %></label>
                     <asp:DropDownList ID="ddlDept" runat="server" CssClass="form-select form-select-sm" />
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label"><%= T("category") %></label>
+                    <label class="form-label"><%= Translate("category") %></label>
                     <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-select form-select-sm" />
                 </div>
                 <div class="col-md-1 d-flex gap-1">
                     <asp:Button ID="btnSearch" runat="server"
                         CssClass="btn btn-primary btn-sm" OnClick="btnSearch_Click" />
                     <a href="<%= ResolveUrl(ShowArchived ? "~/Incidents/List.aspx?archived=true" : "~/Incidents/List.aspx") %>"
-                       class="btn btn-outline-secondary btn-sm" title="<%= T("reset") %>">
+                       class="btn btn-outline-secondary btn-sm" title="<%= Translate("reset") %>">
                         <i class="bi bi-x"></i>
                     </a>
                 </div>
@@ -77,19 +77,19 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <span>
                 <i class="bi bi-table text-primary"></i>
-                <%= T("showing") %> <strong><%= TotalCount %></strong> <%= T("incidents_found") %>
+                <%= Translate("showing") %> <strong><%= TotalCount %></strong> <%= Translate("incidents_found") %>
                 <% if (ShowArchived) { %>
-                <span class="badge bg-secondary ms-1"><%= T("archived_incidents") %></span>
+                <span class="badge bg-secondary ms-1"><%= Translate("archived_incidents") %></span>
                 <% } %>
             </span>
             <div class="d-flex gap-2">
                 <a href="<%= ResolveUrl("~/Handlers/ExportExcel.ashx?type=incidents&" + FilterQs) %>"
-                   class="btn btn-outline-success btn-sm" title="<%= T("export_excel") %>">
-                    <i class="bi bi-file-earmark-excel me-1"></i><%= T("export_excel") %>
+                   class="btn btn-outline-success btn-sm" title="<%= Translate("export_excel") %>">
+                    <i class="bi bi-file-earmark-excel me-1"></i><%= Translate("export_excel") %>
                 </a>
                 <% if (!ShowArchived) { %>
                 <a href="<%= ResolveUrl("~/Incidents/Create.aspx") %>" class="btn btn-success btn-sm">
-                    <i class="bi bi-plus-lg me-1"></i><%= T("new_incident") %>
+                    <i class="bi bi-plus-lg me-1"></i><%= Translate("new_incident") %>
                 </a>
                 <% } %>
             </div>
@@ -99,15 +99,15 @@
                 <table class="table table-hover sp-table mb-0">
                     <thead>
                         <tr>
-                            <th><%= T("report_number") %></th>
-                            <th><%= T("incident_title") %></th>
-                            <th><%= T("category") %></th>
-                            <th><%= T("department") %></th>
-                            <th><%= T("severity") %></th>
-                            <th><%= T("status") %></th>
-                            <th><%= T("date_col") %></th>
-                            <th><%= T("actions") %></th>
-                            <th class="text-center"><%= T("ca_count") %></th>
+                            <th><%= Translate("report_number") %></th>
+                            <th><%= Translate("incident_title") %></th>
+                            <th><%= Translate("category") %></th>
+                            <th><%= Translate("department") %></th>
+                            <th><%= Translate("severity") %></th>
+                            <th><%= Translate("status") %></th>
+                            <th><%= Translate("date_col") %></th>
+                            <th><%= Translate("actions") %></th>
+                            <th class="text-center"><%= Translate("ca_count") %></th>
                             <th class="text-center"><i class="bi bi-paperclip" title="Attachments"></i></th>
                         </tr>
                     </thead>
@@ -132,15 +132,15 @@
                                 </a>
                                 <% if (!inc.IsArchived) { %>
                                 <a href="<%= ResolveUrl("~/Incidents/Edit.aspx?id=" + inc.Id) %>"
-                                   class="btn btn-outline-secondary btn-sm py-0 px-2" title="<%= T("edit") %>">
+                                   class="btn btn-outline-secondary btn-sm py-0 px-2" title="<%= Translate("edit") %>">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                                 <% } %>
                                 <% if (IsManagerOrAdmin && (inc.IsArchived || inc.Status == IncidentStatus.Closed.ToString())) { %>
                                 <a href="<%= ResolveUrl("~/Incidents/List.aspx?toggle_archive=" + inc.Id + (ShowArchived ? "&archived=true" : "")) %>"
                                    class="btn btn-outline-<%= inc.IsArchived ? "success" : "warning" %> btn-sm py-0 px-2"
-                                   title="<%= inc.IsArchived ? T("unarchive") : T("archive") %>"
-                                   onclick="return confirm('<%= inc.IsArchived ? T("confirm_unarchive") : T("confirm_archive") %>');">
+                                   title="<%= inc.IsArchived ? Translate("unarchive") : Translate("archive") %>"
+                                   onclick="return confirm('<%= inc.IsArchived ? Translate("confirm_unarchive") : Translate("confirm_archive") %>');">
                                     <i class="bi bi-<%= inc.IsArchived ? "arrow-counterclockwise" : "archive" %>"></i>
                                 </a>
                                 <% } %>
@@ -164,7 +164,7 @@
                         </tr>
                         <% } %>
                         <% if (Incidents.Count == 0) { %>
-                        <tr><td colspan="10" class="text-center text-muted py-4"><%= T("no_incidents") %></td></tr>
+                        <tr><td colspan="10" class="text-center text-muted py-4"><%= Translate("no_incidents") %></td></tr>
                         <% } %>
                     </tbody>
                 </table>
@@ -172,7 +172,7 @@
         </div>
         <% if (TotalPages > 1) { %>
         <div class="card-footer d-flex justify-content-between align-items-center">
-            <small class="text-muted"><%= T("page") %> <%= CurrentPage %> <%= T("of") %> <%= TotalPages %></small>
+            <small class="text-muted"><%= Translate("page") %> <%= CurrentPage %> <%= Translate("of") %> <%= TotalPages %></small>
             <nav>
                 <ul class="pagination pagination-sm mb-0">
                     <li class="page-item <%= CurrentPage == 1 ? "disabled" : "" %>">

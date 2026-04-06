@@ -1,4 +1,5 @@
-using SafetyPortal.Web.Models;
+using SafetyPortal.Shared.Models;
+using SafetyPortal.Web.Services;
 using System;
 using System.Collections.Generic;
 
@@ -24,7 +25,7 @@ namespace SafetyPortal.Web.Admin
             var toggleId = Request.QueryString["toggle"];
             if (!string.IsNullOrEmpty(toggleId) && int.TryParse(toggleId, out int tid))
             {
-                Api.ToggleDepartmentActive(tid);
+                new AdminService(Token).ToggleDepartmentActive(tid);
                 Response.Redirect("Departments.aspx", true);
                 return;
             }
@@ -36,7 +37,7 @@ namespace SafetyPortal.Web.Admin
 
         private void LoadDepartments()
         {
-            Departments = Api.GetAllDepartments() ?? new List<DepartmentAdminItem>();
+            Departments = new AdminService(Token).GetAllDepartments() ?? new List<DepartmentAdminItem>();
         }
 
         protected void btnSave_Click(object sender, EventArgs e)
@@ -51,11 +52,12 @@ namespace SafetyPortal.Web.Admin
                 color = "#6c757d";
 
             bool isActive = string.Equals(hfActive.Value, "true", StringComparison.OrdinalIgnoreCase);
+            var adminSvc = new AdminService(Token);
             bool ok = editId == 0
-                ? Api.CreateDepartment(name, location, color)
-                : Api.UpdateDepartment(editId, name, location, color, isActive);
+                ? adminSvc.CreateDepartment(name, location, color)
+                : adminSvc.UpdateDepartment(editId, name, location, color, isActive);
 
-            Message = ok ? T("dept_saved") : T("dept_save_fail");
+            Message = ok ? Translate("dept_saved") : Translate("dept_save_fail");
             MessageType = ok ? "success" : "danger";
             LoadDepartments();
         }
@@ -63,8 +65,8 @@ namespace SafetyPortal.Web.Admin
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             if (!int.TryParse(hfDeleteId.Value, out int id) || id == 0) return;
-            bool ok = Api.DeleteDepartment(id);
-            Message = ok ? T("dept_deleted") : T("dept_delete_fail");
+            bool ok = new AdminService(Token).DeleteDepartment(id);
+            Message = ok ? Translate("dept_deleted") : Translate("dept_delete_fail");
             MessageType = ok ? "success" : "danger";
             LoadDepartments();
         }

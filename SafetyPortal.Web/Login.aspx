@@ -30,7 +30,7 @@
             <div class="text-center mb-4">
                 <i class="bi bi-shield-check text-primary" style="font-size:3rem"></i>
                 <h3 class="mt-2 fw-bold">SafetyPortal</h3>
-                <p class="text-muted small"><%= T("login_subtitle") %></p>
+                <p class="text-muted small"><%= Translate("login_subtitle") %></p>
             </div>
 
             <% if (!string.IsNullOrEmpty(ErrorMessage)) { %>
@@ -44,7 +44,7 @@
                 <asp:HiddenField ID="hdnReturnUrl" runat="server" />
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold"><%= T("email") %></label>
+                    <label class="form-label fw-semibold"><%= Translate("email") %></label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-envelope"></i></span>
                         <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control"
@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-semibold"><%= T("password") %></label>
+                    <label class="form-label fw-semibold"><%= Translate("password") %></label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-lock"></i></span>
                         <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control"
@@ -72,7 +72,7 @@
             </form>
 
             <div class="mt-4 pt-3 border-top">
-                <p class="text-muted small text-center mb-2"><%= T("demo_accounts") %></p>
+                <p class="text-muted small text-center mb-2"><%= Translate("demo_accounts") %></p>
                 <div class="d-flex flex-column gap-1">
                     <code class="small text-center">admin@datwise.local / Admin123!</code>
                     <code class="small text-center">safety.manager@datwise.local / Safety123!</code>

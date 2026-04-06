@@ -1,5 +1,6 @@
 using System.Web;
 using System.Web.SessionState;
+using SafetyPortal.Web.Services;
 
 namespace SafetyPortal.Web.Handlers
 {
@@ -41,8 +42,7 @@ namespace SafetyPortal.Web.Handlers
             }
 
             var token = SessionHelper.GetToken(context.Session);
-            var client = new ApiClient(token);
-            bool ok = client.ProxyExport(apiPath, context.Response);
+            bool ok = new AttachmentService(token).ProxyExport(apiPath, context.Response);
 
             if (!ok)
                 context.Response.StatusCode = 500;
@@ -53,6 +53,7 @@ namespace SafetyPortal.Web.Handlers
         private static string BuildIncidentsExportPath(System.Collections.Specialized.NameValueCollection qs)
         {
             var parts = new System.Collections.Generic.List<string>();
+            if (qs["archived"] == "true") parts.Add("archived=true");
             if (!string.IsNullOrEmpty(qs["search"])) parts.Add("search=" + HttpUtility.UrlEncode(qs["search"]));
             if (!string.IsNullOrEmpty(qs["status"])) parts.Add("status=" + HttpUtility.UrlEncode(qs["status"]));
             if (!string.IsNullOrEmpty(qs["severity"])) parts.Add("severityLevel=" + HttpUtility.UrlEncode(qs["severity"]));

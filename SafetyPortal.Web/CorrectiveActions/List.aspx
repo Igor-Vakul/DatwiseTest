@@ -1,10 +1,10 @@
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="List.aspx.cs"
          Inherits="SafetyPortal.Web.CorrectiveActions.CorrectiveActionList" MasterPageFile="~/Site.Master" %>
-<%@ Import Namespace="SafetyPortal.Web" %>
+<%@ Import Namespace="SafetyPortal.Shared" %>
 
-<asp:Content ContentPlaceHolderID="TitleContent" runat="server"><%= T("ca_title") %></asp:Content>
+<asp:Content ContentPlaceHolderID="TitleContent" runat="server"><%= Translate("ca_title") %></asp:Content>
 <asp:Content ContentPlaceHolderID="PageTitle"    runat="server">
-    <i class="bi bi-check2-square me-2 text-info"></i><%= T("ca_title") %>
+    <i class="bi bi-check2-square me-2 text-info"></i><%= Translate("ca_title") %>
 </asp:Content>
 
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
@@ -13,7 +13,7 @@
         <div class="card-body py-3">
             <div class="row g-2 align-items-end">
                 <div class="col-md-3">
-                    <label class="form-label"><%= T("status") %></label>
+                    <label class="form-label"><%= Translate("status") %></label>
                     <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-select form-select-sm">
                         <asp:ListItem Value=""></asp:ListItem>
                         <asp:ListItem Value="Pending">Pending</asp:ListItem>
@@ -25,7 +25,7 @@
                     <asp:Button ID="btnFilter" runat="server"
                         CssClass="btn btn-primary btn-sm" OnClick="btnFilter_Click" />
                     <a href="<%= ResolveUrl("~/CorrectiveActions/List.aspx") %>"
-                       class="btn btn-outline-secondary btn-sm"><%= T("reset") %></a>
+                       class="btn btn-outline-secondary btn-sm"><%= Translate("reset") %></a>
                 </div>
             </div>
         </div>
@@ -35,11 +35,11 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <span>
                 <i class="bi bi-table text-primary"></i>
-                <strong><%= Actions.Count %></strong> <%= T("actions_found") %>
+                <strong><%= Actions.Count %></strong> <%= Translate("actions_found") %>
             </span>
             <a href="<%= ResolveUrl("~/Handlers/ExportExcel.ashx?type=actions&" + ExportQs) %>"
-               class="btn btn-outline-success btn-sm" title="<%= T("export_excel") %>">
-                <i class="bi bi-file-earmark-excel me-1"></i><%= T("export_excel") %>
+               class="btn btn-outline-success btn-sm" title="<%= Translate("export_excel") %>">
+                <i class="bi bi-file-earmark-excel me-1"></i><%= Translate("export_excel") %>
             </a>
         </div>
         <div class="card-body p-0">
@@ -47,13 +47,13 @@
                 <table class="table table-hover sp-table mb-0">
                     <thead>
                         <tr>
-                            <th><%= T("incident_col") %></th>
-                            <th><%= T("action_col") %></th>
-                            <th><%= T("assigned_to") %></th>
-                            <th><%= T("due_date") %></th>
-                            <th><%= T("priority") %></th>
-                            <th><%= T("status") %></th>
-                            <% if (IsSupervisorOrAbove) { %><th><%= T("update") %></th><% } %>
+                            <th><%= Translate("incident_col") %></th>
+                            <th><%= Translate("action_col") %></th>
+                            <th><%= Translate("assigned_to") %></th>
+                            <th><%= Translate("due_date") %></th>
+                            <th><%= Translate("priority") %></th>
+                            <th><%= Translate("status") %></th>
+                            <% if (IsSupervisorOrAbove) { %><th><%= Translate("update") %></th><% } %>
                         </tr>
                     </thead>
                     <tbody>
@@ -83,7 +83,7 @@
                                 <% if (a.Status != ActionStatus.Completed.ToString()) { %>
                                 <a href="List.aspx?complete=<%= a.Id %>&status=<%= ddlStatus.SelectedValue %>"
                                    class="btn btn-outline-success btn-sm py-0 px-2"
-                                   onclick="return confirm('<%= T("confirm_complete") %>')" title="<%= T("mark_complete") %>">
+                                   onclick="return confirm('<%= Translate("confirm_complete") %>')" title="<%= Translate("mark_complete") %>">
                                     <i class="bi bi-check-lg"></i>
                                 </a>
                                 <% } %>
@@ -92,7 +92,7 @@
                         </tr>
                         <% } %>
                         <% if (Actions.Count == 0) { %>
-                        <tr><td colspan="7" class="text-center text-muted py-4"><%= T("no_actions_found") %></td></tr>
+                        <tr><td colspan="7" class="text-center text-muted py-4"><%= Translate("no_actions_found") %></td></tr>
                         <% } %>
                     </tbody>
                 </table>

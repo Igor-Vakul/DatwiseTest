@@ -1,6 +1,8 @@
 using System;
 using System.Text.RegularExpressions;
 using System.Web.UI;
+using SafetyPortal.Shared;
+using SafetyPortal.Web.Services;
 
 namespace SafetyPortal.Web
 {
@@ -21,7 +23,7 @@ namespace SafetyPortal.Web
             base.InitializeCulture();
         }
 
-        protected string T(string key)
+        protected string Translate(string key)
         {
             var val = GetGlobalResourceObject("Strings", key) as string;
             return val ?? key;
@@ -59,7 +61,7 @@ namespace SafetyPortal.Web
                 return;
             }
 
-            btnLogin.Text = T("sign_in");
+            btnLogin.Text = Translate("sign_in");
 
             if (!IsPostBack)
                 hdnReturnUrl.Value = Request.QueryString["returnUrl"] ?? "~/Dashboard.aspx";
@@ -72,16 +74,16 @@ namespace SafetyPortal.Web
 
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
-                ErrorMessage = T("enter_credentials");
+                ErrorMessage = Translate("enter_credentials");
                 return;
             }
 
-            var api = new ApiClient();
-            var resp = api.Login(email, password);
+            var auth = new AuthService();
+            var resp = auth.Login(email, password);
 
             if (resp == null)
             {
-                ErrorMessage = T("invalid_login");
+                ErrorMessage = Translate("invalid_login");
                 return;
             }
 

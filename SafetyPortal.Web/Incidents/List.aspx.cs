@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
-using SafetyPortal.Web.Models;
+using SafetyPortal.Shared;
+using SafetyPortal.Shared.Models;
+using SafetyPortal.Web.Services;
 
 namespace SafetyPortal.Web.Incidents
 {
@@ -25,9 +27,9 @@ namespace SafetyPortal.Web.Incidents
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            btnSearch.Text = T("filter");
-            ddlStatus.Items[0].Text = T("all_statuses");
-            ddlSeverity.Items[0].Text = T("all_severities");
+            btnSearch.Text = Translate("filter");
+            ddlStatus.Items[0].Text = Translate("all_statuses");
+            ddlSeverity.Items[0].Text = Translate("all_severities");
 
             if (!IsPostBack)
             {
@@ -36,7 +38,7 @@ namespace SafetyPortal.Web.Incidents
                 if (!string.IsNullOrEmpty(toggleId) && int.TryParse(toggleId, out int tid)
                     && IsManagerOrAdmin)
                 {
-                    Api.ToggleIncidentArchive(tid);
+                    new IncidentService(Token).ToggleIncidentArchive(tid);
                     // Redirect back preserving other filters but without the toggle param
                     var redirect = "List.aspx?" + (Request.QueryString["archived"] == "true"
                         ? "archived=true&" : "");
@@ -54,12 +56,13 @@ namespace SafetyPortal.Web.Incidents
 
         private void LoadLookups()
         {
-            var depts = Api.GetDepartments() ?? new List<DepartmentItem>();
+            var lookup = new LookupService(Token);
+            var depts = lookup.GetDepartments() ?? new List<DepartmentItem>();
             ddlDept.Items.Add(new System.Web.UI.WebControls.ListItem("All Departments", ""));
             foreach (var d in depts)
                 ddlDept.Items.Add(new System.Web.UI.WebControls.ListItem(d.Name, d.Id.ToString()));
 
-            var cats = Api.GetCategories() ?? new List<CategoryItem>();
+            var cats = lookup.GetCategories() ?? new List<CategoryItem>();
             ddlCategory.Items.Add(new System.Web.UI.WebControls.ListItem("All Categories", ""));
             foreach (var c in cats)
                 ddlCategory.Items.Add(new System.Web.UI.WebControls.ListItem(c.Name, c.Id.ToString()));
@@ -84,7 +87,7 @@ namespace SafetyPortal.Web.Incidents
 
             FilterQs = BuildFilterQs();
 
-            var result = Api.GetIncidents(
+            var result = new IncidentService(Token).GetIncidents(
                 page: CurrentPage,
                 pageSize: PageSize,
                 search: txtSearch.Text.Trim(),

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
-using SafetyPortal.Web.Models;
+using SafetyPortal.Shared;
+using SafetyPortal.Shared.Models;
+using SafetyPortal.Web.Services;
 
 namespace SafetyPortal.Web.CorrectiveActions
 {
@@ -14,8 +16,8 @@ namespace SafetyPortal.Web.CorrectiveActions
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            btnFilter.Text = T("filter");
-            ddlStatus.Items[0].Text = T("all_statuses");
+            btnFilter.Text = Translate("filter");
+            ddlStatus.Items[0].Text = Translate("all_statuses");
 
             // Handle "complete" GET param
             if (!IsPostBack)
@@ -23,7 +25,7 @@ namespace SafetyPortal.Web.CorrectiveActions
                 var completeId = Request.QueryString["complete"];
                 if (!string.IsNullOrEmpty(completeId) && int.TryParse(completeId, out int caId))
                 {
-                    Api.UpdateActionStatus(caId, ActionStatus.Completed.ToString());
+                    new CorrectiveActionService(Token).UpdateActionStatus(caId, ActionStatus.Completed.ToString());
                     Response.Redirect($"List.aspx", true);
                     return;
                 }
@@ -39,7 +41,7 @@ namespace SafetyPortal.Web.CorrectiveActions
             if (!string.IsNullOrEmpty(ddlStatus.SelectedValue))
                 ExportQs = "status=" + System.Web.HttpUtility.UrlEncode(ddlStatus.SelectedValue);
 
-            Actions = Api.GetCorrectiveActions(
+            Actions = new CorrectiveActionService(Token).GetCorrectiveActions(
                 status: ddlStatus.SelectedValue
             ) ?? new List<CorrectiveActionSummary>();
         }

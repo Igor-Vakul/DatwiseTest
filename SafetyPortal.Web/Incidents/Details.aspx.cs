@@ -4,7 +4,9 @@ using System.IO;
 using System.Text;
 using System.Web;
 using System.Web.UI.WebControls;
-using SafetyPortal.Web.Models;
+using SafetyPortal.Shared;
+using SafetyPortal.Shared.Models;
+using SafetyPortal.Web.Services;
 
 namespace SafetyPortal.Web.Incidents
 {
@@ -28,8 +30,8 @@ namespace SafetyPortal.Web.Incidents
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (btnAddAction != null) btnAddAction.Text = T("save_action");
-            if (btnUpload != null) btnUpload.Text = T("upload_btn");
+            if (btnAddAction != null) btnAddAction.Text = Translate("save_action");
+            if (btnUpload != null) btnUpload.Text = Translate("upload_btn");
 
             // Handle "complete action" GET action
             if (!IsPostBack)
@@ -37,7 +39,7 @@ namespace SafetyPortal.Web.Incidents
                 var completeActionId = Request.QueryString["completeAction"];
                 if (!string.IsNullOrEmpty(completeActionId) && int.TryParse(completeActionId, out int caId))
                 {
-                    Api.UpdateActionStatus(caId, ActionStatus.Completed.ToString());
+                    new CorrectiveActionService(Token).UpdateActionStatus(caId, ActionStatus.Completed.ToString());
                     Response.Redirect($"Details.aspx?id={IncidentId}", true);
                     return;
                 }
@@ -46,15 +48,15 @@ namespace SafetyPortal.Web.Incidents
                 var deleteAttId = Request.QueryString["deleteAttachment"];
                 if (!string.IsNullOrEmpty(deleteAttId) && int.TryParse(deleteAttId, out int attId))
                 {
-                    Api.DeleteAttachment(IncidentId, attId);
+                    new AttachmentService(Token).DeleteAttachment(IncidentId, attId);
                     Response.Redirect($"Details.aspx?id={IncidentId}", true);
                     return;
                 }
             }
 
-            Incident = Api.GetIncident(IncidentId);
+            Incident = new IncidentService(Token).GetIncident(IncidentId);
             if (Incident != null)
-                Attachments = Api.GetAttachments(IncidentId) ?? new List<AttachmentInfo>();
+                Attachments = new AttachmentService(Token).GetAttachments(IncidentId) ?? new List<AttachmentInfo>();
 
             if (!IsPostBack && Incident != null && IsManagerOrAdmin)
             {
@@ -65,7 +67,7 @@ namespace SafetyPortal.Web.Incidents
 
         private void LoadUsers()
         {
-            var users = Api.GetUsers() ?? new List<UserLookupItem>();
+            var users = new LookupService(Token).GetUsers() ?? new List<UserLookupItem>();
             ddlActionUser.Items.Clear();
             foreach (var u in users)
                 ddlActionUser.Items.Add(new ListItem($"{u.FullName} [{u.RoleName}]", u.Id.ToString()));
@@ -73,12 +75,12 @@ namespace SafetyPortal.Web.Incidents
 
         protected void btnUpload_Click(object sender, EventArgs e)
         {
-            Incident = Api.GetIncident(IncidentId);
-            Attachments = Api.GetAttachments(IncidentId) ?? new List<AttachmentInfo>();
+            Incident = new IncidentService(Token).GetIncident(IncidentId);
+            Attachments = new AttachmentService(Token).GetAttachments(IncidentId) ?? new List<AttachmentInfo>();
 
             if (!fuDetailsAttachments.HasFiles)
             {
-                UploadError = T("attach_select_file");
+                UploadError = Translate("attach_select_file");
                 if (Incident != null && IsManagerOrAdmin) LoadUsers();
                 return;
             }
@@ -95,7 +97,7 @@ namespace SafetyPortal.Web.Incidents
                     bytes = ms.ToArray();
                 }
 
-                var err = Api.UploadAttachment(
+                var err = new AttachmentService(Token).UploadAttachment(
                     IncidentId, bytes,
                     Path.GetFileName(file.FileName),
                     file.ContentType);
@@ -108,7 +110,7 @@ namespace SafetyPortal.Web.Incidents
             {
                 UploadError = errors.ToString();
                 if (Incident != null && IsManagerOrAdmin) LoadUsers();
-                Attachments = Api.GetAttachments(IncidentId) ?? new List<AttachmentInfo>();
+                Attachments = new AttachmentService(Token).GetAttachments(IncidentId) ?? new List<AttachmentInfo>();
                 return;
             }
 
@@ -117,7 +119,7 @@ namespace SafetyPortal.Web.Incidents
 
         protected void btnAddAction_Click(object sender, EventArgs e)
         {
-            Incident = Api.GetIncident(IncidentId);
+            Incident = new IncidentService(Token).GetIncident(IncidentId);
 
             var title = StripHtml(txtActionTitle.Text.Trim());
             if (string.IsNullOrEmpty(title))
@@ -144,7 +146,7 @@ namespace SafetyPortal.Web.Incidents
                 PriorityLevel = ddlActionPriority.SelectedValue
             };
 
-            if (Api.CreateCorrectiveAction(req))
+            if (new CorrectiveActionService(Token).CreateCorrectiveAction(req))
                 Response.Redirect($"Details.aspx?id={IncidentId}", true);
             else
             {

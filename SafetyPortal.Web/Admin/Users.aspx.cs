@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
-using SafetyPortal.Web.Models;
+using SafetyPortal.Shared.Models;
+using SafetyPortal.Web.Services;
 
 namespace SafetyPortal.Web.Admin
 {
@@ -36,9 +37,9 @@ namespace SafetyPortal.Web.Admin
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            btnCreate.Text = T("create_user");
-            btnSaveEdit.Text = T("save_user");
-            btnSendEmail.Text = T("send_btn");
+            btnCreate.Text = Translate("create_user");
+            btnSaveEdit.Text = Translate("save_user");
+            btnSendEmail.Text = Translate("send_btn");
 
             // Handle toggle-active GET
             if (!IsPostBack)
@@ -46,7 +47,7 @@ namespace SafetyPortal.Web.Admin
                 var toggleId = Request.QueryString["toggle"];
                 if (!string.IsNullOrEmpty(toggleId) && int.TryParse(toggleId, out int tid))
                 {
-                    Api.ToggleUserActive(tid);
+                    new UserService(Token).ToggleUserActive(tid);
                     Response.Redirect("Users.aspx", true);
                     return;
                 }
@@ -67,12 +68,12 @@ namespace SafetyPortal.Web.Admin
 
         private void LoadUsers()
         {
-            Users = Api.GetAllUsers() ?? new List<UserSummary>();
+            Users = new UserService(Token).GetAllUsers() ?? new List<UserSummary>();
         }
 
         private void LoadRoles()
         {
-            var roles = Api.GetRoles() ?? new List<RoleItem>();
+            var roles = new LookupService(Token).GetRoles() ?? new List<RoleItem>();
 
             ddlRole.Items.Clear();
             foreach (var r in roles)
@@ -85,7 +86,7 @@ namespace SafetyPortal.Web.Admin
             // Pre-select role in edit form if editing
             if (!string.IsNullOrEmpty(hdnEditId.Value) && int.TryParse(hdnEditId.Value, out int eid))
             {
-                var users = Api.GetAllUsers() ?? new List<UserSummary>();
+                var users = new UserService(Token).GetAllUsers() ?? new List<UserSummary>();
                 var target = users.Find(u => u.Id == eid);
                 if (target != null)
                 {
@@ -104,7 +105,7 @@ namespace SafetyPortal.Web.Admin
 
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(pass))
             {
-                Message = T("fields_required");
+                Message = Translate("fields_required");
                 MessageType = "danger";
                 LoadUsers();
                 LoadRoles();
@@ -114,7 +115,7 @@ namespace SafetyPortal.Web.Admin
             var passError = ValidatePassword(pass);
             if (passError != null)
             {
-                Message = T(passError);
+                Message = Translate(passError);
                 MessageType = "danger";
                 LoadUsers();
                 LoadRoles();
@@ -129,9 +130,9 @@ namespace SafetyPortal.Web.Admin
                 RoleId = int.Parse(ddlRole.SelectedValue)
             };
 
-            if (Api.CreateUser(req))
+            if (new UserService(Token).CreateUser(req))
             {
-                Message = T("user_created");
+                Message = Translate("user_created");
                 MessageType = "success";
                 txtName.Text = string.Empty;
                 txtEmail.Text = string.Empty;
@@ -139,7 +140,7 @@ namespace SafetyPortal.Web.Admin
             }
             else
             {
-                Message = T("user_create_fail");
+                Message = Translate("user_create_fail");
                 MessageType = "danger";
             }
 
@@ -151,14 +152,14 @@ namespace SafetyPortal.Web.Admin
         {
             if (!int.TryParse(hdnEmailUserId.Value, out int uid) || uid == 0)
             {
-                EmailError = T("email_send_fail");
+                EmailError = Translate("email_send_fail");
                 LoadUsers(); LoadRoles();
                 return;
             }
 
             if (uid == CurrentUserId)
             {
-                EmailError = T("email_self_send");
+                EmailError = Translate("email_self_send");
                 LoadUsers(); LoadRoles();
                 return;
             }
@@ -168,14 +169,14 @@ namespace SafetyPortal.Web.Admin
 
             if (string.IsNullOrEmpty(subject) || string.IsNullOrEmpty(body))
             {
-                EmailError = T("email_subject_required");
+                EmailError = Translate("email_subject_required");
                 LoadUsers(); LoadRoles();
                 return;
             }
 
-            if (Api.SendEmailToUser(uid, subject, body))
+            if (new UserService(Token).SendEmailToUser(uid, subject, body))
             {
-                Message = T("email_sent");
+                Message = Translate("email_sent");
                 MessageType = "success";
                 hdnEmailUserId.Value = string.Empty;
                 hdnEmailAddress.Value = string.Empty;
@@ -184,7 +185,7 @@ namespace SafetyPortal.Web.Admin
             }
             else
             {
-                EmailError = T("email_send_fail");
+                EmailError = Translate("email_send_fail");
             }
 
             LoadUsers(); LoadRoles();
@@ -194,7 +195,7 @@ namespace SafetyPortal.Web.Admin
         {
             if (!int.TryParse(hdnEditId.Value, out int uid) || uid == 0)
             {
-                Message = T("user_update_fail");
+                Message = Translate("user_update_fail");
                 MessageType = "danger";
                 LoadUsers();
                 LoadRoles();
@@ -204,7 +205,7 @@ namespace SafetyPortal.Web.Admin
             var name = StripHtml(txtEditName.Text.Trim());
             if (string.IsNullOrEmpty(name))
             {
-                Message = T("fields_required");
+                Message = Translate("fields_required");
                 MessageType = "danger";
                 LoadUsers();
                 LoadRoles();
@@ -217,7 +218,7 @@ namespace SafetyPortal.Web.Admin
                 var passError = ValidatePassword(pass);
                 if (passError != null)
                 {
-                    Message = T(passError);
+                    Message = Translate(passError);
                     MessageType = "danger";
                     LoadUsers();
                     LoadRoles();
@@ -232,15 +233,15 @@ namespace SafetyPortal.Web.Admin
                 Password = string.IsNullOrEmpty(pass) ? null : pass
             };
 
-            if (Api.UpdateUser(uid, req))
+            if (new UserService(Token).UpdateUser(uid, req))
             {
-                Message = T("user_updated");
+                Message = Translate("user_updated");
                 MessageType = "success";
                 hdnEditId.Value = string.Empty;
             }
             else
             {
-                Message = T("user_update_fail");
+                Message = Translate("user_update_fail");
                 MessageType = "danger";
             }
 

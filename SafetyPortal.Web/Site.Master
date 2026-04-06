@@ -36,40 +36,40 @@
         </a>
 
         <ul class="nav flex-column mt-2 flex-grow-1">
-            <li class="sidebar-section"><%= T("nav_main") %></li>
+            <li class="sidebar-section"><%= Translate("nav_main") %></li>
             <li class="nav-item">
                 <a class="nav-link <%= IsActive("Dashboard.aspx") %>" href="<%= ResolveUrl("~/Dashboard.aspx") %>">
-                    <i class="bi bi-speedometer2"></i><span><%= T("nav_dashboard") %></span>
+                    <i class="bi bi-speedometer2"></i><span><%= Translate("nav_dashboard") %></span>
                 </a>
             </li>
 
-            <li class="sidebar-section mt-2"><%= T("nav_safety") %></li>
+            <li class="sidebar-section mt-2"><%= Translate("nav_safety") %></li>
             <li class="nav-item">
                 <a class="nav-link <%= IsActive("Incidents/List.aspx") %>" href="<%= ResolveUrl("~/Incidents/List.aspx") %>">
-                    <i class="bi bi-exclamation-triangle"></i><span><%= T("nav_incidents") %></span>
+                    <i class="bi bi-exclamation-triangle"></i><span><%= Translate("nav_incidents") %></span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <%= IsActive("CorrectiveActions/List.aspx") %>" href="<%= ResolveUrl("~/CorrectiveActions/List.aspx") %>">
-                    <i class="bi bi-check2-square"></i><span><%= T("nav_corrective_actions") %></span>
+                    <i class="bi bi-check2-square"></i><span><%= Translate("nav_corrective_actions") %></span>
                 </a>
             </li>
 
             <% if (IsAdmin) { %>
-            <li class="sidebar-section mt-2"><%= T("nav_admin") %></li>
+            <li class="sidebar-section mt-2"><%= Translate("nav_admin") %></li>
             <li class="nav-item">
                 <a class="nav-link <%= IsActive("Admin/Users.aspx") %>" href="<%= ResolveUrl("~/Admin/Users.aspx") %>">
-                    <i class="bi bi-people"></i><span><%= T("nav_users") %></span>
+                    <i class="bi bi-people"></i><span><%= Translate("nav_users") %></span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <%= IsActive("Admin/Departments.aspx") %>" href="<%= ResolveUrl("~/Admin/Departments.aspx") %>">
-                    <i class="bi bi-building"></i><span><%= T("nav_departments") %></span>
+                    <i class="bi bi-building"></i><span><%= Translate("nav_departments") %></span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <%= IsActive("Admin/Categories.aspx") %>" href="<%= ResolveUrl("~/Admin/Categories.aspx") %>">
-                    <i class="bi bi-tags"></i><span><%= T("nav_categories") %></span>
+                    <i class="bi bi-tags"></i><span><%= Translate("nav_categories") %></span>
                 </a>
             </li>
             <% } %>
@@ -101,7 +101,7 @@
                 </span>
                 <a href="<%= ResolveUrl("~/Login.aspx?action=logout") %>"
                    class="btn btn-outline-danger btn-sm">
-                    <i class="bi bi-box-arrow-right"></i> <%= T("nav_logout") %>
+                    <i class="bi bi-box-arrow-right"></i> <%= Translate("nav_logout") %>
                 </a>
             </div>
         </div>

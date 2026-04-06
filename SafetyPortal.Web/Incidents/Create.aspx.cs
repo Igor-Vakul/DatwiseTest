@@ -4,7 +4,9 @@ using System.IO;
 using System.Text;
 using System.Web;
 using System.Web.UI.WebControls;
-using SafetyPortal.Web.Models;
+using SafetyPortal.Shared;
+using SafetyPortal.Shared.Models;
+using SafetyPortal.Web.Services;
 
 namespace SafetyPortal.Web.Incidents
 {
@@ -26,7 +28,7 @@ namespace SafetyPortal.Web.Incidents
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            btnSave.Text = T("submit_report");
+            btnSave.Text = Translate("submit_report");
             if (!IsPostBack)
             {
                 txtDate.Text = DateTime.Today.ToString(AppConstants.Validation.ISODateFormat);
@@ -36,9 +38,10 @@ namespace SafetyPortal.Web.Incidents
 
         private void LoadLookups()
         {
-            var cats = Api.GetCategories() ?? new List<CategoryItem>();
-            var depts = Api.GetDepartments() ?? new List<DepartmentItem>();
-            var users = Api.GetUsers() ?? new List<UserLookupItem>();
+            var lookup = new LookupService(Token);
+            var cats = lookup.GetCategories() ?? new List<CategoryItem>();
+            var depts = lookup.GetDepartments() ?? new List<DepartmentItem>();
+            var users = lookup.GetUsers() ?? new List<UserLookupItem>();
 
             foreach (var c in cats)
                 ddlCategory.Items.Add(new ListItem(c.Name, c.Id.ToString()));
@@ -82,7 +85,7 @@ namespace SafetyPortal.Web.Incidents
                 AssignedToUserId = assignedTo
             };
 
-            var incidentId = Api.CreateIncidentForId(req);
+            var incidentId = new IncidentService(Token).CreateIncidentForId(req);
             if (incidentId == null)
             {
                 ErrorMessage = "Failed to submit report. Please try again.";
@@ -104,7 +107,7 @@ namespace SafetyPortal.Web.Incidents
                         bytes = ms.ToArray();
                     }
 
-                    var err = Api.UploadAttachment(
+                    var err = new AttachmentService(Token).UploadAttachment(
                         incidentId.Value, bytes,
                         Path.GetFileName(file.FileName),
                         file.ContentType);
