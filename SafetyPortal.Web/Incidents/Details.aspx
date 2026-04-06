@@ -27,8 +27,8 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span><i class="bi bi-info-circle text-primary"></i> <%= System.Web.HttpUtility.HtmlEncode(Incident.Title) %></span>
                     <div class="d-flex gap-2">
-                        <span class="badge badge-severity-<%= Incident.SeverityLevel.ToLower() %> fs-6"><%= Incident.SeverityLevel %></span>
-                        <span class="badge badge-status-<%= Incident.Status.ToLower() %> fs-6"><%= Incident.Status %></span>
+                        <span class="badge rounded-pill fs-6" style="background-color:<%= System.Web.HttpUtility.HtmlAttributeEncode(SeverityColors.ContainsKey(Incident.SeverityLevel) ? SeverityColors[Incident.SeverityLevel] : "#6c757d") %>"><%= Incident.SeverityLevel %></span>
+                        <span class="badge rounded-pill fs-6" style="background-color:<%= System.Web.HttpUtility.HtmlAttributeEncode(StatusColors.ContainsKey(Incident.Status) ? StatusColors[Incident.Status] : "#6c757d") %>"><%= Incident.Status %></span>
                     </div>
                 </div>
                 <div class="card-body">
@@ -95,9 +95,9 @@
                         <dt class="col-5 text-muted"><%= Translate("reported_at") %></dt>
                         <dd class="col-7"><%= Incident.ReportedAt.ToString("dd MMM yyyy HH:mm") %></dd>
                         <dt class="col-5 text-muted"><%= Translate("severity") %></dt>
-                        <dd class="col-7"><span class="badge badge-severity-<%= Incident.SeverityLevel.ToLower() %>"><%= Incident.SeverityLevel %></span></dd>
+                        <dd class="col-7"><span class="badge rounded-pill" style="background-color:<%= System.Web.HttpUtility.HtmlAttributeEncode(SeverityColors.ContainsKey(Incident.SeverityLevel) ? SeverityColors[Incident.SeverityLevel] : "#6c757d") %>"><%= Incident.SeverityLevel %></span></dd>
                         <dt class="col-5 text-muted"><%= Translate("status") %></dt>
-                        <dd class="col-7"><span class="badge badge-status-<%= Incident.Status.ToLower() %>"><%= Incident.Status %></span></dd>
+                        <dd class="col-7"><span class="badge rounded-pill" style="background-color:<%= System.Web.HttpUtility.HtmlAttributeEncode(StatusColors.ContainsKey(Incident.Status) ? StatusColors[Incident.Status] : "#6c757d") %>"><%= Incident.Status %></span></dd>
                     </dl>
                 </div>
             </div>
@@ -223,7 +223,7 @@
                         <td><%= System.Web.HttpUtility.HtmlEncode(ca.AssignedToFullName) %></td>
                         <td><%= ca.DueDate %></td>
                         <td><span class="badge badge-priority-<%= ca.PriorityLevel.ToLower() %>"><%= ca.PriorityLevel %></span></td>
-                        <td><span class="badge badge-status-<%= ca.Status.ToLower() %>"><%= ca.Status %></span></td>
+                        <td><span class="badge rounded-pill" style="background-color:<%= System.Web.HttpUtility.HtmlAttributeEncode(ActionStatusColors.ContainsKey(ca.Status) ? ActionStatusColors[ca.Status] : "#6c757d") %>"><%= ca.Status %></span></td>
                         <% if (IsSupervisorOrAbove) { %>
                         <td>
                             <% if (ca.Status != ActionStatus.Completed.ToString()) { %>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SafetyPortal.Api.Data;
 
@@ -11,9 +12,11 @@ using SafetyPortal.Api.Data;
 namespace SafetyPortal.Api.Migrations
 {
     [DbContext(typeof(SafetyPortalDbContext))]
-    partial class SafetyPortalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260406132316_AddStatusOptions")]
+    partial class AddStatusOptions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,13 +32,6 @@ namespace SafetyPortal.Api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(7)
-                        .HasColumnType("nvarchar(7)")
-                        .HasDefaultValue("#6c757d");
 
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("int");
@@ -65,7 +61,6 @@ namespace SafetyPortal.Api.Migrations
                         new
                         {
                             Id = 1,
-                            Color = "#6c757d",
                             DisplayOrder = 1,
                             IsActive = true,
                             IsCompleted = false,
@@ -75,7 +70,6 @@ namespace SafetyPortal.Api.Migrations
                         new
                         {
                             Id = 2,
-                            Color = "#0d6efd",
                             DisplayOrder = 2,
                             IsActive = true,
                             IsCompleted = false,
@@ -85,7 +79,6 @@ namespace SafetyPortal.Api.Migrations
                         new
                         {
                             Id = 3,
-                            Color = "#198754",
                             DisplayOrder = 3,
                             IsActive = true,
                             IsCompleted = true,
@@ -168,16 +161,16 @@ namespace SafetyPortal.Api.Migrations
                     b.Property<int>("ReportId")
                         .HasColumnType("int");
 
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AssignedToUserId");
 
                     b.HasIndex("ReportId");
-
-                    b.HasIndex("StatusId");
 
                     b.ToTable("CorrectiveActions", (string)null);
                 });
@@ -412,11 +405,15 @@ namespace SafetyPortal.Api.Migrations
                     b.Property<int>("ReportedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SeverityLevelId")
-                        .HasColumnType("int");
+                    b.Property<string>("SeverityLevel")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -436,10 +433,6 @@ namespace SafetyPortal.Api.Migrations
 
                     b.HasIndex("ReportedByUserId");
 
-                    b.HasIndex("SeverityLevelId");
-
-                    b.HasIndex("StatusId");
-
                     b.ToTable("IncidentReports", (string)null);
                 });
 
@@ -450,13 +443,6 @@ namespace SafetyPortal.Api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(7)
-                        .HasColumnType("nvarchar(7)")
-                        .HasDefaultValue("#6c757d");
 
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("int");
@@ -486,7 +472,6 @@ namespace SafetyPortal.Api.Migrations
                         new
                         {
                             Id = 1,
-                            Color = "#0d6efd",
                             DisplayOrder = 1,
                             IsActive = true,
                             IsClosing = false,
@@ -496,7 +481,6 @@ namespace SafetyPortal.Api.Migrations
                         new
                         {
                             Id = 2,
-                            Color = "#6610f2",
                             DisplayOrder = 2,
                             IsActive = true,
                             IsClosing = false,
@@ -506,7 +490,6 @@ namespace SafetyPortal.Api.Migrations
                         new
                         {
                             Id = 3,
-                            Color = "#198754",
                             DisplayOrder = 3,
                             IsActive = true,
                             IsClosing = true,
@@ -566,13 +549,6 @@ namespace SafetyPortal.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(7)
-                        .HasColumnType("nvarchar(7)")
-                        .HasDefaultValue("#6c757d");
-
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("int");
 
@@ -598,7 +574,6 @@ namespace SafetyPortal.Api.Migrations
                         new
                         {
                             Id = 1,
-                            Color = "#198754",
                             DisplayOrder = 1,
                             IsActive = true,
                             IsSystem = true,
@@ -607,7 +582,6 @@ namespace SafetyPortal.Api.Migrations
                         new
                         {
                             Id = 2,
-                            Color = "#ffc107",
                             DisplayOrder = 2,
                             IsActive = true,
                             IsSystem = true,
@@ -616,7 +590,6 @@ namespace SafetyPortal.Api.Migrations
                         new
                         {
                             Id = 3,
-                            Color = "#fd7e14",
                             DisplayOrder = 3,
                             IsActive = true,
                             IsSystem = true,
@@ -625,7 +598,6 @@ namespace SafetyPortal.Api.Migrations
                         new
                         {
                             Id = 4,
-                            Color = "#dc3545",
                             DisplayOrder = 4,
                             IsActive = true,
                             IsSystem = true,
@@ -694,17 +666,9 @@ namespace SafetyPortal.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SafetyPortal.Api.Entities.ActionStatusOption", "StatusOption")
-                        .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("AssignedToUser");
 
                     b.Navigation("Report");
-
-                    b.Navigation("StatusOption");
                 });
 
             modelBuilder.Entity("SafetyPortal.Api.Entities.IncidentAttachment", b =>
@@ -751,18 +715,6 @@ namespace SafetyPortal.Api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SafetyPortal.Api.Entities.SeverityLevelOption", "SeverityLevelOption")
-                        .WithMany()
-                        .HasForeignKey("SeverityLevelId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("SafetyPortal.Api.Entities.IncidentStatusOption", "StatusOption")
-                        .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("AssignedToUser");
 
                     b.Navigation("Category");
@@ -770,10 +722,6 @@ namespace SafetyPortal.Api.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("ReportedByUser");
-
-                    b.Navigation("SeverityLevelOption");
-
-                    b.Navigation("StatusOption");
                 });
 
             modelBuilder.Entity("SafetyPortal.Api.Entities.User", b =>

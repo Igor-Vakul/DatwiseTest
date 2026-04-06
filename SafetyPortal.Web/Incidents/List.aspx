@@ -122,8 +122,8 @@
                             </td>
                             <td><span class="badge bg-secondary-subtle text-secondary"><%= System.Web.HttpUtility.HtmlEncode(inc.CategoryName) %></span></td>
                             <td><small class="text-muted"><%= System.Web.HttpUtility.HtmlEncode(inc.DepartmentName) %></small></td>
-                            <td><span class="badge badge-severity-<%= inc.SeverityLevel.ToLower() %>"><%= inc.SeverityLevel %></span></td>
-                            <td><span class="badge badge-status-<%= inc.Status.ToLower() %>"><%= inc.Status %></span></td>
+                            <td><span class="badge rounded-pill" style="background-color:<%= System.Web.HttpUtility.HtmlAttributeEncode(SeverityColors.ContainsKey(inc.SeverityLevel) ? SeverityColors[inc.SeverityLevel] : "#6c757d") %>"><%= inc.SeverityLevel %></span></td>
+                            <td><span class="badge rounded-pill" style="background-color:<%= System.Web.HttpUtility.HtmlAttributeEncode(StatusColors.ContainsKey(inc.Status) ? StatusColors[inc.Status] : "#6c757d") %>"><%= inc.Status %></span></td>
                             <td><small><%= inc.IncidentDate.ToString("dd MMM yy") %></small></td>
                             <td>
                                 <a href="<%= ResolveUrl("~/Incidents/Details.aspx?id=" + inc.Id) %>"

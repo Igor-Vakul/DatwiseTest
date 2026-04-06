@@ -30,6 +30,8 @@ public static class IncidentEndpoints
                 .Include(x => x.Category)
                 .Include(x => x.Department)
                 .Include(x => x.ReportedByUser)
+                .Include(x => x.StatusOption)
+                .Include(x => x.SeverityLevelOption)
                 .Include(x => x.CorrectiveActions)
                 .Include(x => x.Attachments)
                 .Where(x => x.IsArchived == f.Archived)
@@ -48,10 +50,10 @@ public static class IncidentEndpoints
                     x.Description.Contains(f.Search));
 
             if (!string.IsNullOrWhiteSpace(f.Status))
-                query = query.Where(x => x.Status == f.Status);
+                query = query.Where(x => x.StatusOption.Name == f.Status);
 
             if (!string.IsNullOrWhiteSpace(f.SeverityLevel))
-                query = query.Where(x => x.SeverityLevel == f.SeverityLevel);
+                query = query.Where(x => x.SeverityLevelOption.Name == f.SeverityLevel);
 
             if (f.DepartmentId.HasValue)
                 query = query.Where(x => x.DepartmentId == f.DepartmentId);
@@ -73,8 +75,8 @@ public static class IncidentEndpoints
                     x.Department.Name,
                     x.ReportedByUser.FullName,
                     x.IncidentDate,
-                    x.SeverityLevel,
-                    x.Status,
+                    x.SeverityLevelOption.Name,
+                    x.StatusOption.Name,
                     x.CorrectiveActions.Count,
                     x.Attachments.Count,
                     x.IsArchived
@@ -98,6 +100,8 @@ public static class IncidentEndpoints
                 .Include(x => x.Department)
                 .Include(x => x.ReportedByUser)
                 .Include(x => x.AssignedToUser)
+                .Include(x => x.StatusOption)
+                .Include(x => x.SeverityLevelOption)
                 .Include(x => x.CorrectiveActions)
                 .Where(x => x.IsArchived == f.Archived)
                 .AsQueryable();
@@ -115,10 +119,10 @@ public static class IncidentEndpoints
                     x.Description.Contains(f.Search));
 
             if (!string.IsNullOrWhiteSpace(f.Status))
-                query = query.Where(x => x.Status == f.Status);
+                query = query.Where(x => x.StatusOption.Name == f.Status);
 
             if (!string.IsNullOrWhiteSpace(f.SeverityLevel))
-                query = query.Where(x => x.SeverityLevel == f.SeverityLevel);
+                query = query.Where(x => x.SeverityLevelOption.Name == f.SeverityLevel);
 
             if (f.DepartmentId.HasValue)
                 query = query.Where(x => x.DepartmentId == f.DepartmentId);
@@ -137,8 +141,8 @@ public static class IncidentEndpoints
                     ReportedBy = x.ReportedByUser.FullName,
                     AssignedTo = x.AssignedToUser != null ? x.AssignedToUser.FullName : "",
                     IncidentDate = x.IncidentDate,
-                    SeverityLevel = x.SeverityLevel,
-                    Status = x.Status,
+                    SeverityLevel = x.SeverityLevelOption.Name,
+                    Status = x.StatusOption.Name,
                     Location = x.LocationDetails ?? "",
                     CorrectiveActionsCount = x.CorrectiveActions.Count
                 })
@@ -162,8 +166,12 @@ public static class IncidentEndpoints
                 .Include(x => x.Department)
                 .Include(x => x.ReportedByUser)
                 .Include(x => x.AssignedToUser)
+                .Include(x => x.StatusOption)
+                .Include(x => x.SeverityLevelOption)
                 .Include(x => x.CorrectiveActions)
                     .ThenInclude(ca => ca.AssignedToUser)
+                .Include(x => x.CorrectiveActions)
+                    .ThenInclude(ca => ca.StatusOption)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (incident is null)
@@ -185,8 +193,8 @@ public static class IncidentEndpoints
                 incident.IncidentDate,
                 incident.ReportedAt,
                 incident.LocationDetails,
-                incident.SeverityLevel,
-                incident.Status,
+                incident.SeverityLevelOption.Name,
+                incident.StatusOption.Name,
                 incident.IsArchived,
                 incident.CorrectiveActions.Select(ca => new CorrectiveActionSummaryDto(
                     ca.Id,
@@ -195,7 +203,7 @@ public static class IncidentEndpoints
                     ca.ActionTitle,
                     ca.AssignedToUser!.FullName,
                     ca.DueDate,
-                    ca.Status,
+                    ca.StatusOption.Name,
                     ca.PriorityLevel
                 )).ToList()
             );
@@ -213,6 +221,18 @@ public static class IncidentEndpoints
             if (!int.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
                 return Results.Unauthorized();
 
+            var severityOption = await db.SeverityLevelOptions
+                .FirstOrDefaultAsync(s => s.Name == request.SeverityLevel && s.IsActive);
+            if (severityOption is null)
+                return Results.BadRequest(new { error = "Invalid severity level." });
+
+            var defaultStatus = await db.IncidentStatusOptions
+                .Where(s => s.IsActive && !s.IsClosing)
+                .OrderBy(s => s.DisplayOrder)
+                .FirstOrDefaultAsync();
+            if (defaultStatus is null)
+                return Results.StatusCode(500);
+
             var count = await db.IncidentReports.CountAsync();
             var reportNumber = $"INC-{DateTime.UtcNow:yyyy}-{(count + 1):D4}";
 
@@ -228,17 +248,14 @@ public static class IncidentEndpoints
                 IncidentDate = DateTime.Parse(request.IncidentDate),
                 ReportedAt = DateTime.UtcNow,
                 LocationDetails = request.LocationDetails,
-                SeverityLevel = request.SeverityLevel,
-                Status = IncidentStatus.Open.ToString()
+                SeverityLevelId = severityOption.Id,
+                StatusId = defaultStatus.Id
             };
 
             db.IncidentReports.Add(incident);
             await db.SaveChangesAsync();
 
-            // Scenario 1 — fire-and-forget: send notification email in background
             jobs.Enqueue<IncidentNotificationJob>(j => j.SendCreatedAsync(incident.Id));
-
-            // Scenario 3 — delayed escalation: if still Open after N days, alert managers
             jobs.Schedule<IncidentEscalationJob>(
                 j => j.CheckAndEscalateAsync(incident.Id),
                 TimeSpan.FromDays(AppConstants.Jobs.EscalationAfterDays));
@@ -261,40 +278,54 @@ public static class IncidentEndpoints
             if (incident is null)
                 return Results.NotFound();
 
+            var severityOption = await db.SeverityLevelOptions
+                .FirstOrDefaultAsync(s => s.Name == request.SeverityLevel && s.IsActive);
+            if (severityOption is null)
+                return Results.BadRequest(new { error = "Invalid severity level." });
+
+            var newStatusOption = await db.IncidentStatusOptions
+                .FirstOrDefaultAsync(s => s.Name == request.Status);
+            if (newStatusOption is null)
+                return Results.BadRequest(new { error = "Invalid status." });
+
+            if (newStatusOption.IsClosing && incident.StatusId != newStatusOption.Id)
+            {
+                var completedStatus = await db.ActionStatusOptions
+                    .Where(s => s.IsCompleted)
+                    .FirstOrDefaultAsync();
+
+                if (completedStatus is not null)
+                    foreach (var ca in incident.CorrectiveActions)
+                        ca.StatusId = completedStatus.Id;
+            }
+
             incident.Title = request.Title;
             incident.Description = request.Description;
             incident.CategoryId = request.CategoryId;
             incident.DepartmentId = request.DepartmentId;
             incident.IncidentDate = DateTime.Parse(request.IncidentDate);
             incident.LocationDetails = request.LocationDetails;
-            incident.SeverityLevel = request.SeverityLevel;
+            incident.SeverityLevelId = severityOption.Id;
             incident.AssignedToUserId = request.AssignedToUserId;
-
-            if (request.Status == IncidentStatus.Closed.ToString() &&
-                incident.Status != IncidentStatus.Closed.ToString())
-            {
-                foreach (var ca in incident.CorrectiveActions)
-                    ca.Status = ActionStatus.Completed.ToString();
-            }
-
-            incident.Status = request.Status;
+            incident.StatusId = newStatusOption.Id;
 
             await db.SaveChangesAsync();
 
-            // Scenario 1 — fire-and-forget: send update notification email in background
             jobs.Enqueue<IncidentNotificationJob>(j => j.SendUpdatedAsync(incident.Id));
 
             return Results.NoContent();
         });
 
-        // PUT /api/incidents/{id}/archive — toggle archive flag, Admin/SafetyManager only
+        // PUT /api/incidents/{id}/archive — toggle archive flag
         group.MapPut("/{id:int}/archive", async (int id, SafetyPortalDbContext db) =>
         {
-            var incident = await db.IncidentReports.FindAsync(id);
+            var incident = await db.IncidentReports
+                .Include(x => x.StatusOption)
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (incident is null)
                 return Results.NotFound();
 
-            if (!incident.IsArchived && incident.Status != IncidentStatus.Closed.ToString())
+            if (!incident.IsArchived && !incident.StatusOption.IsClosing)
                 return Results.BadRequest(new { error = "Only closed incidents can be archived." });
 
             incident.IsArchived = !incident.IsArchived;
@@ -303,7 +334,7 @@ public static class IncidentEndpoints
         })
         .RequireAuthorization("SafetyManagerOrAdmin");
 
-        // DELETE /api/incidents/{id} — Admin/SafetyManager only
+        // DELETE /api/incidents/{id}
         group.MapDelete("/{id:int}", async (int id, SafetyPortalDbContext db) =>
         {
             var incident = await db.IncidentReports.FindAsync(id);

@@ -23,41 +23,46 @@ public static class DashboardEndpoints
                     x.CorrectiveActions.Any(ca => ca.AssignedToUserId == currentUserId)))
                 : db.IncidentReports.Where(x => !x.IsArchived);
 
+            var firstPendingActionStatusId = await db.ActionStatusOptions
+                .Where(s => s.IsActive && !s.IsCompleted)
+                .OrderBy(s => s.DisplayOrder)
+                .Select(s => s.Id)
+                .FirstOrDefaultAsync();
+
             var totalIncidents = await active.CountAsync();
-            var openIncidents = await active.CountAsync(x => x.Status == IncidentStatus.Open.ToString() || x.Status == IncidentStatus.InProgress.ToString());
-            var closedIncidents = await active.CountAsync(x => x.Status == IncidentStatus.Closed.ToString());
+            var openIncidents  = await active.CountAsync(x => !x.StatusOption.IsClosing);
+            var closedIncidents = await active.CountAsync(x => x.StatusOption.IsClosing);
             var highCritical = await active.CountAsync(x =>
-                                        (x.Status == IncidentStatus.Open.ToString() || x.Status == IncidentStatus.InProgress.ToString()) &&
-                                        (x.SeverityLevel == SeverityLevel.High.ToString() || x.SeverityLevel == SeverityLevel.Critical.ToString()));
+                !x.StatusOption.IsClosing &&
+                (x.SeverityLevelOption.Name == SeverityLevel.High.ToString() ||
+                 x.SeverityLevelOption.Name == SeverityLevel.Critical.ToString()));
 
             var overdueActions = await db.CorrectiveActions.CountAsync(x =>
-                                        x.Status != ActionStatus.Completed.ToString() && x.DueDate < today);
-            var pendingActions = await db.CorrectiveActions.CountAsync(x => x.Status == ActionStatus.Pending.ToString());
+                !x.StatusOption.IsCompleted && x.DueDate < today);
+            var pendingActions = await db.CorrectiveActions.CountAsync(x =>
+                x.StatusId == firstPendingActionStatusId);
 
             var byCategory = await active
-                .Include(x => x.Category)
                 .GroupBy(x => x.Category.Name)
                 .Select(g => new { CategoryName = g.Key, Count = g.Count() })
                 .ToListAsync();
 
             var byDepartment = await active
-                .Include(x => x.Department)
                 .GroupBy(x => new { x.Department.Name, x.Department.Color })
                 .Select(g => new { DepartmentName = g.Key.Name, Color = g.Key.Color, Count = g.Count() })
                 .ToListAsync();
 
             var bySeverity = await active
-                .GroupBy(x => x.SeverityLevel)
+                .GroupBy(x => x.SeverityLevelOption.Name)
                 .Select(g => new { Label = g.Key, Count = g.Count() })
                 .ToListAsync();
 
             var byStatus = await active
-                .GroupBy(x => x.Status)
+                .GroupBy(x => x.StatusOption.Name)
                 .Select(g => new { Label = g.Key, Count = g.Count() })
                 .ToListAsync();
 
             var sixMonthsAgo = DateTime.UtcNow.AddMonths(-(AppConstants.Dashboard.TrendMonthsLookback - 1));
-            // Materialize year/month keys first — string interpolation with :D2 cannot be translated to SQL
             var byMonthRaw = await active
                 .Where(x => x.IncidentDate >= sixMonthsAgo)
                 .GroupBy(x => new { x.IncidentDate.Year, x.IncidentDate.Month })
@@ -70,6 +75,8 @@ public static class DashboardEndpoints
                 .ToList();
 
             var recentIncidents = await active
+                .Include(x => x.StatusOption)
+                .Include(x => x.SeverityLevelOption)
                 .Include(x => x.Attachments)
                 .OrderByDescending(x => x.ReportedAt)
                 .Take(AppConstants.Dashboard.RecentIncidentsCount)
@@ -78,8 +85,8 @@ public static class DashboardEndpoints
                     x.Id,
                     x.ReportNumber,
                     x.Title,
-                    x.SeverityLevel,
-                    x.Status,
+                    SeverityLevel = x.SeverityLevelOption.Name,
+                    Status = x.StatusOption.Name,
                     x.IncidentDate,
                     AttachmentsCount = x.Attachments.Count
                 })

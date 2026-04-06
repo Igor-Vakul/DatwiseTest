@@ -35,7 +35,8 @@ public class CorrectiveActionReminderJob
         var actions = await _db.CorrectiveActions
             .Include(ca => ca.AssignedToUser)
             .Include(ca => ca.Report)
-            .Where(ca => ca.Status != ActionStatus.Completed.ToString()
+            .Include(ca => ca.StatusOption)
+            .Where(ca => !ca.StatusOption.IsCompleted
                       && ca.CompletedAt == null
                       && ca.DueDate == targetDate)
             .ToListAsync();

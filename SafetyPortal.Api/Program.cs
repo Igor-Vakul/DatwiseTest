@@ -199,6 +199,7 @@ app.MapLookupEndpoints();
 app.MapUserManagementEndpoints();
 app.MapAdminDepartmentEndpoints();
 app.MapAdminCategoryEndpoints();
+app.MapAdminStatusEndpoints();
 app.MapAttachmentEndpoints();
 
 app.Run();

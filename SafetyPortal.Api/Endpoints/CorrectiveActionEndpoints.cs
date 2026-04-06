@@ -19,13 +19,14 @@ public static class CorrectiveActionEndpoints
             var query = db.CorrectiveActions
                 .Include(x => x.Report)
                 .Include(x => x.AssignedToUser)
+                .Include(x => x.StatusOption)
                 .AsQueryable();
 
             if (reportId.HasValue)
                 query = query.Where(x => x.ReportId == reportId);
 
             if (!string.IsNullOrWhiteSpace(status))
-                query = query.Where(x => x.Status == status);
+                query = query.Where(x => x.StatusOption.Name == status);
 
             var items = await query
                 .OrderBy(x => x.DueDate)
@@ -36,7 +37,7 @@ public static class CorrectiveActionEndpoints
                     x.ActionTitle,
                     x.AssignedToUser!.FullName,
                     x.DueDate,
-                    x.Status,
+                    x.StatusOption.Name,
                     x.PriorityLevel
                 ))
                 .ToListAsync();
@@ -44,19 +45,20 @@ public static class CorrectiveActionEndpoints
             return Results.Ok(items);
         });
 
-        // GET /api/corrective-actions/export — filtered Excel download
+        // GET /api/corrective-actions/export
         group.MapGet("/export", async (SafetyPortalDbContext db, int? reportId = null, string? status = null) =>
         {
             var query = db.CorrectiveActions
                 .Include(x => x.Report)
                 .Include(x => x.AssignedToUser)
+                .Include(x => x.StatusOption)
                 .AsQueryable();
 
             if (reportId.HasValue)
                 query = query.Where(x => x.ReportId == reportId);
 
             if (!string.IsNullOrWhiteSpace(status))
-                query = query.Where(x => x.Status == status);
+                query = query.Where(x => x.StatusOption.Name == status);
 
             var rows = await query
                 .OrderBy(x => x.DueDate)
@@ -67,7 +69,7 @@ public static class CorrectiveActionEndpoints
                     AssignedTo = x.AssignedToUser!.FullName,
                     DueDate = x.DueDate.ToString("dd/MM/yyyy"),
                     Priority = x.PriorityLevel,
-                    Status = x.Status
+                    Status = x.StatusOption.Name
                 })
                 .ToListAsync();
 
@@ -81,9 +83,16 @@ public static class CorrectiveActionEndpoints
                 fileName);
         });
 
-        // POST /api/corrective-actions — Supervisor and above
+        // POST /api/corrective-actions
         group.MapPost("/", async (CreateCorrectiveActionDto request, SafetyPortalDbContext db) =>
         {
+            var defaultStatus = await db.ActionStatusOptions
+                .Where(s => s.IsActive && !s.IsCompleted)
+                .OrderBy(s => s.DisplayOrder)
+                .FirstOrDefaultAsync();
+            if (defaultStatus is null)
+                return Results.StatusCode(500);
+
             var action = new CorrectiveAction
             {
                 ReportId = request.ReportId,
@@ -91,7 +100,7 @@ public static class CorrectiveActionEndpoints
                 ActionDescription = request.ActionDescription,
                 AssignedToUserId = request.AssignedToUserId,
                 DueDate = request.DueDate,
-                Status = ActionStatus.Pending.ToString(),
+                StatusId = defaultStatus.Id,
                 PriorityLevel = request.PriorityLevel
             };
 
@@ -102,15 +111,20 @@ public static class CorrectiveActionEndpoints
         })
         .RequireAuthorization("SupervisorOrAbove");
 
-        // PUT /api/corrective-actions/{id}/status — Supervisor and above
+        // PUT /api/corrective-actions/{id}/status
         group.MapPut("/{id:int}/status", async (int id, UpdateActionStatusDto request, SafetyPortalDbContext db) =>
         {
             var action = await db.CorrectiveActions.FindAsync(id);
             if (action is null)
                 return Results.NotFound();
 
-            action.Status = request.Status;
-            if (request.Status == ActionStatus.Completed.ToString())
+            var statusOption = await db.ActionStatusOptions
+                .FirstOrDefaultAsync(s => s.Name == request.Status);
+            if (statusOption is null)
+                return Results.BadRequest(new { error = "Invalid status." });
+
+            action.StatusId = statusOption.Id;
+            if (statusOption.IsCompleted)
                 action.CompletedAt = DateTime.UtcNow;
 
             await db.SaveChangesAsync();
@@ -118,7 +132,7 @@ public static class CorrectiveActionEndpoints
         })
         .RequireAuthorization("SupervisorOrAbove");
 
-        // DELETE /api/corrective-actions/{id} — SafetyManager and above
+        // DELETE /api/corrective-actions/{id}
         group.MapDelete("/{id:int}", async (int id, SafetyPortalDbContext db) =>
         {
             var action = await db.CorrectiveActions.FindAsync(id);

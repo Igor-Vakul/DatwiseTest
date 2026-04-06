@@ -25,6 +25,9 @@ namespace SafetyPortal.Web.Incidents
         protected List<AttachmentInfo> Attachments { get; private set; } = new List<AttachmentInfo>();
         protected string ActionError { get; private set; } = string.Empty;
         protected string UploadError { get; private set; } = string.Empty;
+        protected System.Collections.Generic.Dictionary<string, string> SeverityColors { get; private set; } = new System.Collections.Generic.Dictionary<string, string>();
+        protected System.Collections.Generic.Dictionary<string, string> StatusColors { get; private set; } = new System.Collections.Generic.Dictionary<string, string>();
+        protected System.Collections.Generic.Dictionary<string, string> ActionStatusColors { get; private set; } = new System.Collections.Generic.Dictionary<string, string>();
 
         private int IncidentId => int.TryParse(Request.QueryString["id"], out int id) ? id : 0;
 
@@ -57,6 +60,14 @@ namespace SafetyPortal.Web.Incidents
             Incident = new IncidentService(Token).GetIncident(IncidentId);
             if (Incident != null)
                 Attachments = new AttachmentService(Token).GetAttachments(IncidentId) ?? new List<AttachmentInfo>();
+
+            var lookup = new LookupService(Token);
+            foreach (var s in lookup.GetSeverityLevels() ?? new List<SeverityLevelItem>())
+                SeverityColors[s.Name] = s.Color;
+            foreach (var s in lookup.GetIncidentStatuses() ?? new List<IncidentStatusItem>())
+                StatusColors[s.Name] = s.Color;
+            foreach (var s in lookup.GetActionStatuses() ?? new List<ActionStatusItem>())
+                ActionStatusColors[s.Name] = s.Color;
 
             if (!IsPostBack && Incident != null && IsManagerOrAdmin)
             {

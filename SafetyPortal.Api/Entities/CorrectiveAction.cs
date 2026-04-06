@@ -1,4 +1,4 @@
-﻿namespace SafetyPortal.Api.Entities;
+namespace SafetyPortal.Api.Entities;
 
 public class CorrectiveAction
 {
@@ -16,6 +16,8 @@ public class CorrectiveAction
     public DateOnly DueDate { get; set; }
     public DateTime? CompletedAt { get; set; }
 
-    public string Status { get; set; } = string.Empty;
+    public int StatusId { get; set; }
+    public ActionStatusOption StatusOption { get; set; } = null!;
+
     public string PriorityLevel { get; set; } = string.Empty;
 }

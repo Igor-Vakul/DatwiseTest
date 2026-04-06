@@ -49,6 +49,36 @@ public static class LookupEndpoints
             return Results.Ok(roles);
         });
 
+        group.MapGet("/incident-statuses", async (SafetyPortalDbContext db) =>
+        {
+            var statuses = await db.IncidentStatusOptions
+                .Where(x => x.IsActive)
+                .OrderBy(x => x.DisplayOrder)
+                .Select(x => new { x.Id, x.Name, x.IsClosing, x.Color })
+                .ToListAsync();
+            return Results.Ok(statuses);
+        });
+
+        group.MapGet("/severity-levels", async (SafetyPortalDbContext db) =>
+        {
+            var levels = await db.SeverityLevelOptions
+                .Where(x => x.IsActive)
+                .OrderBy(x => x.DisplayOrder)
+                .Select(x => new { x.Id, x.Name, x.Color })
+                .ToListAsync();
+            return Results.Ok(levels);
+        });
+
+        group.MapGet("/action-statuses", async (SafetyPortalDbContext db) =>
+        {
+            var statuses = await db.ActionStatusOptions
+                .Where(x => x.IsActive)
+                .OrderBy(x => x.DisplayOrder)
+                .Select(x => new { x.Id, x.Name, x.IsCompleted, x.Color })
+                .ToListAsync();
+            return Results.Ok(statuses);
+        });
+
         return app;
     }
 }

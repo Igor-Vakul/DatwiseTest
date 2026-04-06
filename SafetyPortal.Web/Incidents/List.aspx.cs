@@ -22,6 +22,8 @@ namespace SafetyPortal.Web.Incidents
         protected int TotalPages { get; private set; } = 1;
         protected string FilterQs { get; private set; } = string.Empty;
         protected bool ShowArchived { get; private set; } = false;
+        protected System.Collections.Generic.Dictionary<string, string> SeverityColors { get; private set; } = new System.Collections.Generic.Dictionary<string, string>();
+        protected System.Collections.Generic.Dictionary<string, string> StatusColors { get; private set; } = new System.Collections.Generic.Dictionary<string, string>();
 
         private const int PageSize = AppConstants.Pagination.DefaultPageSize;
 
@@ -66,6 +68,12 @@ namespace SafetyPortal.Web.Incidents
             ddlCategory.Items.Add(new System.Web.UI.WebControls.ListItem("All Categories", ""));
             foreach (var c in cats)
                 ddlCategory.Items.Add(new System.Web.UI.WebControls.ListItem(c.Name, c.Id.ToString()));
+
+            foreach (var s in lookup.GetSeverityLevels() ?? new List<SeverityLevelItem>())
+                SeverityColors[s.Name] = s.Color;
+
+            foreach (var s in lookup.GetIncidentStatuses() ?? new List<IncidentStatusItem>())
+                StatusColors[s.Name] = s.Color;
         }
 
         private void RestoreFiltersFromQs()

@@ -18,5 +18,14 @@ namespace SafetyPortal.Web.Services
 
         public List<RoleItem> GetRoles()
             => Get<List<RoleItem>>("/api/lookup/roles");
+
+        public List<IncidentStatusItem> GetIncidentStatuses()
+            => Get<List<IncidentStatusItem>>("/api/lookup/incident-statuses");
+
+        public List<SeverityLevelItem> GetSeverityLevels()
+            => Get<List<SeverityLevelItem>>("/api/lookup/severity-levels");
+
+        public List<ActionStatusItem> GetActionStatuses()
+            => Get<List<ActionStatusItem>>("/api/lookup/action-statuses");
     }
 }

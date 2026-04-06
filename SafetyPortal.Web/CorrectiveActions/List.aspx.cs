@@ -13,6 +13,7 @@ namespace SafetyPortal.Web.CorrectiveActions
 
         protected List<CorrectiveActionSummary> Actions { get; private set; } = new List<CorrectiveActionSummary>();
         protected string ExportQs { get; private set; } = string.Empty;
+        protected System.Collections.Generic.Dictionary<string, string> ActionStatusColors { get; private set; } = new System.Collections.Generic.Dictionary<string, string>();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -44,6 +45,9 @@ namespace SafetyPortal.Web.CorrectiveActions
             Actions = new CorrectiveActionService(Token).GetCorrectiveActions(
                 status: ddlStatus.SelectedValue
             ) ?? new List<CorrectiveActionSummary>();
+
+            foreach (var s in new LookupService(Token).GetActionStatuses() ?? new List<ActionStatusItem>())
+                ActionStatusColors[s.Name] = s.Color;
         }
 
         protected void btnFilter_Click(object sender, EventArgs e)

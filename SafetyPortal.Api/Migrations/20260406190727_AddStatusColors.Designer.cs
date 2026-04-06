@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SafetyPortal.Api.Data;
 
@@ -11,9 +12,11 @@ using SafetyPortal.Api.Data;
 namespace SafetyPortal.Api.Migrations
 {
     [DbContext(typeof(SafetyPortalDbContext))]
-    partial class SafetyPortalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260406190727_AddStatusColors")]
+    partial class AddStatusColors
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,16 +171,16 @@ namespace SafetyPortal.Api.Migrations
                     b.Property<int>("ReportId")
                         .HasColumnType("int");
 
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AssignedToUserId");
 
                     b.HasIndex("ReportId");
-
-                    b.HasIndex("StatusId");
 
                     b.ToTable("CorrectiveActions", (string)null);
                 });
@@ -412,11 +415,15 @@ namespace SafetyPortal.Api.Migrations
                     b.Property<int>("ReportedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SeverityLevelId")
-                        .HasColumnType("int");
+                    b.Property<string>("SeverityLevel")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -435,10 +442,6 @@ namespace SafetyPortal.Api.Migrations
                         .IsUnique();
 
                     b.HasIndex("ReportedByUserId");
-
-                    b.HasIndex("SeverityLevelId");
-
-                    b.HasIndex("StatusId");
 
                     b.ToTable("IncidentReports", (string)null);
                 });
@@ -694,17 +697,9 @@ namespace SafetyPortal.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SafetyPortal.Api.Entities.ActionStatusOption", "StatusOption")
-                        .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("AssignedToUser");
 
                     b.Navigation("Report");
-
-                    b.Navigation("StatusOption");
                 });
 
             modelBuilder.Entity("SafetyPortal.Api.Entities.IncidentAttachment", b =>
@@ -751,18 +746,6 @@ namespace SafetyPortal.Api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SafetyPortal.Api.Entities.SeverityLevelOption", "SeverityLevelOption")
-                        .WithMany()
-                        .HasForeignKey("SeverityLevelId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("SafetyPortal.Api.Entities.IncidentStatusOption", "StatusOption")
-                        .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("AssignedToUser");
 
                     b.Navigation("Category");
@@ -770,10 +753,6 @@ namespace SafetyPortal.Api.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("ReportedByUser");
-
-                    b.Navigation("SeverityLevelOption");
-
-                    b.Navigation("StatusOption");
                 });
 
             modelBuilder.Entity("SafetyPortal.Api.Entities.User", b =>

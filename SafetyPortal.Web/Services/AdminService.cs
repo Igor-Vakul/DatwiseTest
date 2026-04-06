@@ -40,5 +40,47 @@ namespace SafetyPortal.Web.Services
 
         public bool DeleteCategory(int id)
             => Delete($"/api/admin/categories/{id}");
+
+        // ── Incident Statuses ─────────────────────────────────────────────────
+
+        public List<IncidentStatusItem> GetAllIncidentStatuses()
+            => Get<List<IncidentStatusItem>>("/api/admin/incident-statuses");
+
+        public bool CreateIncidentStatus(string name, bool isClosing, string color)
+            => Post("/api/admin/incident-statuses", new { Name = name, IsClosing = isClosing, Color = color, IsActive = true });
+
+        public bool UpdateIncidentStatus(int id, string name, bool isClosing, string color, bool isActive)
+            => Put($"/api/admin/incident-statuses/{id}", new { Name = name, IsClosing = isClosing, Color = color, IsActive = isActive });
+
+        public bool DeleteIncidentStatus(int id)
+            => Delete($"/api/admin/incident-statuses/{id}");
+
+        // ── Severity Levels ───────────────────────────────────────────────────
+
+        public List<SeverityLevelItem> GetAllSeverityLevels()
+            => Get<List<SeverityLevelItem>>("/api/admin/severity-levels");
+
+        public bool CreateSeverityLevel(string name, string color)
+            => Post("/api/admin/severity-levels", new { Name = name, Color = color, IsActive = true });
+
+        public bool UpdateSeverityLevel(int id, string name, string color, bool isActive)
+            => Put($"/api/admin/severity-levels/{id}", new { Name = name, Color = color, IsActive = isActive });
+
+        public bool DeleteSeverityLevel(int id)
+            => Delete($"/api/admin/severity-levels/{id}");
+
+        // ── Action Statuses ───────────────────────────────────────────────────
+
+        public List<ActionStatusItem> GetAllActionStatuses()
+            => Get<List<ActionStatusItem>>("/api/admin/action-statuses");
+
+        public bool CreateActionStatus(string name, bool isCompleted, string color)
+            => Post("/api/admin/action-statuses", new { Name = name, IsCompleted = isCompleted, Color = color, IsActive = true });
+
+        public bool UpdateActionStatus(int id, string name, bool isCompleted, string color, bool isActive)
+            => Put($"/api/admin/action-statuses/{id}", new { Name = name, IsCompleted = isCompleted, Color = color, IsActive = isActive });
+
+        public bool DeleteActionStatus(int id)
+            => Delete($"/api/admin/action-statuses/{id}");
     }
 }

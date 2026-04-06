@@ -31,6 +31,8 @@ public class IncidentEscalationJob
     {
         var incident = await _db.IncidentReports
             .Include(x => x.ReportedByUser)
+            .Include(x => x.StatusOption)
+            .Include(x => x.SeverityLevelOption)
             .FirstOrDefaultAsync(x => x.Id == incidentId);
 
         if (incident is null)
@@ -40,11 +42,11 @@ public class IncidentEscalationJob
         }
 
         // Skip if already resolved — no escalation needed
-        if (incident.Status != IncidentStatus.Open.ToString())
+        if (incident.StatusOption.IsClosing)
         {
             _logger.LogInformation(
                 "IncidentEscalationJob: incident {ReportNumber} is '{Status}', skipping escalation",
-                incident.ReportNumber, incident.Status);
+                incident.ReportNumber, incident.StatusOption.Name);
             return;
         }
 
@@ -70,7 +72,7 @@ public class IncidentEscalationJob
         var ctx = new IncidentEscalationContext(
             ReportNumber: incident.ReportNumber,
             Title: incident.Title,
-            SeverityLevel: incident.SeverityLevel,
+            SeverityLevel: incident.SeverityLevelOption.Name,
             OpenDays: openDays,
             ReporterName: incident.ReportedByUser.FullName,
             ReporterEmail: incident.ReportedByUser.Email,

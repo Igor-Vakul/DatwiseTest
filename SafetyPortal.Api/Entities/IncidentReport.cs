@@ -1,4 +1,4 @@
-﻿namespace SafetyPortal.Api.Entities;
+namespace SafetyPortal.Api.Entities;
 
 public class IncidentReport
 {
@@ -23,8 +23,13 @@ public class IncidentReport
     public DateTime ReportedAt { get; set; } = DateTime.UtcNow;
 
     public string? LocationDetails { get; set; }
-    public string SeverityLevel { get; set; } = string.Empty;
-    public string Status { get; set; } = string.Empty;
+
+    public int SeverityLevelId { get; set; }
+    public SeverityLevelOption SeverityLevelOption { get; set; } = null!;
+
+    public int StatusId { get; set; }
+    public IncidentStatusOption StatusOption { get; set; } = null!;
+
     public bool IsArchived { get; set; } = false;
 
     public ICollection<CorrectiveAction> CorrectiveActions { get; set; } = new List<CorrectiveAction>();

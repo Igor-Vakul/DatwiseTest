@@ -113,6 +113,9 @@
     <Content Include="Admin\Categories.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
+    <Content Include="Admin\Statuses.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="Content\Site.css" />
     <Content Include="Content\lib\bootstrap\css\bootstrap.min.css" />
     <Content Include="Content\lib\bootstrap\css\bootstrap.rtl.min.css" />
@@ -169,6 +172,10 @@
     </Compile>
     <Compile Include="Admin\Categories.aspx.cs">
       <DependentUpon>Categories.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\Statuses.aspx.cs">
+      <DependentUpon>Statuses.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Infrastructure\SessionHelper.cs" />

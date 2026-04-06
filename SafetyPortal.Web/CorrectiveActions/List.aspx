@@ -77,7 +77,7 @@
                                 <% } %>
                             </td>
                             <td><span class="badge badge-priority-<%= a.PriorityLevel.ToLower() %>"><%= a.PriorityLevel %></span></td>
-                            <td><span class="badge badge-status-<%= a.Status.ToLower() %>"><%= a.Status %></span></td>
+                            <td><span class="badge rounded-pill" style="background-color:<%= System.Web.HttpUtility.HtmlAttributeEncode(ActionStatusColors.ContainsKey(a.Status) ? ActionStatusColors[a.Status] : "#6c757d") %>"><%= a.Status %></span></td>
                             <% if (IsSupervisorOrAbove) { %>
                             <td>
                                 <% if (a.Status != ActionStatus.Completed.ToString()) { %>

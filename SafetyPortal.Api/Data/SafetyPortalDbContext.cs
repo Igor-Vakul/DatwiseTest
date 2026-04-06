@@ -19,6 +19,9 @@ public class SafetyPortalDbContext : DbContext
     public DbSet<CorrectiveAction> CorrectiveActions => Set<CorrectiveAction>();
     public DbSet<IncidentAttachment> IncidentAttachments => Set<IncidentAttachment>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<IncidentStatusOption> IncidentStatusOptions => Set<IncidentStatusOption>();
+    public DbSet<SeverityLevelOption> SeverityLevelOptions => Set<SeverityLevelOption>();
+    public DbSet<ActionStatusOption> ActionStatusOptions => Set<ActionStatusOption>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -149,14 +152,6 @@ public class SafetyPortalDbContext : DbContext
             entity.Property(x => x.LocationDetails)
                 .HasMaxLength(200);
 
-            entity.Property(x => x.SeverityLevel)
-                .HasMaxLength(20)
-                .IsRequired();
-
-            entity.Property(x => x.Status)
-                .HasMaxLength(30)
-                .IsRequired();
-
             entity.Property(x => x.IsArchived)
                 .HasDefaultValue(false);
 
@@ -182,6 +177,16 @@ public class SafetyPortalDbContext : DbContext
                 .WithMany(x => x.AssignedIncidents)
                 .HasForeignKey(x => x.AssignedToUserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(x => x.StatusOption)
+                .WithMany()
+                .HasForeignKey(x => x.StatusId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(x => x.SeverityLevelOption)
+                .WithMany()
+                .HasForeignKey(x => x.SeverityLevelId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<CorrectiveAction>(entity =>
@@ -196,10 +201,6 @@ public class SafetyPortalDbContext : DbContext
             entity.Property(x => x.ActionDescription)
                 .HasMaxLength(500);
 
-            entity.Property(x => x.Status)
-                .HasMaxLength(30)
-                .IsRequired();
-
             entity.Property(x => x.PriorityLevel)
                 .HasMaxLength(20)
                 .IsRequired();
@@ -212,6 +213,11 @@ public class SafetyPortalDbContext : DbContext
             entity.HasOne(x => x.AssignedToUser)
                 .WithMany(x => x.AssignedCorrectiveActions)
                 .HasForeignKey(x => x.AssignedToUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(x => x.StatusOption)
+                .WithMany()
+                .HasForeignKey(x => x.StatusId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
@@ -234,6 +240,49 @@ public class SafetyPortalDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(x => x.UploadedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<IncidentStatusOption>(entity =>
+        {
+            entity.ToTable("IncidentStatusOptions");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Name).HasMaxLength(50).IsRequired();
+            entity.Property(x => x.Color).HasMaxLength(7).HasDefaultValue("#6c757d");
+            entity.HasIndex(x => x.Name).IsUnique();
+            entity.HasData(
+                new IncidentStatusOption { Id = 1, Name = "Open",       IsClosing = false, Color = "#0d6efd", DisplayOrder = 1, IsActive = true, IsSystem = true },
+                new IncidentStatusOption { Id = 2, Name = "InProgress", IsClosing = false, Color = "#6610f2", DisplayOrder = 2, IsActive = true, IsSystem = true },
+                new IncidentStatusOption { Id = 3, Name = "Closed",     IsClosing = true,  Color = "#198754", DisplayOrder = 3, IsActive = true, IsSystem = true }
+            );
+        });
+
+        modelBuilder.Entity<SeverityLevelOption>(entity =>
+        {
+            entity.ToTable("SeverityLevelOptions");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Name).HasMaxLength(50).IsRequired();
+            entity.Property(x => x.Color).HasMaxLength(7).HasDefaultValue("#6c757d");
+            entity.HasIndex(x => x.Name).IsUnique();
+            entity.HasData(
+                new SeverityLevelOption { Id = 1, Name = "Low",      Color = "#198754", DisplayOrder = 1, IsActive = true, IsSystem = true },
+                new SeverityLevelOption { Id = 2, Name = "Medium",   Color = "#ffc107", DisplayOrder = 2, IsActive = true, IsSystem = true },
+                new SeverityLevelOption { Id = 3, Name = "High",     Color = "#fd7e14", DisplayOrder = 3, IsActive = true, IsSystem = true },
+                new SeverityLevelOption { Id = 4, Name = "Critical", Color = "#dc3545", DisplayOrder = 4, IsActive = true, IsSystem = true }
+            );
+        });
+
+        modelBuilder.Entity<ActionStatusOption>(entity =>
+        {
+            entity.ToTable("ActionStatusOptions");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Name).HasMaxLength(50).IsRequired();
+            entity.Property(x => x.Color).HasMaxLength(7).HasDefaultValue("#6c757d");
+            entity.HasIndex(x => x.Name).IsUnique();
+            entity.HasData(
+                new ActionStatusOption { Id = 1, Name = "Pending",    IsCompleted = false, Color = "#6c757d", DisplayOrder = 1, IsActive = true, IsSystem = true },
+                new ActionStatusOption { Id = 2, Name = "InProgress", IsCompleted = false, Color = "#0d6efd", DisplayOrder = 2, IsActive = true, IsSystem = true },
+                new ActionStatusOption { Id = 3, Name = "Completed",  IsCompleted = true,  Color = "#198754", DisplayOrder = 3, IsActive = true, IsSystem = true }
+            );
         });
 
         modelBuilder.Entity<AuditLog>(entity =>

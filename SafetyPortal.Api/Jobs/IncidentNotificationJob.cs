@@ -30,6 +30,8 @@ public class IncidentNotificationJob
         var incident = await _db.IncidentReports
             .Include(x => x.ReportedByUser)
             .Include(x => x.AssignedToUser)
+            .Include(x => x.StatusOption)
+            .Include(x => x.SeverityLevelOption)
             .FirstOrDefaultAsync(x => x.Id == incidentId);
 
         if (incident is null)
@@ -41,8 +43,8 @@ public class IncidentNotificationJob
         var ctx = new IncidentEmailContext(
             ReportNumber: incident.ReportNumber,
             Title: incident.Title,
-            SeverityLevel: incident.SeverityLevel,
-            Status: incident.Status,
+            SeverityLevel: incident.SeverityLevelOption.Name,
+            Status: incident.StatusOption.Name,
             ReporterName: incident.ReportedByUser.FullName,
             ReporterEmail: incident.ReportedByUser.Email,
             AssigneeName: incident.AssignedToUser?.FullName,
@@ -57,6 +59,8 @@ public class IncidentNotificationJob
         var incident = await _db.IncidentReports
             .Include(x => x.ReportedByUser)
             .Include(x => x.AssignedToUser)
+            .Include(x => x.StatusOption)
+            .Include(x => x.SeverityLevelOption)
             .FirstOrDefaultAsync(x => x.Id == incidentId);
 
         if (incident is null)
@@ -68,8 +72,8 @@ public class IncidentNotificationJob
         var ctx = new IncidentEmailContext(
             ReportNumber: incident.ReportNumber,
             Title: incident.Title,
-            SeverityLevel: incident.SeverityLevel,
-            Status: incident.Status,
+            SeverityLevel: incident.SeverityLevelOption.Name,
+            Status: incident.StatusOption.Name,
             ReporterName: incident.ReportedByUser.FullName,
             ReporterEmail: incident.ReportedByUser.Email,
             AssigneeName: incident.AssignedToUser?.FullName,

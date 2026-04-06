@@ -72,6 +72,11 @@
                     <i class="bi bi-tags"></i><span><%= Translate("nav_categories") %></span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link <%= IsActive("Admin/Statuses.aspx") %>" href="<%= ResolveUrl("~/Admin/Statuses.aspx") %>">
+                    <i class="bi bi-sliders"></i><span>Statuses</span>
+                </a>
+            </li>
             <% } %>
         </ul>
 

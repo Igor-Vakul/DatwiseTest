@@ -112,8 +112,8 @@
                     <tr>
                         <td><a href="<%= ResolveUrl("~/Incidents/Details.aspx?id=" + inc.Id) %>"><code><%= inc.ReportNumber %></code></a></td>
                         <td><%= System.Web.HttpUtility.HtmlEncode(inc.Title) %></td>
-                        <td><span class="badge badge-severity-<%= inc.SeverityLevel.ToLower() %>"><%= inc.SeverityLevel %></span></td>
-                        <td><span class="badge badge-status-<%= inc.Status.ToLower() %>"><%= inc.Status %></span></td>
+                        <td><span class="badge rounded-pill" style="background-color:<%= System.Web.HttpUtility.HtmlAttributeEncode(SeverityColors.ContainsKey(inc.SeverityLevel) ? SeverityColors[inc.SeverityLevel] : "#6c757d") %>"><%= inc.SeverityLevel %></span></td>
+                        <td><span class="badge rounded-pill" style="background-color:<%= System.Web.HttpUtility.HtmlAttributeEncode(StatusColors.ContainsKey(inc.Status) ? StatusColors[inc.Status] : "#6c757d") %>"><%= inc.Status %></span></td>
                         <td><%= inc.IncidentDate.ToString("dd MMM yyyy") %></td>
                         <td class="text-center">
                             <% if (inc.AttachmentsCount > 0) { %>
@@ -147,6 +147,10 @@
     const trendData = <%=TrendJson%>;
     const palette = ['#0d6efd','#6610f2','#fd7e14','#198754','#dc3545','#0dcaf0','#6c757d','#ffc107'];
 
+    function colorsFor(data) {
+        return data.map((x, i) => x.color || palette[i % palette.length]);
+    }
+
     function donutLegendLabels(chart) {
         const ds    = chart.data.datasets[0];
         const total = ds.data.reduce((a, b) => a + b, 0);
@@ -163,7 +167,7 @@
         type: 'doughnut',
         data: {
             labels: donutDatasets.category.map(x => x.label),
-            datasets: [{ data: donutDatasets.category.map(x => x.count), backgroundColor: palette, borderWidth: 2 }]
+            datasets: [{ data: donutDatasets.category.map(x => x.count), backgroundColor: colorsFor(donutDatasets.category), borderWidth: 2 }]
         },
         options: {
             responsive: true,
@@ -179,8 +183,9 @@
 
     document.getElementById('donutGroupBy').addEventListener('change', function () {
         const data = donutDatasets[this.value];
-        donutChart.data.labels           = data.map(x => x.label);
-        donutChart.data.datasets[0].data = data.map(x => x.count);
+        donutChart.data.labels                    = data.map(x => x.label);
+        donutChart.data.datasets[0].data          = data.map(x => x.count);
+        donutChart.data.datasets[0].backgroundColor = colorsFor(data);
         donutChart.update();
     });
 
