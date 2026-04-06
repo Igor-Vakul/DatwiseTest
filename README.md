@@ -24,12 +24,13 @@ A **Safety Officer (מנהל בטיחות)** at an industrial facility faces sev
 
 **Advanced extensions implemented:**
 1. 🔐 **Information Security** — JWT-based authentication, role-based authorization (Admin / SafetyManager / Supervisor / Employee), API endpoints protected by policy
-2. 📊 **Report Visualization & Dashboard** — KPI cards, doughnut/bar/line charts (Chart.js), recent incidents table; donut chart supports Category / Severity / Status grouping with count + percentage in legend
+2. 📊 **Report Visualization & Dashboard** — KPI cards, doughnut/bar/line charts (Chart.js), recent incidents table; donut chart supports Category / Severity / Status grouping with count + percentage in legend; all chart slices and badges use DB-driven colors
 3. ⏱️ **Background Jobs (Hangfire)** — Fire-and-forget email notifications, daily recurring reminders, delayed escalation scheduling
 4. 📎 **File Attachments** — Upload/download/delete incident attachments with magic-byte validation and size limits
 5. 📥 **Excel Export** — Filtered export of incidents and corrective actions using EPPlus
 6. 🏢 **Admin: Departments & Categories** — Full CRUD with Bootstrap modals, department color picker (colors reflected in dashboard bar chart), IsActive toggle, delete restriction on open incidents
 7. 📦 **Incident Archive** — Soft-delete via `IsArchived` flag; only Closed incidents can be archived; archived incidents excluded from dashboard stats; Active/Archived tabs on list page
+8. 🎨 **Configurable Statuses with Colors** — Incident statuses, severity levels, and action statuses stored in DB with color, display order, and flags (IsClosing / IsCompleted); fully editable by Admin with a color picker; all badge colors rendered from DB at runtime
 
 ---
 
@@ -59,7 +60,7 @@ Minimal API was deliberately chosen over classic MVC/Web API as a forward-lookin
                                                                   ┌──────────────────────────────┐
                                                                   │     SQL Server Express       │
                                                                   │     SafetyPortalDb           │
-                                                                  │     8 tables + seeded data   │
+                                                                  │     11 tables + seeded data  │
                                                                   └──────────────────────────────┘
 ```
 
@@ -69,20 +70,29 @@ Minimal API was deliberately chosen over classic MVC/Web API as a forward-lookin
 |---------|-----------|---------|
 | `SafetyPortal.Api` | .NET 10, Minimal API, EF Core, JWT | Backend REST API |
 | `SafetyPortal.Web` | ASP.NET Web Forms, .NET FW 4.8 | Frontend UI (server-rendered) |
+| `SafetyPortal.Shared` | .NET Standard 2.0 | Shared DTOs / models between API and Web |
 
 ### Database Schema
 
 ```
 Roles ◄──── Users ─────┐
                         │
-Departments ────────────┤──── IncidentReports ──── CorrectiveActions
-(Color, IsActive)       │    (IsArchived)    │
-                        │                   └──── IncidentAttachments
-IncidentCategories ─────┘
+Departments ────────────┤──── IncidentReports ──────────────── CorrectiveActions
+(Color, IsActive)       │    (IsArchived)    │                 (StatusId FK)
+                        │     StatusId FK ───┤
+IncidentCategories ─────┘     SeverityId FK  └──── IncidentAttachments
 (IsActive)
+
+IncidentStatusOptions   (Id, Name, Color, IsClosing, DisplayOrder, IsActive, IsSystem)
+SeverityLevelOptions    (Id, Name, Color, DisplayOrder, IsActive, IsSystem)
+ActionStatusOptions     (Id, Name, Color, IsCompleted, DisplayOrder, IsActive, IsSystem)
 
 AuditLogs  (standalone — login events, failed attempts, lockouts)
 ```
+
+> `IncidentReports.StatusId` and `SeverityLevelId` are integer foreign keys — **not** nvarchar strings.
+> `CorrectiveActions.StatusId` is an integer FK to `ActionStatusOptions`.
+> This ensures referential integrity and allows renaming a status without touching incident rows.
 
 ### API Endpoints
 
@@ -92,10 +102,13 @@ AuditLogs  (standalone — login events, failed attempts, lockouts)
 | Incidents | `GET/POST /api/incidents`, `GET/PUT/DELETE /api/incidents/{id}`, `PUT /{id}/archive` |
 | Corrective Actions | `GET/POST /api/corrective-actions`, `PUT /{id}/status`, `DELETE /{id}` |
 | Dashboard | `GET /api/dashboard/stats` |
-| Lookup | `GET /api/lookup/departments`, `/categories` (active only), `/users`, `/roles` |
-| Users (Admin) | `GET/POST /api/users`, `PUT /api/users/{id}/toggle-active` |
+| Lookup | `GET /api/lookup/departments`, `/categories`, `/users`, `/roles`, `/incident-statuses`, `/severity-levels`, `/action-statuses` |
+| Users (Admin) | `GET/POST /api/users`, `PUT /api/users/{id}`, `PUT /api/users/{id}/toggle-active` |
 | Admin Departments | `GET/POST /api/admin/departments`, `PUT /{id}`, `PUT /{id}/toggle-active`, `DELETE /{id}` |
 | Admin Categories | `GET/POST /api/admin/categories`, `PUT /{id}`, `PUT /{id}/toggle-active`, `DELETE /{id}` |
+| Admin Statuses | `GET/POST /api/admin/incident-statuses`, `PUT /{id}`, `DELETE /{id}` |
+| Admin Statuses | `GET/POST /api/admin/severity-levels`, `PUT /{id}`, `DELETE /{id}` |
+| Admin Statuses | `GET/POST /api/admin/action-statuses`, `PUT /{id}`, `DELETE /{id}` |
 | Attachments | `POST/GET /api/incidents/{id}/attachments`, `GET /{attId}/download`, `DELETE /{attId}` |
 | Export | `GET /api/incidents/export`, `GET /api/corrective-actions/export` |
 | Hangfire | `GET /hangfire` (Admin dashboard), `GET/POST /jobs/login`, `GET /jobs/logout` |
@@ -181,22 +194,24 @@ Protection is applied at two independent layers so that neither layer alone is a
 | `Incidents/Create.aspx` | Title, Description, Location Details |
 | `Incidents/Edit.aspx` | Title, Description, Location Details |
 | `Incidents/Details.aspx` | Corrective Action Title, Corrective Action Description |
-| `Admin/Users.aspx` | Full Name (create & edit), Email, Email Subject, Email Body |
+| `Admin/Users.aspx` | Full Name (create & edit), Email |
+| `Admin/Statuses.aspx` | Status / Severity Level name |
 
 ### Web Forms Pages
 
 | Page | Access | Description |
 |------|--------|-------------|
 | `Login.aspx` | Public | Login with email/password |
-| `Dashboard.aspx` | All roles | KPI cards + 3 charts (donut by Category/Severity/Status, bar by department with colors, trend line) + recent incidents |
-| `Incidents/List.aspx` | All roles | Paginated list with search/filter, Active/Archived tabs |
+| `Dashboard.aspx` | All roles | KPI cards + 3 charts (donut by Category/Severity/Status, bar by department with colors, trend line) + recent incidents — all badge colors from DB |
+| `Incidents/List.aspx` | All roles | Paginated list with search/filter, Active/Archived tabs; severity and status badges colored from DB |
 | `Incidents/Create.aspx` | All roles | Submit new incident report |
-| `Incidents/Details.aspx` | All roles | View details, corrective actions, upload/download/delete attachments |
+| `Incidents/Details.aspx` | All roles | View details, corrective actions, upload/download/delete attachments; all badges colored from DB |
 | `Incidents/Edit.aspx` | All roles | Edit existing incident |
-| `CorrectiveActions/List.aspx` | All roles | All actions with overdue highlight |
-| `Admin/Users.aspx` | Admin only | Create/toggle-active users |
+| `CorrectiveActions/List.aspx` | All roles | All actions with overdue highlight; status badges colored from DB |
+| `Admin/Users.aspx` | Admin only | Create/edit/toggle-active users, including email editing with duplicate check |
 | `Admin/Departments.aspx` | Admin only | CRUD departments with color picker and IsActive toggle |
 | `Admin/Categories.aspx` | Admin only | CRUD incident categories with IsActive toggle |
+| `Admin/Statuses.aspx` | Admin only | CRUD for Incident Statuses, Severity Levels, and Action Statuses — each with color picker, IsClosing/IsCompleted flag, IsActive toggle; system statuses protected from deletion |
 
 ---
 
@@ -239,7 +254,7 @@ If the API key is not set, job execution will fail silently (jobs are still queu
 
 ---
 
-## 3.4 Running Instructions
+## 3.5 Running Instructions
 
 ### Prerequisites
 
@@ -266,7 +281,7 @@ dotnet run
 
 The API will:
 - Auto-apply EF Core migrations
-- Seed the database (roles, departments, categories, 2 users)
+- Seed the database (roles, departments, categories, statuses, severity levels, 2 users)
 - Start at `https://localhost:7182`
 - Swagger UI: `https://localhost:7182/swagger`
 
@@ -291,16 +306,20 @@ The app will open at `https://localhost:44300`.
 | System Admin | `admin@datwise.local` | `Admin123!` | Admin |
 | Safety Manager | `safety.manager@datwise.local` | `Safety123!` | SafetyManager |
 
-### Optional: Load Sample Data via SQL
-
-```sql
--- Run database/schema.sql against an empty SafetyPortalDb
--- (only needed if you prefer SQL script over EF migrations)
-```
-
 ---
 
 ## Changelog
+
+### v1.5.0
+- Statuses, severity levels, and action statuses stored in DB as dedicated tables (`IncidentStatusOptions`, `SeverityLevelOptions`, `ActionStatusOptions`)
+- `IncidentReports.StatusId` / `SeverityLevelId` and `CorrectiveActions.StatusId` are now proper integer foreign keys — no more nvarchar string comparisons
+- Data-safe migration: existing rows migrated via JOIN, old string columns dropped only after FK columns populated
+- Each status/severity has a `Color` (hex), `DisplayOrder`, `IsActive`, `IsSystem`, and domain flag (`IsClosing` / `IsCompleted`)
+- Admin → Statuses page: full CRUD for all three tables with Bootstrap color picker and live preview swatch
+- System statuses (seeded) cannot be deleted; in-use statuses cannot be deleted
+- All badge colors (severity, incident status, action status) rendered at runtime from DB — no more hardcoded CSS classes
+- Dashboard donut chart slices colored from DB; `colorsFor()` helper falls back to palette for categories
+- Lookup endpoints now return `Color` for all status/severity types
 
 ### v1.4.0
 - Employee role: dashboard and incident list filtered server-side to own records only (reported by, assigned to, or has corrective action assigned)
@@ -310,6 +329,7 @@ The app will open at `https://localhost:44300`.
 - Fixed CS8602 nullable dereference warnings
 - Fixed `UnobtrusiveValidationMode` jQuery dependency error in Web Forms validators
 - Fixed duplicate type conflict (`App_Code` dynamic assembly vs compiled assembly) by moving enums to `Constants/WebEnums.cs`
+- Allow email editing when updating a user, with server-side duplicate check and per-form `ValidationGroup` isolation
 
 ### v1.3.0
 - Admin CRUD pages for Departments and Categories (Bootstrap modals, IsActive toggle, delete restricted to open-incident-free records)
@@ -343,15 +363,13 @@ The app will open at `https://localhost:44300`.
 c:\DatWiseTest\
 ├── Datwise.sln
 ├── README.md
-├── database/
-│   └── schema.sql                    ← DDL + sample data
 ├── SafetyPortal.Api/                 ← .NET 10 Minimal API
 │   ├── Auth/JwtOptions.cs
 │   ├── Data/SafetyPortalDbContext.cs
 │   ├── Data/DbSeeder.cs
 │   ├── Dtos/
 │   │   ├── Auth/
-│   │   ├── Incidents/          ← includes IncidentFilterQuery ([AsParameters])
+│   │   ├── Incidents/
 │   │   ├── CorrectiveActions/
 │   │   ├── Departments/
 │   │   ├── Categories/
@@ -364,28 +382,44 @@ c:\DatWiseTest\
 │   │   ├── LookupEndpoints.cs
 │   │   ├── AdminDepartmentEndpoints.cs
 │   │   ├── AdminCategoryEndpoints.cs
+│   │   ├── AdminStatusEndpoints.cs   ← CRUD for all 3 status/severity tables
 │   │   └── UserManagementEndpoints.cs
 │   ├── Entities/
-│   ├── Services/JwtTokenService.cs
+│   │   ├── IncidentStatusOption.cs   ← IsClosing, Color, IsSystem
+│   │   ├── SeverityLevelOption.cs    ← Color, IsSystem
+│   │   ├── ActionStatusOption.cs     ← IsCompleted, Color, IsSystem
+│   │   └── ...
+│   ├── Jobs/
+│   │   ├── IncidentNotificationJob.cs
+│   │   ├── IncidentEscalationJob.cs
+│   │   └── CorrectiveActionReminderJob.cs
+│   ├── Migrations/
 │   └── Program.cs
+├── SafetyPortal.Shared/              ← .NET Standard 2.0 — shared models
+│   └── Models/
+│       ├── LookupModels.cs           ← IncidentStatusItem, SeverityLevelItem, ActionStatusItem (with Color)
+│       └── ...
 └── SafetyPortal.Web/                 ← ASP.NET Web Forms .NET FW 4.8
-    ├── App_Code/
-    │   ├── ApiClient.cs              ← HTTP client wrapping the API
-    │   ├── BasePage.cs               ← Auth guard base class
-    │   ├── Models.cs                 ← DTOs mirroring API responses
-    │   └── SessionHelper.cs         ← JWT session management
+    ├── Infrastructure/
+    │   ├── BasePage.cs
+    │   ├── SessionHelper.cs
+    │   └── LanguageHelper.cs
+    ├── Services/
+    │   ├── ApiBase.cs
+    │   ├── AdminService.cs           ← CRUD for statuses/severity with Color param
+    │   ├── LookupService.cs
+    │   └── ...
     ├── Content/Site.css
     ├── Incidents/
     ├── CorrectiveActions/
     ├── Admin/
     │   ├── Users.aspx
-    │   ├── Departments.aspx    ← CRUD + color picker + IsActive toggle
-    │   └── Categories.aspx     ← CRUD + IsActive toggle
-    ├── Constants/
-    │   └── WebEnums.cs           ← RoleName, IncidentStatus, SeverityLevel, ActionStatus, TextDirection
+    │   ├── Departments.aspx
+    │   ├── Categories.aspx
+    │   └── Statuses.aspx             ← Color picker + CRUD for all 3 status tables
     ├── Site.Master
+    ├── Dashboard.aspx                ← Charts use DB colors via colorsFor()
     ├── Login.aspx
-    ├── Dashboard.aspx
     └── Web.config
 ```
 
@@ -396,10 +430,10 @@ c:\DatWiseTest\
 | Criterion | Implementation |
 |-----------|---------------|
 | Business/Tech integration | Safety Officer workflow: incident → CA → dashboard |
-| Web Forms + SQL Server | ASP.NET Web Forms 4.8 + SQL Server via EF Core |
-| UI/UX | Bootstrap 5, responsive sidebar, color-coded badges, Chart.js charts |
-| Management thinking | Role-based access, risk levels (severity/priority), overdue highlighting |
-| Creativity | Server-side JWT session bridge between .NET FW and .NET 10 API |
+| Web Forms + SQL Server | ASP.NET Web Forms 4.8 + SQL Server via EF Core with proper FK relationships |
+| UI/UX | Bootstrap 5, responsive sidebar, DB-driven colored badges, Chart.js charts with DB colors |
+| Management thinking | Role-based access, risk levels (severity/priority), overdue highlighting, configurable status lifecycle |
+| Creativity | Server-side JWT session bridge between .NET FW and .NET 10 API; status/severity as first-class DB entities with referential integrity |
 
 ---
 
@@ -414,8 +448,8 @@ Admin
 
 | Role | Capabilities |
 |------|-------------|
-| **Admin** | Full access: user management, delete incidents/attachments/actions, Hangfire dashboard |
-| **SafetyManager** | All except user management: create/edit/delete incidents, manage corrective actions, delete attachments |
+| **Admin** | Full access: user management, delete incidents/attachments/actions, manage statuses/severity, Hangfire dashboard |
+| **SafetyManager** | All except user/status management: create/edit/delete incidents, manage corrective actions, delete attachments |
 | **Supervisor** | Create/edit incidents, add corrective actions, mark actions complete, upload attachments |
 | **Employee** | View and create incidents — **filtered to own records only**: incidents they reported, are assigned to, or have a corrective action assigned to them; read-only access to corrective actions |
 
@@ -448,4 +482,5 @@ Admin
 | User management | ❌ | ❌ | ❌ | ✅ |
 | Manage departments | ❌ | ❌ | ❌ | ✅ |
 | Manage categories | ❌ | ❌ | ❌ | ✅ |
+| Manage statuses & severity | ❌ | ❌ | ❌ | ✅ |
 | Hangfire dashboard | ❌ | ❌ | ❌ | ✅ |
